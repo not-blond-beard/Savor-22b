@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9DC0A7CB-B88F-4EF9-956B-B047A2432C3A}") = "Savor22b", "Savor22b\Savor22b.csproj", "{8324803B-5835-4103-B819-88825BD8050F}"
+EndProject
+Project("{9DC0A7CB-B88F-4EF9-956B-B047A2432C3A}") = "Libplanet.Headless", "Libplanet.Headless\Libplanet.Headless.csproj", "{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8324803B-5835-4103-B819-88825BD8050F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8324803B-5835-4103-B819-88825BD8050F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8324803B-5835-4103-B819-88825BD8050F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8324803B-5835-4103-B819-88825BD8050F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
