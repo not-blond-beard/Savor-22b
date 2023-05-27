@@ -20,11 +20,29 @@
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "SAVOR22B_CONFIG_FILE": "appsettings.local.json"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
             }
+        },
+        {
+          "name": "Debug Savor22b",
+          "type": "coreclr",
+          "request": "launch",
+          "program": "${workspaceFolder}/backend/app/Savor22b/bin/Debug/net6.0/Savor22b.dll",
+          "args": [
+            "6469fefc-21e8-4e88-bb57-78c12534247a"
+          ],
+          "cwd": "${workspaceFolder}/backend/app/Savor22b",
+          "stopAtEntry": false,
+          "console": "integratedTerminal",
+          "preLaunchTask": "build",
+          "consoleInput": "interactive",
+          "env": {
+            "SAVOR22B_CONFIG_FILE": "appsettings.local.json"
+          }
         },
         {
             "name": ".NET Core Attach",
