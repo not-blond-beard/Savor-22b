@@ -19,11 +19,11 @@ public static class LibplanetServicesExtensions
         configure(builder);
         InstantiatedNodeComponents<T> build = builder.Build();
 
-        services.AddSingleton<IBlockPolicy<T>>(build.BlockChain.Policy);
-        services.AddSingleton<IStagePolicy<T>>(build.BlockChain.StagePolicy);
+        services.AddSingleton<IBlockPolicy>(build.BlockChain.Policy);
+        services.AddSingleton<IStagePolicy>(build.BlockChain.StagePolicy);
         services.AddSingleton<IStore>(build.Store);
         services.AddSingleton<IStateStore>(build.StateStore);
-        services.AddSingleton<BlockChain<T>>(build.BlockChain);
+        services.AddSingleton<BlockChain>(build.BlockChain);
 
         if (build.ValidatorDriverConfiguration is { } validatorDriverConfiguration)
         {
@@ -37,7 +37,7 @@ public static class LibplanetServicesExtensions
 
         if (build.Swarm is { } swarm && build.BootstrapMode is { } bootstrapMode)
         {
-            services.AddSingleton<Swarm<T>>(swarm);
+            services.AddSingleton<Swarm>(swarm);
             services.AddSingleton(typeof(SwarmService<T>.BootstrapMode), bootstrapMode);
             services.AddHostedService<SwarmService<T>>();
         }

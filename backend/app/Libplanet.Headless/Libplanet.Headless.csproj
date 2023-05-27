@@ -13,9 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Libplanet" Version="1.0.0" />
-    <PackageReference Include="Libplanet.Net" Version="1.0.0" />
-    <PackageReference Include="Libplanet.RocksDBStore" Version="1.0.0" />
+    <PackageReference Include="Libplanet" Version="1.3.0" />
+    <PackageReference Include="Libplanet.Net" Version="1.3.0" />
+    <PackageReference Include="Libplanet.RocksDBStore" Version="1.3.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
   </ItemGroup>
 

@@ -111,6 +111,7 @@ app.AddCommand((
         {
             builder
                 .UseConfiguration(headlessConfig)
+                .UseActionLoader(temp)
                 .UseBlockPolicy(BlockPolicySource.GetPolicy());
 
             if (validatorKey is { } key)

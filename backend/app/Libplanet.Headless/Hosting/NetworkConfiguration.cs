@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Diagnostics.Contracts;
 using Libplanet.Crypto;
 using Libplanet.Net;
+using Libplanet.Net.Options;
 
 namespace Libplanet.Headless.Hosting;
 

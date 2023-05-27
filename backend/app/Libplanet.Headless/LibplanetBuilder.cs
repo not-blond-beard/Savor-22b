@@ -3,7 +3,9 @@ namespace Libplanet.Headless.Hosting;
 using System.Collections.Immutable;
 using Bencodex;
 using Bencodex.Types;
+using Libplanet.Headless.Action;
 using Libplanet.Action;
+using Libplanet.Action.Loader;
 using Libplanet.Assets;
 using Libplanet.Blockchain;
 using Libplanet.Blockchain.Policies;
@@ -13,16 +15,22 @@ using Libplanet.Net;
 using Libplanet.Net.Consensus;
 using Libplanet.Net.Transports;
 using Libplanet.Store;
+using Libplanet.Store.Trie;
+using Libplanet.RocksDBStore;
 using Serilog;
+using Libplanet.Blockchain.Renderers;
 
 internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
     where T : IAction, new()
 {
     private Configuration _configuration = new Configuration();
-    private IBlockPolicy<T>? _blockPolicy;
+    private IBlockPolicy? _blockPolicy;
     private DifferentAppProtocolVersionEncountered? _differentApvEncountered;
     private IImmutableSet<Currency>? _nativeTokens;
     private PrivateKey? _validatorPrivateKey;
+    private IStateStore? _stateStore;
+    private IActionLoader? _actionLoader;
+    private IEnumerable<IRenderer>? _renderers;
 
     public ILibplanetBuilder<T> UseConfiguration(Configuration configuration)
     {
@@ -30,7 +38,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         return this;
     }
 
-    public ILibplanetBuilder<T> UseBlockPolicy(IBlockPolicy<T> blockPolicy)
+    public ILibplanetBuilder<T> UseBlockPolicy(IBlockPolicy blockPolicy)
     {
         if (_nativeTokens is not null)
         {
@@ -41,6 +49,34 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         }
 
         _blockPolicy = blockPolicy;
+        return this;
+    }
+
+    public ILibplanetBuilder<T> UseActionLoader(IActionLoader actionLoader)
+    {
+        if (_nativeTokens is not null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(UseNativeTokens)}() and {nameof(UseActionLoader)}() cannot be " +
+                "configured at the same time."
+            );
+        }
+
+        _actionLoader = actionLoader;
+        return this;
+    }
+
+    public ILibplanetBuilder<T> UseRenderers(IEnumerable<IRenderer> renderers)
+    {
+        if (_nativeTokens is not null)
+        {
+            throw new InvalidOperationException(
+                $"{nameof(UseNativeTokens)}() and {nameof(UseRenderers)}() cannot be " +
+                "configured at the same time."
+            );
+        }
+
+        _renderers = renderers;
         return this;
     }
 
@@ -71,7 +107,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         return this;
     }
 
-    private Block<T> GetGenesisBlock()
+    private Block GetGenesisBlock()
     {
         if (_configuration.GenesisBlockPath is not { } genesisUri)
         {
@@ -113,16 +149,16 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
                 );
         }
 
-        return BlockMarshaler.UnmarshalBlock<T>(
+        return BlockMarshaler.UnmarshalBlock(
             (Bencodex.Types.Dictionary)serializedGenesis);
     }
 
     private static (IStore, IStateStore) LoadStore(Uri storeUri)
     {
-#pragma warning disable CS0219
+// #pragma warning disable CS0219
         // Workaround to reference RocksDBStore.dll:
-        RocksDBStore.RocksDBStore? _ = null;
-#pragma warning restore CS0219
+        // RocksDBStore.RocksDBStore? _ = null;
+// #pragma warning restore CS0219
 
         (IStore, IStateStore)? pair = StoreLoaderAttribute.LoadStore(storeUri);
         if (pair is {} found)
@@ -150,23 +186,38 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         }
 
         (IStore store, IStateStore stateStore) = LoadStore(storeUri);
-        var blockPolicy = _blockPolicy ?? new BlockPolicy<T>(
-            nativeTokens: _nativeTokens);
-        var stagePolicy = new VolatileStagePolicy<T>(_configuration.TxLifetime);
+        var blockPolicy = _blockPolicy ?? new BlockPolicy();
+        var actionLoader = _actionLoader ?? new ActionLoader();
+        var renderers = _renderers ?? new List<IRenderer>();
+        var stagePolicy = new VolatileStagePolicy(_configuration.TxLifetime);
         var genesis = GetGenesisBlock();
+        IKeyValueStore stateKeyValueStore = new RocksDBKeyValueStore(storeUri.LocalPath);
+        _stateStore = new TrieStateStore(stateKeyValueStore);
+        var blockChainStates = new BlockChainStates(store, _stateStore);
+        var actionEvaluator = new ActionEvaluator(
+            _ => blockPolicy.BlockAction,
+            blockChainStates,
+            actionLoader,
+            null);
+
         var blockChain = store.GetCanonicalChainId() is not null
-            ? new BlockChain<T>(
+            ? new BlockChain(
                 blockPolicy,
                 stagePolicy,
                 store,
                 stateStore,
-                genesis)
-            : BlockChain<T>.Create(
+                genesis,
+                blockChainStates,
+                actionEvaluator,
+                renderers)
+            : BlockChain.Create(
                 blockPolicy,
                 stagePolicy,
                 store,
                 stateStore,
-                genesis);
+                genesis,
+                actionEvaluator,
+                renderers);
 
         if (_configuration.Network is not { } netConfig)
         {
@@ -242,7 +293,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
             };
         }
 
-        var swarm = new Swarm<T>(
+        var swarm = new Swarm(
             blockChain,
             new PrivateKey(),
             transport,

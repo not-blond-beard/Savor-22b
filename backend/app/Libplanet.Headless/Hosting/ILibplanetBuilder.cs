@@ -12,7 +12,7 @@ public interface ILibplanetBuilder<T>
 {
     ILibplanetBuilder<T> UseConfiguration(Configuration configuration);
 
-    ILibplanetBuilder<T> UseBlockPolicy(IBlockPolicy<T> blockPolicy);
+    ILibplanetBuilder<T> UseBlockPolicy(IBlockPolicy blockPolicy);
 
     ILibplanetBuilder<T> OnDifferentAppProtocolVersionEncountered(
         DifferentAppProtocolVersionEncountered differentApvEncountered);

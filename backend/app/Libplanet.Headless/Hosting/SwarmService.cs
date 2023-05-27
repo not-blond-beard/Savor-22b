@@ -19,10 +19,10 @@ public class SwarmService<T> : BackgroundService, IDisposable
         Participant,
     }
 
-    private readonly Swarm<T> _swarm;
+    private readonly Swarm _swarm;
     private readonly SwarmService<T>.BootstrapMode _mode;
 
-    public SwarmService(Swarm<T> swarm, SwarmService<T>.BootstrapMode mode)
+    public SwarmService(Swarm swarm, SwarmService<T>.BootstrapMode mode)
     {
         _swarm = swarm;
         _mode = mode;

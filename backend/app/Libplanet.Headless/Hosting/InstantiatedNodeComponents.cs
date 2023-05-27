@@ -11,8 +11,8 @@ using Libplanet.Net;
 public record InstantiatedNodeComponents<T>(
     IStore Store,
     IStateStore StateStore,
-    BlockChain<T> BlockChain,
-    Swarm<T>? Swarm,
+    BlockChain BlockChain,
+    Swarm? Swarm,
     SwarmService<T>.BootstrapMode? BootstrapMode,
     PrivateKey? ValidatorPrivateKey,
     ValidatorDriverConfiguration ValidatorDriverConfiguration
