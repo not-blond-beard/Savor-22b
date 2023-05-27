@@ -1,53 +1,22 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
-            "name": ".NET Core Launch (web)",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "build",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Savor22b/bin/Debug/net6.0/Savor22b.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/Savor22b",
-            "stopAtEntry": false,
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "SAVOR22B_CONFIG_FILE": "appsettings.local.json"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
-        },
-        {
-          "name": "Debug Savor22b",
-          "type": "coreclr",
-          "request": "launch",
-          "program": "${workspaceFolder}/backend/app/Savor22b/bin/Debug/net6.0/Savor22b.dll",
-          "args": [
-            "6469fefc-21e8-4e88-bb57-78c12534247a"
-          ],
-          "cwd": "${workspaceFolder}/backend/app/Savor22b",
-          "stopAtEntry": false,
-          "console": "integratedTerminal",
-          "preLaunchTask": "build",
-          "consoleInput": "interactive",
-          "env": {
-            "SAVOR22B_CONFIG_FILE": "appsettings.local.json"
-          }
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach"
+  "version": "0.2.0",
+  "configurations": [
+      {
+        "name": "Debug Savor22b",
+        "type": "coreclr",
+        "request": "launch",
+        "program": "${workspaceFolder}/Savor22b/bin/Debug/net6.0/Savor22b.dll",
+        "args": [
+          "6469fefc-21e8-4e88-bb57-78c12534247a"
+        ],
+        "cwd": "${workspaceFolder}/Savor22b",
+        "stopAtEntry": false,
+        "console": "integratedTerminal",
+        "preLaunchTask": "build",
+        "consoleInput": "interactive",
+        "env": {
+          "SAVOR22B_CONFIG_FILE": "appsettings.local.json"
         }
-    ]
+    },
+  ]
 }
