@@ -3,8 +3,9 @@ namespace Savor22b.Action;
 using System;
 using Libplanet.Action;
 using Libplanet.Store;
+using Savor22b.Helpers;
+using Savor22b.Model;
 using Savor22b.States;
-using Serilog;
 
 
 [ActionType("generate_seed")]
@@ -48,6 +49,21 @@ public class GenerateSeedAction : BaseAction
         }
     }
 
+    private SeedState generateRandomSeed(IRandom random)
+    {
+        CsvParser<Seed> csvParser = new CsvParser<Seed>();
+
+        var csvPath = Paths.GetCSVDataPath("seed.csv");
+
+        var seeds = csvParser.ParseCsv(csvPath);
+        int randomIndex = random.Next(0, seeds.Count);
+
+        var randomSeedData = seeds[randomIndex];
+        var randomSeed = new SeedState(randomSeedData.Id, randomSeedData.Name);
+
+        return randomSeed;
+    }
+
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         IAccountStateDelta states = ctx.PreviousStates;
@@ -56,8 +72,8 @@ public class GenerateSeedAction : BaseAction
             states.GetState(ctx.Signer) is Bencodex.Types.Dictionary stateEncoded
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
-        // 랜덤으로 생성, csv 데이터에서 읽어와야함
-        SeedState seedState = new SeedState(1, "test");
+
+        SeedState seedState = generateRandomSeed(ctx.Random);
         inventoryState = inventoryState.AddSeed(seedState);
 
         var encodedValue = inventoryState.ToBencodex();
