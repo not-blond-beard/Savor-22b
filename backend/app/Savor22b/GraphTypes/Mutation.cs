@@ -149,5 +149,37 @@ public class Mutation : ObjectGraphType
                 return tx;
             }
         );
+
+        // TODO: This mutation should be upstreamed to Libplanet.Explorer so that any native tokens
+        // can work together with this mutation:
+        Field<TransactionType<PolymorphicAction<BaseAction>>>(
+            "generateSeed",
+            description: "test",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                }
+            ),
+            resolve: context =>
+            {
+                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+
+                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+
+                var actionList = new List<PolymorphicAction<BaseAction>>();
+                var action = new GenerateSeedAction();
+
+                actionList.Add(action);
+
+                var tx = blockChain.MakeTransaction(privateKey, actionList);
+
+                swarm?.BroadcastTxs(new[] { tx });
+
+                return tx;
+            }
+        );
     }
 }

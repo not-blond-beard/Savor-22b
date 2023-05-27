@@ -9,6 +9,7 @@ using Libplanet.Assets;
 using Libplanet.Blockchain;
 using Libplanet.Net;
 using Savor22b.Action;
+using Savor22b.States;
 
 public class Query : ObjectGraphType
 {
@@ -49,5 +50,32 @@ public class Query : ObjectGraphType
                 swarm is null
                 ? throw new InvalidOperationException("Network settings is not set.")
                 : swarm.AsPeer.PeerString);
+
+        Field<InventoryStateType>(
+           "inventory",
+           description: "The inventory of the specified address.",
+           arguments: new QueryArguments(
+               new QueryArgument<NonNullGraphType<StringGraphType>>
+               {
+                   Name = "address",
+                   Description = "The account holder's 40-hex address",
+               }
+           ),
+           resolve: context =>
+           {
+               var accountAddress = new Address(context.GetArgument<string>("address"));
+
+               // Retrieve InventoryState from the blockchain based on the account address.
+               var inventoryStateEncoded = blockChain.GetState(accountAddress);
+
+               InventoryState inventoryState =
+                    inventoryStateEncoded is Bencodex.Types.Dictionary bdict
+                        ? new InventoryState(bdict)
+                        : new InventoryState();
+
+               return inventoryState;
+           }
+       );
+
     }
 }
