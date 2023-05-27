@@ -9,5 +9,7 @@
             "path": "../backend/app"
         }
     ],
-    "settings": {}
+    "settings": {
+        "dotnet-test-explorer.testProjectPath": "**/*Tests.@(csproj|vbproj|fsproj)"
+    }
 }
