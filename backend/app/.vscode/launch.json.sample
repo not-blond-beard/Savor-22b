@@ -1,0 +1,22 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+          "name": "Debug Savor22b",
+          "type": "coreclr",
+          "request": "launch",
+          "program": "${workspaceFolder}/Savor22b/bin/Debug/net6.0/Savor22b.dll",
+          "cwd": "${workspaceFolder}/Savor22b",
+          "stopAtEntry": false,
+          "console": "integratedTerminal",
+          "preLaunchTask": "build",
+          "consoleInput": "interactive",
+          "args": [
+            "your planet key id here"
+          ],
+          "env": {
+            "SAVOR22B_CONFIG_FILE": "appsettings.local.json"
+          }
+        }
+    ]
+}
