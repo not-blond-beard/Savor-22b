@@ -22,11 +22,11 @@ public class Mutation : ObjectGraphType
         "SA1118:ParameterMustNotSpanMultipleLines",
         Justification = "GraphQL docs require long lines of text.")]
     public Mutation(
-        BlockChain<PolymorphicAction<BaseAction>> blockChain,
-        Swarm<PolymorphicAction<BaseAction>>? swarm = null
+        BlockChain blockChain,
+        Swarm? swarm = null
     )
     {
-        Field<TransactionType<PolymorphicAction<BaseAction>>>(
+        Field<TransactionType>(
             "stage",
             description: "Stage transaction to current chain",
             arguments: new QueryArguments(
@@ -40,7 +40,7 @@ public class Mutation : ObjectGraphType
             {
                 string payloadHex = context.GetArgument<string>("payloadHex");
                 byte[] payload = ByteUtil.ParseHex(payloadHex);
-                var tx = Transaction<PolymorphicAction<BaseAction>>.Deserialize(payload);
+                var tx = Transaction.Deserialize(payload);
                 blockChain.StageTransaction(tx);
                 swarm?.BroadcastTxs(new[] { tx });
                 return tx;
@@ -49,7 +49,7 @@ public class Mutation : ObjectGraphType
 
         // TODO: This mutation should be upstreamed to Libplanet.Explorer so that any native tokens
         // can work together with this mutation:
-        Field<TransactionType<PolymorphicAction<BaseAction>>>(
+        Field<TransactionType>(
             "transferAsset",
             description: "Transfers the given amount of MNT from the account of the specified " +
                 "privateKeyHex to the specified recipient.  The transaction is signed using " +
@@ -87,10 +87,12 @@ public class Mutation : ObjectGraphType
                         amount
                     )
                 );
+                var actionList = new List<PolymorphicAction<SVRBaseAction>>();
+                actionList.Add(action);
 
                 var tx = blockChain.MakeTransaction(
                     privateKey,
-                    action,
+                    actionList,
                     ImmutableHashSet<Address>.Empty
                         .Add(privateKey.ToAddress())
                         .Add(recipient));
@@ -101,7 +103,7 @@ public class Mutation : ObjectGraphType
 
         // TODO: This mutation should be upstreamed to Libplanet.Explorer so that any native tokens
         // can work together with this mutation:
-        Field<TransactionType<PolymorphicAction<BaseAction>>>(
+        Field<TransactionType>(
             "mintAsset",
             description: "Mints the given amount of MNT to the balance of the specified " +
                 "recipient. The transaction is signed using the privateKeyHex and added to " +
@@ -138,10 +140,12 @@ public class Mutation : ObjectGraphType
                         amount
                     )
                 );
+                var actionList = new List<PolymorphicAction<SVRBaseAction>>();
+                actionList.Add(action);
 
                 var tx = blockChain.MakeTransaction(
                     privateKey,
-                    action,
+                    actionList,
                     ImmutableHashSet<Address>.Empty
                         .Add(privateKey.ToAddress())
                         .Add(recipient));
@@ -152,7 +156,7 @@ public class Mutation : ObjectGraphType
 
         // TODO: This mutation should be upstreamed to Libplanet.Explorer so that any native tokens
         // can work together with this mutation:
-        Field<TransactionType<PolymorphicAction<BaseAction>>>(
+        Field<TransactionType>(
             "generateSeed",
             description: "Generate Seed",
             arguments: new QueryArguments(
@@ -169,7 +173,7 @@ public class Mutation : ObjectGraphType
 
                 PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
 
-                var actionList = new List<PolymorphicAction<BaseAction>>();
+                var actionList = new List<PolymorphicAction<SVRBaseAction>>();
                 var action = new GenerateSeedAction();
 
                 actionList.Add(action);

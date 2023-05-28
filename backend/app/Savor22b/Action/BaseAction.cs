@@ -2,8 +2,9 @@ namespace Savor22b.Action;
 
 using Bencodex.Types;
 using Libplanet.Action;
+using Libplanet.State;
 
-public abstract class BaseAction : IAction
+public abstract class SVRBaseAction : IAction
 {
     public abstract IValue PlainValue { get; }
 

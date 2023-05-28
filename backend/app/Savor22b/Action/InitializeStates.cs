@@ -4,10 +4,11 @@ using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
 using Libplanet.Assets;
+using Libplanet.State;
 using Libplanet.Headless.Extensions;
 
 [ActionType(nameof(InitializeStates))]
-public class InitializeStates : BaseAction
+public class InitializeStates : SVRBaseAction
 {
     private Dictionary<Address, FungibleAssetValue> _assets;
 

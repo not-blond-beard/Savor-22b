@@ -3,6 +3,7 @@ namespace Savor22b.Action;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
+using Libplanet.State;
 using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 
@@ -12,7 +13,7 @@ using Libplanet.Headless.Extensions;
 /// an example of composing custom actions.
 /// </summary>
 [ActionType(nameof(TransferAsset))]
-public class TransferAsset : BaseAction
+public class TransferAsset : SVRBaseAction
 {
     public TransferAsset()
     {

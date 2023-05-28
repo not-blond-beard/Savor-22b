@@ -17,8 +17,9 @@ using Savor22b;
 using Savor22b.Action;
 using Savor22b.GraphTypes;
 using Serilog;
+using Libplanet.Blockchain.Renderers;
 
-using PlanetExplorerSchema = Libplanet.Explorer.Schemas.LibplanetExplorerSchema<Libplanet.Action.PolymorphicAction<Savor22b.Action.BaseAction>>;
+using PlanetExplorerSchema = Libplanet.Explorer.Schemas.LibplanetExplorerSchema;
 
 var app = CoconaApp.Create();
 
@@ -107,11 +108,12 @@ app.AddCommand((
 
     var builder = WebApplication.CreateBuilder(args);
     builder.Services
-        .AddLibplanet<PolymorphicAction<BaseAction>>(builder =>
+        .AddLibplanet<PolymorphicAction<SVRBaseAction>>(builder =>
         {
             builder
                 .UseConfiguration(headlessConfig)
-                .UseActionLoader(temp)
+                .UseActionLoader(new SVRActionLoader())
+                .UseRenderers(new List<IRenderer>())
                 .UseBlockPolicy(BlockPolicySource.GetPolicy());
 
             if (validatorKey is { } key)
@@ -124,7 +126,7 @@ app.AddCommand((
             builder
                 .AddSchema<Schema>()
                 .AddSchema<PlanetExplorerSchema>()
-                .AddGraphTypes(typeof(ExplorerQuery<PolymorphicAction<BaseAction>>).Assembly)
+                .AddGraphTypes(typeof(ExplorerQuery).Assembly)
                 .AddGraphTypes(typeof(Query).Assembly)
                 .AddUserContextBuilder<ExplorerContextBuilder>()
                 .AddSystemTextJson();
@@ -135,7 +137,7 @@ app.AddCommand((
         .AddSingleton<Mutation>()
         .AddSingleton<GraphQLHttpMiddleware<Schema>>()
         .AddSingleton<GraphQLHttpMiddleware<PlanetExplorerSchema>>()
-        .AddSingleton<IBlockChainContext<PolymorphicAction<BaseAction>>, ExplorerContext>();
+        .AddSingleton<IBlockChainContext, ExplorerContext>();
 
     if (headlessConfig.GraphQLUri is { } graphqlUri)
     {

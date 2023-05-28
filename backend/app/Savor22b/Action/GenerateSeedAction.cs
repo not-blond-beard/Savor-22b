@@ -3,13 +3,14 @@ namespace Savor22b.Action;
 using System;
 using Libplanet.Action;
 using Libplanet.Store;
+using Libplanet.State;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
 
 
 [ActionType("generate_seed")]
-public class GenerateSeedAction : BaseAction
+public class GenerateSeedAction : SVRBaseAction
 {
 
     class ActionPlainValue : DataModel

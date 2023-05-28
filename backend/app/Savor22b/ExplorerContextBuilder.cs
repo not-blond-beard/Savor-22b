@@ -18,6 +18,6 @@ internal class ExplorerContextBuilder : IUserContextBuilder
     public Task<IDictionary<string, object>> BuildUserContext(HttpContext httpContext) =>
         new ValueTask<IDictionary<string, object?>>(new Dictionary<string, object?>
         {
-            [nameof(IBlockChainContext<PolymorphicAction<BaseAction>>.Store)] = _store,
+            [nameof(IBlockChainContext.Store)] = _store,
         }).AsTask()!;
 }
