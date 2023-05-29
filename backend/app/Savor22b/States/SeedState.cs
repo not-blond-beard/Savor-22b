@@ -2,7 +2,7 @@ namespace Savor22b.States;
 
 using Bencodex.Types;
 
-public class SeedState
+public class SeedState : BencodexData
 {
     public int Id { get; private set; }
     public int SeedID { get; private set; }

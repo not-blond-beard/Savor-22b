@@ -73,7 +73,7 @@ public class GenerateSeedAction : BaseAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
-        SeedState seedState = generateRandomSeed(ctx.Random, inventoryState.nextSeedId);
+        SeedState seedState = generateRandomSeed(ctx.Random, inventoryState.NextSeedId);
         inventoryState = inventoryState.AddSeed(seedState);
 
         var encodedValue = inventoryState.ToBencodex();
