@@ -5,18 +5,18 @@ using Bencodex.Types;
 public class SeedState
 {
     public int Id { get; private set; }
-    public string Name { get; private set; }
+    public int SeedID { get; private set; }
 
-    public SeedState(int id, string name)
+    public SeedState(int id, int seedId)
     {
         this.Id = id;
-        this.Name = name;
+        this.SeedID = seedId;
     }
 
     public SeedState(Bencodex.Types.Dictionary encoded)
     {
         this.Id = (int)((Integer)encoded[(Text)"id"]).Value;
-        this.Name = (string)((Text)encoded[(Text)"name"]).Value;
+        this.SeedID = (int)((Integer)encoded[(Text)"seedId"]).Value;
     }
 
     public Dictionary ToBencodex()
@@ -24,7 +24,7 @@ public class SeedState
         var pairs = new[]
         {
             new KeyValuePair<IKey, IValue>((Text)"id", (Integer)this.Id),
-            new KeyValuePair<IKey, IValue>((Text)"name", (Text)this.Name),
+            new KeyValuePair<IKey, IValue>((Text)"seedId", (Integer)this.SeedID),
         };
         return new Dictionary(pairs);
     }

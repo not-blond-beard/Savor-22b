@@ -49,7 +49,7 @@ public class GenerateSeedAction : BaseAction
         }
     }
 
-    private SeedState generateRandomSeed(IRandom random)
+    private SeedState generateRandomSeed(IRandom random, int newSeedId)
     {
         CsvParser<Seed> csvParser = new CsvParser<Seed>();
 
@@ -59,7 +59,7 @@ public class GenerateSeedAction : BaseAction
         int randomIndex = random.Next(0, seeds.Count);
 
         var randomSeedData = seeds[randomIndex];
-        var randomSeed = new SeedState(randomSeedData.Id, randomSeedData.Name);
+        var randomSeed = new SeedState(newSeedId, randomSeedData.Id);
 
         return randomSeed;
     }
@@ -73,7 +73,7 @@ public class GenerateSeedAction : BaseAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
-        SeedState seedState = generateRandomSeed(ctx.Random);
+        SeedState seedState = generateRandomSeed(ctx.Random, inventoryState.nextSeedId);
         inventoryState = inventoryState.AddSeed(seedState);
 
         var encodedValue = inventoryState.ToBencodex();

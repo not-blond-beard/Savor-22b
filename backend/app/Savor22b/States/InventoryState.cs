@@ -49,4 +49,6 @@ public class InventoryState
         var seedStateList = this.SeedStateList.Add(seedState);
         return new InventoryState(seedStateList);
     }
+
+    public int nextSeedId => this.SeedStateList.Count + 1;
 }

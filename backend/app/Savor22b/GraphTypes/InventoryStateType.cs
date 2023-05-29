@@ -23,10 +23,10 @@ public class SeedStateType : ObjectGraphType<SeedState>
             resolve: context => context.Source.Id
         );
 
-        Field<StringGraphType>(
-            name: "name",
-            description: "The name of the seed state.",
-            resolve: context => context.Source.Name
+        Field<IntGraphType>(
+            name: "seedId",
+            description: "The ID of the seed.",
+            resolve: context => context.Source.SeedID
         );
     }
 }
