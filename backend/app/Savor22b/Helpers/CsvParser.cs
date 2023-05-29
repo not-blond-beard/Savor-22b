@@ -45,8 +45,24 @@ public class CsvParser<T> where T : class, new()
                 string fieldName = type.GetProperties()[i].Name;
                 Type fieldType = type.GetProperties()[i].PropertyType;
 
-                object fieldValue = Convert.ChangeType(fields[i], fieldType);
-                type.GetProperty(fieldName).SetValue(item, fieldValue);
+                if (!string.IsNullOrEmpty(fields[i]))
+                {
+                    object fieldValue = null;
+
+                    Type underlyingType = Nullable.GetUnderlyingType(fieldType);
+
+                    if (underlyingType != null)
+                    {
+                        fieldValue = Convert.ChangeType(fields[i], underlyingType);
+                    }
+                    else
+                    {
+                        fieldValue = Convert.ChangeType(fields[i], fieldType);
+                    }
+
+                    type.GetProperty(fieldName).SetValue(item, fieldValue);
+                }
+
             }
 
             return item;
