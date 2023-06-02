@@ -9,7 +9,7 @@ using Libplanet.Assets;
 using Libplanet.State;
 
 
-[ActionType(nameof(Mint))]
+[ActionType(0)]
 public class Mint : SVRBaseAction
 {
     /// <summary>

@@ -2,8 +2,8 @@ namespace Savor22b.Action;
 
 using System;
 using Libplanet.Action;
-using Libplanet.Store;
 using Libplanet.State;
+using Libplanet.Store;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
@@ -12,10 +12,8 @@ using Savor22b.States;
 [ActionType("generate_seed")]
 public class GenerateSeedAction : SVRBaseAction
 {
-
     class ActionPlainValue : DataModel
     {
-
         public ActionPlainValue()
             : base()
         {

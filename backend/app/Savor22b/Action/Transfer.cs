@@ -9,7 +9,7 @@ using Libplanet.State;
 using Libplanet.Assets;
 
 
-[ActionType(nameof(Transfer))]
+[ActionType(1)]
 public class Transfer : SVRBaseAction
 {
     public Transfer(Address recipient, FungibleAssetValue amount)
