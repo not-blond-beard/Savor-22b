@@ -22,7 +22,7 @@ public static class BencodexExtensions
     public static IValue ToBencodex(this Address address) => new Binary(address.ByteArray);
     public static Address ToAddress(this IValue value) => new(value);
 
-    #region Address
+    #endregion Address
 
     #region Guid
 
