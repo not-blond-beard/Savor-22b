@@ -10,7 +10,7 @@ public class SVRActionLoader : IActionLoader
 
     public SVRActionLoader()
     {
-        _actionLoader = TypedActionLoader.Create(typeof(SVRBaseAction).Assembly, typeof(SVRBaseAction));
+        _actionLoader = TypedActionLoader.Create(typeof(SVRAction).Assembly, typeof(SVRAction));
     }
 
     /// <inheritdoc cref="IActionLoader.LoadAction"/>

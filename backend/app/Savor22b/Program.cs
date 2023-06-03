@@ -110,7 +110,7 @@ app.AddCommand(
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Services
-            .AddLibplanet<PolymorphicAction<SVRBaseAction>>(builder =>
+            .AddLibplanet(builder =>
             {
                 builder
                     .UseConfiguration(headlessConfig)

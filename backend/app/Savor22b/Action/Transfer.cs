@@ -10,7 +10,7 @@ using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 
 
-[ActionType(1)]
+[ActionType(nameof(Transfer))]
 public class Transfer : SVRAction
 {
     public Transfer(Address recipient, FungibleAssetValue amount)

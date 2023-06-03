@@ -9,12 +9,13 @@ using Savor22b.Model;
 using Savor22b.States;
 
 
-[ActionType("generate_seed")]
+[ActionType(nameof(GenerateSeedAction))]
 public class GenerateSeedAction : SVRAction
 {
     public GenerateSeedAction()
     {
     }
+
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>(){}.ToImmutableDictionary();
 

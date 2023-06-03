@@ -10,7 +10,7 @@ using Libplanet.State;
 using Libplanet.Headless.Extensions;
 
 
-[ActionType(0)]
+[ActionType(nameof(Mint))]
 public class Mint : SVRAction
 {
     /// <summary>

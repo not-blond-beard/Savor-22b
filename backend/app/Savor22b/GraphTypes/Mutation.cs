@@ -14,6 +14,7 @@ using Libplanet.Explorer.GraphTypes;
 using Libplanet.Net;
 using Libplanet.Tx;
 using Savor22b.Action;
+using Serilog;
 
 public class Mutation : ObjectGraphType
 {
@@ -87,7 +88,7 @@ public class Mutation : ObjectGraphType
                         amount
                     )
                 );
-                var actionList = new List<PolymorphicAction<SVRBaseAction>>();
+                var actionList = new List<SVRAction>();
                 actionList.Add(action);
 
                 var tx = blockChain.MakeTransaction(
@@ -140,7 +141,7 @@ public class Mutation : ObjectGraphType
                         amount
                     )
                 );
-                var actionList = new List<PolymorphicAction<SVRBaseAction>>();
+                var actionList = new List<SVRAction>();
                 actionList.Add(action);
 
                 var tx = blockChain.MakeTransaction(
@@ -173,7 +174,7 @@ public class Mutation : ObjectGraphType
 
                 PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
 
-                var actionList = new List<PolymorphicAction<SVRBaseAction>>();
+                var actionList = new List<SVRAction>();
                 var action = new GenerateSeedAction();
 
                 actionList.Add(action);

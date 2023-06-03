@@ -9,8 +9,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace Libplanet.Headless.Hosting;
 
-public class SoloValidationService<T> : BackgroundService, IDisposable
-    where T : IAction, new()
+public class SoloValidationService : BackgroundService, IDisposable
 {
     private readonly BlockChain _blockChain;
 

@@ -20,8 +20,7 @@ using Libplanet.RocksDBStore;
 using Serilog;
 using Libplanet.Blockchain.Renderers;
 
-internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
-    where T : IAction, new()
+internal sealed class LibplanetBuilder : ILibplanetBuilder
 {
     private Configuration _configuration = new Configuration();
     private IBlockPolicy? _blockPolicy;
@@ -32,13 +31,13 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
     private IActionLoader? _actionLoader;
     private IEnumerable<IRenderer>? _renderers;
 
-    public ILibplanetBuilder<T> UseConfiguration(Configuration configuration)
+    public ILibplanetBuilder UseConfiguration(Configuration configuration)
     {
         _configuration = configuration;
         return this;
     }
 
-    public ILibplanetBuilder<T> UseBlockPolicy(IBlockPolicy blockPolicy)
+    public ILibplanetBuilder UseBlockPolicy(IBlockPolicy blockPolicy)
     {
         if (_nativeTokens is not null)
         {
@@ -52,7 +51,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         return this;
     }
 
-    public ILibplanetBuilder<T> UseActionLoader(IActionLoader actionLoader)
+    public ILibplanetBuilder UseActionLoader(IActionLoader actionLoader)
     {
         if (_nativeTokens is not null)
         {
@@ -66,7 +65,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         return this;
     }
 
-    public ILibplanetBuilder<T> UseRenderers(IEnumerable<IRenderer> renderers)
+    public ILibplanetBuilder UseRenderers(IEnumerable<IRenderer> renderers)
     {
         if (_nativeTokens is not null)
         {
@@ -80,14 +79,14 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         return this;
     }
 
-    public ILibplanetBuilder<T> OnDifferentAppProtocolVersionEncountered(
+    public ILibplanetBuilder OnDifferentAppProtocolVersionEncountered(
         DifferentAppProtocolVersionEncountered differentApvEncountered)
     {
         _differentApvEncountered = differentApvEncountered;
         return this;
     }
 
-    public ILibplanetBuilder<T> UseNativeTokens(IImmutableSet<Currency> nativeTokens)
+    public ILibplanetBuilder UseNativeTokens(IImmutableSet<Currency> nativeTokens)
     {
         if (_blockPolicy is not null)
         {
@@ -101,7 +100,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         return this;
     }
 
-    public ILibplanetBuilder<T> UseValidator(PrivateKey privateKey)
+    public ILibplanetBuilder UseValidator(PrivateKey privateKey)
     {
         _validatorPrivateKey = privateKey;
         return this;
@@ -176,7 +175,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
         );
     }
 
-    public InstantiatedNodeComponents<T> Build()
+    public InstantiatedNodeComponents Build()
     {
         if (_configuration.StoreUri is not {} storeUri)
         {
@@ -221,7 +220,7 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
 
         if (_configuration.Network is not { } netConfig)
         {
-            return new InstantiatedNodeComponents<T>(
+            return new InstantiatedNodeComponents(
                 store,
                 stateStore,
                 blockChain,
@@ -301,10 +300,10 @@ internal sealed class LibplanetBuilder<T> : ILibplanetBuilder<T>
             consensusTransport,
             consensusReactorOption);
         var bootstrapMode = netConfig.PeerStrings.Any() || netConfig.StaticPeerStrings.Any()
-            ? SwarmService<T>.BootstrapMode.Participant
-            : SwarmService<T>.BootstrapMode.Seed;
+            ? SwarmService.BootstrapMode.Participant
+            : SwarmService.BootstrapMode.Seed;
 
-        return new InstantiatedNodeComponents<T>(
+        return new InstantiatedNodeComponents(
             store,
             stateStore,
             blockChain,
