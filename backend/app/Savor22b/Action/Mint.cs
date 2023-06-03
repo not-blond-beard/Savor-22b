@@ -1,16 +1,17 @@
 namespace Savor22b.Action;
 
 using System;
-using System.Reflection;
+using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.State;
+using Libplanet.Headless.Extensions;
 
 
 [ActionType(0)]
-public class Mint : SVRBaseAction
+public class Mint : SVRAction
 {
     /// <summary>
     /// Creates a new instance of <see cref="Mint"/> action.
@@ -39,60 +40,18 @@ public class Mint : SVRBaseAction
     /// </summary>
     public FungibleAssetValue Amount { get; private set; }
 
-    public IValue TypeId =>
-        this.GetType().GetCustomAttribute<ActionTypeAttribute>()!.TypeIdentifier;
+    protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
+        new Dictionary<string, IValue>()
+        {
+            [nameof(Recipient)] = Recipient.ToBencodex(),
+            [nameof(Amount)] = Amount.ToBencodex(),
+        }.ToImmutableDictionary();
 
-    /// <inheritdoc cref="IAction.PlainValue"/>
-    public override IValue PlainValue => Bencodex.Types.Dictionary.Empty
-        .Add("type_id", TypeId)
-        .Add("values", Bencodex.Types.Dictionary.Empty
-            .Add("recipient", Recipient.ByteArray)
-            .Add("currency", Amount.Currency.Serialize())
-            .Add("amount", new Bencodex.Types.Integer(Amount.RawValue)));
-
-    /// <inheritdoc cref="IAction.LoadPlainValue(IValue)"/>
-    public override void LoadPlainValue(IValue plainValue)
+    protected override void LoadPlainValueInternal(
+        IImmutableDictionary<string, IValue> plainValue)
     {
-        if (!(plainValue is Dictionary dict))
-        {
-            throw new ArgumentException(
-                $"Given {nameof(plainValue)} must be a {nameof(Dictionary)}: " +
-                $"{plainValue.GetType()}",
-                nameof(plainValue));
-        }
-
-        if (!dict.TryGetValue((Text)"type_id", out IValue typeId))
-        {
-            throw new ArgumentException(
-                $"Given {nameof(plainValue)} is missing type id: {plainValue}",
-                nameof(plainValue));
-        }
-
-        if (!typeId.Equals(TypeId))
-        {
-            throw new ArgumentException(
-                $"Given {nameof(plainValue)} has invalid type id: {plainValue}",
-                nameof(plainValue));
-        }
-
-        if (!dict.TryGetValue((Text)"values", out IValue values))
-        {
-            throw new ArgumentException(
-                $"Given {nameof(plainValue)} is missing values: {plainValue}",
-                nameof(plainValue));
-        }
-
-        if (!(values is Dictionary valuesDict))
-        {
-            throw new ArgumentException(
-                $"Given {nameof(plainValue)} has invalid values: {plainValue}",
-                nameof(plainValue));
-        }
-
-        Recipient = new Address(valuesDict.GetValue<IValue>("recipient"));
-        Amount = FungibleAssetValue.FromRawValue(
-            new Currency(valuesDict["currency"]),
-            valuesDict.GetValue<Bencodex.Types.Integer>("amount"));
+        Recipient = plainValue[nameof(Recipient)].ToAddress();
+        Amount = plainValue[nameof(Amount)].ToFungibleAssetValue();
     }
 
     /// <inheritdoc cref="IAction.Execute(IActionContext)"/>

@@ -1,51 +1,26 @@
 namespace Savor22b.Action;
 
-using System;
+using System.Collections.Immutable;
+using Bencodex.Types;
 using Libplanet.Action;
 using Libplanet.State;
-using Libplanet.Store;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
 
 
 [ActionType("generate_seed")]
-public class GenerateSeedAction : SVRBaseAction
+public class GenerateSeedAction : SVRAction
 {
-    class ActionPlainValue : DataModel
-    {
-        public ActionPlainValue()
-            : base()
-        {
-        }
-
-
-        public ActionPlainValue(Bencodex.Types.Dictionary encoded)
-            : base(encoded)
-        {
-        }
-    }
-
-    private ActionPlainValue _plainValue;
-
     public GenerateSeedAction()
     {
-        _plainValue = new ActionPlainValue();
     }
+    protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
+        new Dictionary<string, IValue>(){}.ToImmutableDictionary();
 
-    public override Bencodex.Types.IValue PlainValue => _plainValue.Encode();
-
-    public override void LoadPlainValue(Bencodex.Types.IValue plainValue)
+    protected override void LoadPlainValueInternal(
+        IImmutableDictionary<string, IValue> plainValue)
     {
-        if (plainValue is Bencodex.Types.Dictionary bdict)
-        {
-            _plainValue = new ActionPlainValue(bdict);
-        }
-        else
-        {
-            throw new ArgumentException(
-                $"Invalid {nameof(plainValue)} type: {plainValue.GetType()}");
-        }
     }
 
     private SeedState generateRandomSeed(IRandom random, int newSeedId)

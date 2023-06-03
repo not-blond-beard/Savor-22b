@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using Bencodex.Types;
 using Libplanet.Action;
-using Savor22b.Extensions;
+using Libplanet.Headless.Extensions;
 
 [Serializable]
 public abstract class SVRAction : SVRBaseAction
