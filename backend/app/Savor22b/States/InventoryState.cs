@@ -10,38 +10,38 @@ public class InventoryState : State
 
     public InventoryState()
     {
-        this.SeedStateList = ImmutableList<SeedState>.Empty;
-        this.RefrigeratorStateList = ImmutableList<RefrigeratorState>.Empty;
+        SeedStateList = ImmutableList<SeedState>.Empty;
+        RefrigeratorStateList = ImmutableList<RefrigeratorState>.Empty;
     }
 
     public InventoryState(ImmutableList<SeedState> seedStateList, ImmutableList<RefrigeratorState>? refrigeratorStateList)
     {
-        this.SeedStateList = seedStateList;
-        this.RefrigeratorStateList = refrigeratorStateList ?? ImmutableList<RefrigeratorState>.Empty;
+        SeedStateList = seedStateList;
+        RefrigeratorStateList = refrigeratorStateList ?? ImmutableList<RefrigeratorState>.Empty;
     }
 
     public InventoryState(Bencodex.Types.Dictionary encoded)
     {
-        if (encoded.TryGetValue((Text)"seedStateList", out var seedStateList))
+        if (encoded.TryGetValue((Text)nameof(SeedStateList), out var seedStateList))
         {
-            this.SeedStateList = ((Bencodex.Types.List)seedStateList)
+            SeedStateList = ((Bencodex.Types.List)seedStateList)
                 .Select(element => new SeedState((Bencodex.Types.Dictionary)element))
                 .ToImmutableList();
         }
         else
         {
-            this.SeedStateList = ImmutableList<SeedState>.Empty;
+            SeedStateList = ImmutableList<SeedState>.Empty;
         }
 
-        if (encoded.TryGetValue((Text)"refrigeratorStateList", out var refrigeratorStateList))
+        if (encoded.TryGetValue((Text)nameof(RefrigeratorStateList), out var refrigeratorStateList))
         {
-            this.RefrigeratorStateList = ((Bencodex.Types.List)refrigeratorStateList)
+            RefrigeratorStateList = ((Bencodex.Types.List)refrigeratorStateList)
                 .Select(element => new RefrigeratorState((Bencodex.Types.Dictionary)element))
                 .ToImmutableList();
         }
         else
         {
-            this.RefrigeratorStateList = ImmutableList<RefrigeratorState>.Empty;
+            RefrigeratorStateList = ImmutableList<RefrigeratorState>.Empty;
         }
     }
 
@@ -59,40 +59,29 @@ public class InventoryState : State
     {
         var pairs = new[]
         {
-            new KeyValuePair<IKey, IValue>((Text)"seedStateList",
-                new Bencodex.Types.List(this.SeedStateList.Select(element => element.Serialize()))),
-            new KeyValuePair<IKey, IValue>((Text)"refrigeratorStateList",
-                new Bencodex.Types.List(this.RefrigeratorStateList.Select(element => element.Serialize()))),
+            new KeyValuePair<IKey, IValue>((Text)nameof(SeedStateList),
+                new Bencodex.Types.List(SeedStateList.Select(element => element.Serialize()))),
+            new KeyValuePair<IKey, IValue>((Text)nameof(RefrigeratorStateList),
+                new Bencodex.Types.List(RefrigeratorStateList.Select(element => element.Serialize()))),
         };
         return new Dictionary(pairs);
     }
 
-    public InventoryState RemoveSeed(Guid seedStateId)
+    public InventoryState RemoveSeed(Guid seedStateID)
     {
-        var seedStateList = this.SeedStateList.RemoveAll(seedState => seedState.Id == seedStateId);
-        return new InventoryState(seedStateList, this.RefrigeratorStateList);
+        var seedStateList = SeedStateList.RemoveAll(seedState => seedState.StateID == seedStateID);
+        return new InventoryState(seedStateList, RefrigeratorStateList);
     }
 
     public InventoryState AddSeed(SeedState seedState)
     {
-        var seedStateList = this.SeedStateList.Add(seedState);
-        return new InventoryState(seedStateList, this.RefrigeratorStateList);
+        var seedStateList = SeedStateList.Add(seedState);
+        return new InventoryState(seedStateList, RefrigeratorStateList);
     }
 
     public InventoryState AddRefrigeratorItem(RefrigeratorState item)
     {
-        var refrigeratorStateList = this.RefrigeratorStateList.Add(item);
-        return new InventoryState(this.SeedStateList, refrigeratorStateList);
-    }
-    public int NextRefrigeratorId
-    {
-        get
-        {
-            if (this.RefrigeratorStateList.Count == 0)
-            {
-                return 0;
-            }
-            return this.RefrigeratorStateList[this.RefrigeratorStateList.Count - 1].Id + 1;
-        }
+        var refrigeratorStateList = RefrigeratorStateList.Add(item);
+        return new InventoryState(SeedStateList, refrigeratorStateList);
     }
 }

@@ -5,27 +5,27 @@ using Libplanet.Headless.Extensions;
 
 public class SeedState : State
 {
-    public Guid Id { get; private set; }
+    public Guid StateID { get; private set; }
     public int SeedID { get; private set; }
 
-    public SeedState(Guid id, int seedId)
+    public SeedState(Guid stateID, int seedID)
     {
-        Id = id;
-        SeedID = seedId;
+        StateID = stateID;
+        SeedID = seedID;
     }
 
     public SeedState(Bencodex.Types.Dictionary encoded)
     {
-        Id = encoded["id"].ToGuid();
-        SeedID = (int)((Integer)encoded[(Text)"seedId"]).Value;
+        StateID = encoded[nameof(StateID)].ToGuid();
+        SeedID = (int)((Integer)encoded[nameof(SeedID)]).Value;
     }
 
     public IValue Serialize()
     {
         var pairs = new[]
         {
-            new KeyValuePair<IKey, IValue>((Text)"id", this.Id.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)"seedId", (Integer)this.SeedID),
+            new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(SeedID), (Integer)this.SeedID),
         };
         return new Dictionary(pairs);
     }
