@@ -1,33 +1,20 @@
 namespace Savor22b.Action;
 
+using System.Collections.Immutable;
+using Bencodex.Types;
 using System;
 using Libplanet.Action;
-using Libplanet.Store;
+using Libplanet.State;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
+using Libplanet.Headless.Extensions;
 
 
-[ActionType("generate_ingredient")]
-public class GenerateIngredientAction : BaseAction
+[ActionType(nameof(GenerateIngredientAction))]
+public class GenerateIngredientAction : SVRAction
 {
-    class ActionPlainValue : DataModel
-    {
-        public int SeedStateId { get; private set; }
-
-        public ActionPlainValue(int seedStateId)
-            : base()
-        {
-            SeedStateId = seedStateId;
-        }
-
-        public ActionPlainValue(Bencodex.Types.Dictionary encoded)
-            : base(encoded)
-        {
-        }
-    }
-
-    private ActionPlainValue _plainValue;
+    public int SeedID;
 
     public GenerateIngredientAction()
     {
@@ -35,22 +22,18 @@ public class GenerateIngredientAction : BaseAction
 
     public GenerateIngredientAction(int seedId)
     {
-        _plainValue = new ActionPlainValue(seedId);
+        SeedID = seedId;
     }
 
-    public override Bencodex.Types.IValue PlainValue => _plainValue.Encode();
+    protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
+        new Dictionary<string, IValue>(){
+            [nameof(SeedID)] = SeedID.Serialize()
+        }.ToImmutableDictionary();
 
-    public override void LoadPlainValue(Bencodex.Types.IValue plainValue)
+    protected override void LoadPlainValueInternal(
+        IImmutableDictionary<string, IValue> plainValue)
     {
-        if (plainValue is Bencodex.Types.Dictionary bdict)
-        {
-            _plainValue = new ActionPlainValue(bdict);
-        }
-        else
-        {
-            throw new ArgumentException(
-                $"Invalid {nameof(plainValue)} type: {plainValue.GetType()}");
-        }
+        SeedID = plainValue[nameof(SeedID)].ToInteger();
     }
 
     private Ingredient? getMatchedIngredient(int seedId)
@@ -130,19 +113,19 @@ public class GenerateIngredientAction : BaseAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
-        var seed = inventoryState.SeedStateList.Find(seed => seed.Id == _plainValue.SeedStateId);
+        var seed = inventoryState.SeedStateList.Find(seed => seed.Id == SeedID);
 
         if (seed == null)
         {
             throw new ArgumentException(
-                $"Invalid {nameof(_plainValue.SeedStateId)}: {_plainValue.SeedStateId}");
+                $"Invalid {nameof(SeedID)}: {SeedID}");
         }
 
         var ingredient = generateIngredient(ctx, seed.SeedID, inventoryState.NextRefrigeratorId);
 
         inventoryState = inventoryState.AddRefrigeratorItem(ingredient);
-        inventoryState = inventoryState.RemoveSeed(_plainValue.SeedStateId);
+        inventoryState = inventoryState.RemoveSeed(SeedID);
 
-        return states.SetState(ctx.Signer, inventoryState.ToBencodex());
+        return states.SetState(ctx.Signer, inventoryState.Serialize());
     }
 }

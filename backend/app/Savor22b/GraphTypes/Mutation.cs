@@ -187,7 +187,7 @@ public class Mutation : ObjectGraphType
             }
         );
 
-        Field<TransactionType<PolymorphicAction<BaseAction>>>(
+        Field<TransactionType>(
             "generateIngredient",
             description: "Generate Ingredient",
             arguments: new QueryArguments(
@@ -209,7 +209,7 @@ public class Mutation : ObjectGraphType
 
                 PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
 
-                var actionList = new List<PolymorphicAction<BaseAction>>();
+                var actionList = new List<SVRAction>();
                 var action = new GenerateIngredientAction(
                     context.GetArgument<int>("seedStateId")
                 );
