@@ -1,13 +1,11 @@
 using Bencodex.Types;
 using Libplanet.Assets;
+using System.Globalization;
 
 namespace Libplanet.Headless.Extensions;
 
 public static class BencodexExtensions
 {
-    public static IValue Serialize(this Guid number) =>
-        new Binary(number.ToByteArray());
-
     public static IValue ToBencodex(this FungibleAssetValue fav) =>
         new List(fav.Currency.Serialize(), (Integer)fav.RawValue);
 
@@ -26,8 +24,21 @@ public static class BencodexExtensions
 
     #region Guid
 
+    public static IValue Serialize(this Guid number) =>
+        new Binary(number.ToByteArray());
+
     public static Guid ToGuid(this IValue serialized) =>
         new Guid(((Binary)serialized).ToByteArray());
 
     #endregion Guid
+
+    #region int
+
+    public static IValue Serialize(this int number) =>
+        (Text)number.ToString(CultureInfo.InvariantCulture);
+
+    public static int ToInteger(this IValue serialized) =>
+        int.Parse(((Text)serialized).Value, CultureInfo.InvariantCulture);
+
+    #endregion int
 }
