@@ -1,52 +1,27 @@
 namespace Savor22b.Action;
 
-using System;
+using System.Collections.Immutable;
+using Bencodex.Types;
 using Libplanet.Action;
-using Libplanet.Store;
+using Libplanet.State;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
 
 
-[ActionType("generate_seed")]
-public class GenerateSeedAction : BaseAction
+[ActionType(nameof(GenerateSeedAction))]
+public class GenerateSeedAction : SVRAction
 {
-
-    class ActionPlainValue : DataModel
-    {
-
-        public ActionPlainValue()
-            : base()
-        {
-        }
-
-
-        public ActionPlainValue(Bencodex.Types.Dictionary encoded)
-            : base(encoded)
-        {
-        }
-    }
-
-    private ActionPlainValue _plainValue;
-
     public GenerateSeedAction()
     {
-        _plainValue = new ActionPlainValue();
     }
 
-    public override Bencodex.Types.IValue PlainValue => _plainValue.Encode();
+    protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
+        new Dictionary<string, IValue>(){}.ToImmutableDictionary();
 
-    public override void LoadPlainValue(Bencodex.Types.IValue plainValue)
+    protected override void LoadPlainValueInternal(
+        IImmutableDictionary<string, IValue> plainValue)
     {
-        if (plainValue is Bencodex.Types.Dictionary bdict)
-        {
-            _plainValue = new ActionPlainValue(bdict);
-        }
-        else
-        {
-            throw new ArgumentException(
-                $"Invalid {nameof(plainValue)} type: {plainValue.GetType()}");
-        }
     }
 
     private SeedState generateRandomSeed(IRandom random, int newSeedId)
@@ -76,7 +51,7 @@ public class GenerateSeedAction : BaseAction
         SeedState seedState = generateRandomSeed(ctx.Random, inventoryState.NextSeedId);
         inventoryState = inventoryState.AddSeed(seedState);
 
-        var encodedValue = inventoryState.ToBencodex();
+        var encodedValue = inventoryState.Serialize();
         var statesWithUpdated = states.SetState(ctx.Signer, encodedValue);
 
         return statesWithUpdated;

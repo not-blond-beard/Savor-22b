@@ -1,7 +1,8 @@
-namespace Savor22b.Action;
+namespace Libplanet.Headless.Action;
 
 using Bencodex.Types;
 using Libplanet.Action;
+using Libplanet.State;
 
 public abstract class BaseAction : IAction
 {

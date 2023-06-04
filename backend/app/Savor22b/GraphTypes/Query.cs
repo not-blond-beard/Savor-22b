@@ -4,11 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using GraphQL;
 using GraphQL.Types;
 using Libplanet;
-using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.Blockchain;
 using Libplanet.Net;
-using Savor22b.Action;
 using Savor22b.States;
 
 public class Query : ObjectGraphType
@@ -18,8 +16,8 @@ public class Query : ObjectGraphType
         "SA1118:ParameterMustNotSpanMultipleLines",
         Justification = "GraphQL docs require long lines of text.")]
     public Query(
-        BlockChain<PolymorphicAction<BaseAction>> blockChain,
-        Swarm<PolymorphicAction<BaseAction>>? swarm = null)
+        BlockChain blockChain,
+        Swarm? swarm = null)
     {
         Field<StringGraphType>(
             "asset",

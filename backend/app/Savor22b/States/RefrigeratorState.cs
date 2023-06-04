@@ -2,7 +2,7 @@ namespace Savor22b.States;
 
 using Bencodex.Types;
 
-public class RefrigeratorState : BencodexData
+public class RefrigeratorState : State
 {
     public int Id { get; set; }
     public int? IngredientId { get; set; }
@@ -45,7 +45,7 @@ public class RefrigeratorState : BencodexData
         }
     }
 
-    public Dictionary ToBencodex()
+    public IValue Serialize()
     {
         var pairs = new List<KeyValuePair<IKey, IValue>>();
 

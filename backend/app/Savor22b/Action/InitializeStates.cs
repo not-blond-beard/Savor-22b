@@ -1,13 +1,15 @@
 namespace Savor22b.Action;
 
+using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
+using Libplanet.State;
 
 [ActionType(nameof(InitializeStates))]
-public class InitializeStates : BaseAction
+public class InitializeStates : SVRAction
 {
     private Dictionary<Address, FungibleAssetValue> _assets;
 
@@ -20,13 +22,6 @@ public class InitializeStates : BaseAction
     {
         _assets = assets;
     }
-
-    public override IValue PlainValue => new Dictionary(
-        _assets.Select(kv => new KeyValuePair<IKey, IValue>(
-            (Binary)kv.Key.ToBencodex(),
-            kv.Value.ToBencodex()
-        )
-    ));
 
     public override IAccountStateDelta Execute(IActionContext context)
     {
@@ -45,12 +40,21 @@ public class InitializeStates : BaseAction
         return states;
     }
 
-    public override void LoadPlainValue(IValue plainValue)
-    {
-        var asDict = (Dictionary)plainValue;
+    protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
+        new Dictionary<string, IValue>()
+        {
+            [nameof(_assets)] = new Bencodex.Types.Dictionary(
+                _assets.Select(kv => new KeyValuePair<IKey, IValue>(
+                    (Binary)kv.Key.ToBencodex(),
+                    kv.Value.ToBencodex()
+                ))),
+        }.ToImmutableDictionary();
 
+    protected override void LoadPlainValueInternal(
+        IImmutableDictionary<string, IValue> plainValue)
+    {
         _assets = new Dictionary<Address, FungibleAssetValue>(
-            asDict.Select(kv =>
+            ((Dictionary)plainValue[nameof(_assets)]).Select(kv =>
                 new KeyValuePair<Address, FungibleAssetValue>(
                     kv.Key.ToAddress(),
                     kv.Value.ToFungibleAssetValue()

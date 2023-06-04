@@ -1,8 +1,10 @@
 namespace Savor22b.Action;
 
+using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
+using Libplanet.State;
 using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 
@@ -12,7 +14,7 @@ using Libplanet.Headless.Extensions;
 /// an example of composing custom actions.
 /// </summary>
 [ActionType(nameof(TransferAsset))]
-public class TransferAsset : BaseAction
+public class TransferAsset : SVRAction
 {
     public TransferAsset()
     {
@@ -31,19 +33,20 @@ public class TransferAsset : BaseAction
 
     public FungibleAssetValue Amount { get; private set; }
 
-    public override IValue PlainValue
-    {
-        get
+    protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
+        new Dictionary<string, IValue>()
         {
-            IEnumerable<KeyValuePair<IKey, IValue>> pairs = new[]
-            {
-                new KeyValuePair<IKey, IValue>((Text)nameof(Sender), Sender.ToBencodex()),
-                new KeyValuePair<IKey, IValue>((Text)nameof(Recipient), Recipient.ToBencodex()),
-                new KeyValuePair<IKey, IValue>((Text)nameof(Amount), Amount.ToBencodex()),
-            };
+            [nameof(Sender)] = Sender.ToBencodex(),
+            [nameof(Recipient)] = Recipient.ToBencodex(),
+            [nameof(Amount)] = Amount.ToBencodex(),
+        }.ToImmutableDictionary();
 
-            return new Dictionary(pairs);
-        }
+    protected override void LoadPlainValueInternal(
+        IImmutableDictionary<string, IValue> plainValue)
+    {
+        Sender = plainValue[nameof(Sender)].ToAddress();
+        Recipient = plainValue[nameof(Recipient)].ToAddress();
+        Amount = plainValue[nameof(Amount)].ToFungibleAssetValue();
     }
 
     public override IAccountStateDelta Execute(IActionContext context)
@@ -61,14 +64,5 @@ public class TransferAsset : BaseAction
         }
 
         return state.TransferAsset(Sender, Recipient, Amount);
-    }
-
-    public override void LoadPlainValue(IValue plainValue)
-    {
-        var asDict = (Dictionary)plainValue;
-
-        Sender = asDict[nameof(Sender)].ToAddress();
-        Recipient = asDict[nameof(Recipient)].ToAddress();
-        Amount = asDict[nameof(Amount)].ToFungibleAssetValue();
     }
 }

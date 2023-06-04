@@ -3,7 +3,7 @@ namespace Savor22b.States;
 using System.Collections.Immutable;
 using Bencodex.Types;
 
-public class InventoryState : BencodexData
+public class InventoryState : State
 {
     public ImmutableList<SeedState> SeedStateList { get; private set; }
     public ImmutableList<RefrigeratorState> RefrigeratorStateList { get; private set; }
@@ -45,15 +45,24 @@ public class InventoryState : BencodexData
         }
     }
 
+    private IValue ImmutableListToBencodex(ImmutableList<SeedState> seedStateList)
+    {
+        var list = new Bencodex.Types.List();
+        foreach (var seedState in seedStateList)
+        {
+            list = list.Add(seedState.Serialize());
+        }
+        return list;
+    }
 
-    public Dictionary ToBencodex()
+    public IValue Serialize()
     {
         var pairs = new[]
         {
             new KeyValuePair<IKey, IValue>((Text)"seedStateList",
-                new Bencodex.Types.List(this.SeedStateList.Select(element => element.ToBencodex()))),
+                new Bencodex.Types.List(this.SeedStateList.Select(element => element.Serialize()))),
             new KeyValuePair<IKey, IValue>((Text)"refrigeratorStateList",
-                new Bencodex.Types.List(this.RefrigeratorStateList.Select(element => element.ToBencodex()))),
+                new Bencodex.Types.List(this.RefrigeratorStateList.Select(element => element.Serialize()))),
         };
         return new Dictionary(pairs);
     }

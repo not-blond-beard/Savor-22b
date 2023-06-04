@@ -9,10 +9,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace Libplanet.Headless.Hosting;
 
-public class SoloValidationService<T> : BackgroundService, IDisposable
-    where T : IAction, new()
+public class SoloValidationService : BackgroundService, IDisposable
 {
-    private readonly BlockChain<T> _blockChain;
+    private readonly BlockChain _blockChain;
 
     private readonly PrivateKey _privateKey;
 
@@ -21,7 +20,7 @@ public class SoloValidationService<T> : BackgroundService, IDisposable
     private readonly ValidatorDriverConfiguration _options;
 
     public SoloValidationService(
-        BlockChain<T> blockChain,
+        BlockChain blockChain,
         ValidatorDriverConfiguration options,
         ValidatorPrivateKey validatorPrivateKey)
     {
