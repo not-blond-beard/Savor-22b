@@ -14,26 +14,30 @@ using Libplanet.Headless.Extensions;
 [ActionType(nameof(GenerateIngredientAction))]
 public class GenerateIngredientAction : SVRAction
 {
-    public Guid SeedID;
+    public Guid RefrigeratorStateID;
+    public Guid SeedStateID;
 
     public GenerateIngredientAction()
     {
     }
 
-    public GenerateIngredientAction(Guid seedId)
+    public GenerateIngredientAction(Guid seedStateID, Guid refrigeratorStateID)
     {
-        SeedID = seedId;
+        SeedStateID = seedStateID;
+        RefrigeratorStateID = refrigeratorStateID;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>(){
-            [nameof(SeedID)] = SeedID.Serialize()
+            [nameof(SeedStateID)] = SeedStateID.Serialize(),
+            [nameof(RefrigeratorStateID)] = RefrigeratorStateID.Serialize()
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
-        SeedID = plainValue[nameof(SeedID)].ToGuid();
+        SeedStateID = plainValue[nameof(SeedStateID)].ToGuid();
+        RefrigeratorStateID = plainValue[nameof(RefrigeratorStateID)].ToGuid();
     }
 
     private Ingredient? getMatchedIngredient(int seedId)
@@ -59,7 +63,7 @@ public class GenerateIngredientAction : SVRAction
         return matchedStat;
     }
 
-    private RefrigeratorState generateIngredient(IActionContext ctx, int seedId, int refrigeratorCount)
+    private RefrigeratorState generateIngredient(IActionContext ctx, int seedId)
     {
         var matchedIngredient = getMatchedIngredient(seedId);
         var gradeExtractor = new GradeExtractor(ctx.Random, 0.1);
@@ -86,7 +90,7 @@ public class GenerateIngredientAction : SVRAction
         var speed = ctx.Random.Next(matchedStat.MinSpd, matchedStat.MaxSpd + 1);
 
         var ingredient = new RefrigeratorState(
-            refrigeratorCount,
+            RefrigeratorStateID,
             matchedIngredient.SeedId,
             null,
             gradeString,
@@ -113,18 +117,18 @@ public class GenerateIngredientAction : SVRAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
-        var seed = inventoryState.SeedStateList.Find(seed => seed.Id == SeedID);
+        var seed = inventoryState.SeedStateList.Find(seed => seed.StateID == SeedStateID);
 
         if (seed == null)
         {
             throw new ArgumentException(
-                $"Invalid {nameof(SeedID)}: {SeedID}");
+                $"Invalid {nameof(SeedStateID)}: {SeedStateID}");
         }
 
-        var ingredient = generateIngredient(ctx, seed.SeedID, inventoryState.NextRefrigeratorId);
+        var ingredient = generateIngredient(ctx, seed.SeedID);
 
         inventoryState = inventoryState.AddRefrigeratorItem(ingredient);
-        inventoryState = inventoryState.RemoveSeed(SeedID);
+        inventoryState = inventoryState.RemoveSeed(SeedStateID);
 
         return states.SetState(ctx.Signer, inventoryState.Serialize());
     }

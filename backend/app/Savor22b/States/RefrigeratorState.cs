@@ -1,47 +1,48 @@
 namespace Savor22b.States;
 
 using Bencodex.Types;
+using Libplanet.Headless.Extensions;
 
 public class RefrigeratorState : State
 {
-    public int Id { get; set; }
-    public int? IngredientId { get; set; }
-    public int? RecipeId { get; set; }
+    public Guid StateID { get; set; }
+    public int? IngredientID { get; set; }
+    public int? RecipeID { get; set; }
     public string Grade { get; set; }
     public int HP { get; set; }
     public int DEF { get; set; }
     public int ATK { get; set; }
     public int SPD { get; set; }
 
-    public RefrigeratorState(int id, int? ingredientId, int? recipeId, string grade, int hp, int def, int atk, int spd)
+    public RefrigeratorState(Guid stateID, int? ingredientID, int? recipeID, string grade, int hp, int def, int atk, int spd)
     {
-        this.Id = id;
-        this.IngredientId = ingredientId;
-        this.RecipeId = recipeId;
-        this.Grade = grade;
-        this.HP = hp;
-        this.DEF = def;
-        this.ATK = atk;
-        this.SPD = spd;
+        StateID = stateID;
+        IngredientID = ingredientID;
+        RecipeID = recipeID;
+        Grade = grade;
+        HP = hp;
+        DEF = def;
+        ATK = atk;
+        SPD = spd;
     }
 
     public RefrigeratorState(Bencodex.Types.Dictionary encoded)
     {
-        this.Id = (int)((Integer)encoded[(Text)"id"]).Value;
-        this.Grade = (string)((Text)encoded[(Text)"grade"]).Value;
-        this.HP = (int)((Integer)encoded[(Text)"hp"]).Value;
-        this.DEF = (int)((Integer)encoded[(Text)"def"]).Value;
-        this.ATK = (int)((Integer)encoded[(Text)"atk"]).Value;
-        this.SPD = (int)((Integer)encoded[(Text)"spd"]).Value;
+        StateID = encoded[nameof(StateID)].ToGuid();
+        Grade = (string)((Text)encoded[(Text)nameof(Grade)]).Value;
+        HP = (int)((Integer)encoded[(Text)nameof(HP)]).Value;
+        DEF = (int)((Integer)encoded[(Text)nameof(DEF)]).Value;
+        ATK = (int)((Integer)encoded[(Text)nameof(ATK)]).Value;
+        SPD = (int)((Integer)encoded[(Text)nameof(SPD)]).Value;
 
-        if (encoded.ContainsKey((Text)"ingredientId"))
+        if (encoded.ContainsKey((Text)nameof(IngredientID)))
         {
-            this.IngredientId = (int)((Integer)encoded[(Text)"ingredientId"]).Value;
+            this.IngredientID = (int)((Integer)encoded[(Text)nameof(IngredientID)]).Value;
         }
 
-        if (encoded.ContainsKey((Text)"recipeId"))
+        if (encoded.ContainsKey((Text)nameof(RecipeID)))
         {
-            this.RecipeId = (int)((Integer)encoded[(Text)"recipeId"]).Value;
+            this.RecipeID = (int)((Integer)encoded[(Text)nameof(RecipeID)]).Value;
         }
     }
 
@@ -49,21 +50,21 @@ public class RefrigeratorState : State
     {
         var pairs = new List<KeyValuePair<IKey, IValue>>();
 
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)"id", (Integer)this.Id));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)"grade", (Text)this.Grade));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)"hp", (Integer)this.HP));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)"def", (Integer)this.DEF));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)"atk", (Integer)this.ATK));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)"spd", (Integer)this.SPD));
+        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()));
+        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(Grade), (Text)Grade));
+        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(HP), (Integer)HP));
+        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(DEF), (Integer)DEF));
+        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(ATK), (Integer)ATK));
+        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(SPD), (Integer)SPD));
 
-        if (this.IngredientId.HasValue)
+        if (IngredientID.HasValue)
         {
-            pairs.Add(new KeyValuePair<IKey, IValue>((Text)"ingredientId", (Integer)this.IngredientId.Value));
+            pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), (Integer)IngredientID.Value));
         }
 
-        if (this.RecipeId.HasValue)
+        if (RecipeID.HasValue)
         {
-            pairs.Add(new KeyValuePair<IKey, IValue>((Text)"recipeId", (Integer)this.RecipeId.Value));
+            pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(RecipeID), (Integer)RecipeID.Value));
         }
 
         return new Dictionary(pairs);

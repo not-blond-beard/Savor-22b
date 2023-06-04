@@ -5,8 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using GraphQL;
 using GraphQL.Types;
 using Libplanet;
-using Libplanet.Action;
-using Libplanet.Action.Sys;
 using Libplanet.Assets;
 using Libplanet.Blockchain;
 using Libplanet.Crypto;
@@ -14,7 +12,6 @@ using Libplanet.Explorer.GraphTypes;
 using Libplanet.Net;
 using Libplanet.Tx;
 using Savor22b.Action;
-using Serilog;
 
 public class Mutation : ObjectGraphType
 {
@@ -211,7 +208,8 @@ public class Mutation : ObjectGraphType
 
                 var actionList = new List<SVRAction>();
                 var action = new GenerateIngredientAction(
-                    context.GetArgument<Guid>("seedStateId")
+                    context.GetArgument<Guid>("seedStateId"),
+                    Guid.NewGuid()
                 );
 
                 actionList.Add(action);

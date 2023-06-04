@@ -13,27 +13,27 @@ using Libplanet.Headless.Extensions;
 [ActionType(nameof(GenerateSeedAction))]
 public class GenerateSeedAction : SVRAction
 {
-    public Guid SeedID;
+    public Guid SeedStateID;
 
     public GenerateSeedAction()
     {
     }
 
-    public GenerateSeedAction(Guid seedId)
+    public GenerateSeedAction(Guid seedStateID)
     {
-        SeedID = seedId;
+        SeedStateID = seedStateID;
     }
 
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>(){
-            [nameof(SeedID)] = SeedID.Serialize()
+            [nameof(SeedStateID)] = SeedStateID.Serialize()
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
-        SeedID = plainValue[nameof(SeedID)].ToGuid();
+        SeedStateID = plainValue[nameof(SeedStateID)].ToGuid();
     }
 
     private SeedState generateRandomSeed(IRandom random)
@@ -46,7 +46,7 @@ public class GenerateSeedAction : SVRAction
         int randomIndex = random.Next(0, seeds.Count);
 
         var randomSeedData = seeds[randomIndex];
-        var randomSeed = new SeedState(SeedID, randomSeedData.Id);
+        var randomSeed = new SeedState(SeedStateID, randomSeedData.Id);
 
         return randomSeed;
     }

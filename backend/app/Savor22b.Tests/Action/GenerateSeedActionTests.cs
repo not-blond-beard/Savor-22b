@@ -17,7 +17,7 @@ public class GenerateSeedActionTests
     }
 
     [Fact]
-    public void GenerateSeedActionExecute_AddsSeedStateToList()
+    public void GenerateSeedActionExecute_AddsSeedToSeedStateList()
     {
         IAccountStateDelta state = new DummyState();
         var random = new DummyRandom(1);
