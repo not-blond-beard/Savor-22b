@@ -175,7 +175,7 @@ public class Mutation : ObjectGraphType
                 PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
 
                 var actionList = new List<SVRAction>();
-                var action = new GenerateSeedAction();
+                var action = new GenerateSeedAction(Guid.NewGuid());
 
                 actionList.Add(action);
 

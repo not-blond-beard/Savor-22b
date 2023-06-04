@@ -64,7 +64,7 @@ public class GenerateSeedActionTests
 
         var random = new DummyRandom(1);
 
-        var action = new GenerateSeedAction();
+        var action = new GenerateSeedAction(Guid.NewGuid());
 
         state = action.Execute(new DummyActionContext
         {
