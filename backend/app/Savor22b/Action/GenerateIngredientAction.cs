@@ -14,13 +14,13 @@ using Libplanet.Headless.Extensions;
 [ActionType(nameof(GenerateIngredientAction))]
 public class GenerateIngredientAction : SVRAction
 {
-    public int SeedID;
+    public Guid SeedID;
 
     public GenerateIngredientAction()
     {
     }
 
-    public GenerateIngredientAction(int seedId)
+    public GenerateIngredientAction(Guid seedId)
     {
         SeedID = seedId;
     }
@@ -33,7 +33,7 @@ public class GenerateIngredientAction : SVRAction
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
-        SeedID = plainValue[nameof(SeedID)].ToInteger();
+        SeedID = plainValue[nameof(SeedID)].ToGuid();
     }
 
     private Ingredient? getMatchedIngredient(int seedId)

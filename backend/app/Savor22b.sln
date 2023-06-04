@@ -7,6 +7,8 @@ Project("{9DC0A7CB-B88F-4EF9-956B-B047A2432C3A}") = "Savor22b", "Savor22b\Savor2
 EndProject
 Project("{9DC0A7CB-B88F-4EF9-956B-B047A2432C3A}") = "Libplanet.Headless", "Libplanet.Headless\Libplanet.Headless.csproj", "{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Savor22b.Tests", "Savor22b.Tests\Savor22b.Tests.csproj", "{CCBBE902-CBE0-4ECB-A924-46686F9BCB3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2E77984-2B2A-4F64-B6AE-16C651D8F9F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCBBE902-CBE0-4ECB-A924-46686F9BCB3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCBBE902-CBE0-4ECB-A924-46686F9BCB3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCBBE902-CBE0-4ECB-A924-46686F9BCB3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCBBE902-CBE0-4ECB-A924-46686F9BCB3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

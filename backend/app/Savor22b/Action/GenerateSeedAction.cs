@@ -7,24 +7,36 @@ using Libplanet.State;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
+using Libplanet.Headless.Extensions;
 
 
 [ActionType(nameof(GenerateSeedAction))]
 public class GenerateSeedAction : SVRAction
 {
+    public Guid SeedID;
+
     public GenerateSeedAction()
     {
     }
 
+    public GenerateSeedAction(Guid seedId)
+    {
+        SeedID = seedId;
+    }
+
+
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
-        new Dictionary<string, IValue>(){}.ToImmutableDictionary();
+        new Dictionary<string, IValue>(){
+            [nameof(SeedID)] = SeedID.Serialize()
+        }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
+        SeedID = plainValue[nameof(SeedID)].ToGuid();
     }
 
-    private SeedState generateRandomSeed(IRandom random, int newSeedId)
+    private SeedState generateRandomSeed(IRandom random)
     {
         CsvParser<Seed> csvParser = new CsvParser<Seed>();
 
@@ -34,7 +46,7 @@ public class GenerateSeedAction : SVRAction
         int randomIndex = random.Next(0, seeds.Count);
 
         var randomSeedData = seeds[randomIndex];
-        var randomSeed = new SeedState(newSeedId, randomSeedData.Id);
+        var randomSeed = new SeedState(SeedID, randomSeedData.Id);
 
         return randomSeed;
     }
@@ -48,7 +60,7 @@ public class GenerateSeedAction : SVRAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
-        SeedState seedState = generateRandomSeed(ctx.Random, inventoryState.NextSeedId);
+        SeedState seedState = generateRandomSeed(ctx.Random);
         inventoryState = inventoryState.AddSeed(seedState);
 
         var encodedValue = inventoryState.Serialize();

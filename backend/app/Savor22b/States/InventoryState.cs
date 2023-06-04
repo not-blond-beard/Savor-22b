@@ -67,7 +67,7 @@ public class InventoryState : State
         return new Dictionary(pairs);
     }
 
-    public InventoryState RemoveSeed(int seedStateId)
+    public InventoryState RemoveSeed(Guid seedStateId)
     {
         var seedStateList = this.SeedStateList.RemoveAll(seedState => seedState.Id == seedStateId);
         return new InventoryState(seedStateList, this.RefrigeratorStateList);
@@ -93,18 +93,6 @@ public class InventoryState : State
                 return 0;
             }
             return this.RefrigeratorStateList[this.RefrigeratorStateList.Count - 1].Id + 1;
-        }
-    }
-
-    public int NextSeedId
-    {
-        get
-        {
-            if (this.SeedStateList.Count == 0)
-            {
-                return 0;
-            }
-            return this.SeedStateList[this.SeedStateList.Count - 1].Id + 1;
         }
     }
 }

@@ -12,6 +12,7 @@
           "preLaunchTask": "build",
           "consoleInput": "interactive",
           "args": [
+            "execute",
             "your planet key id here"
           ],
           "env": {
