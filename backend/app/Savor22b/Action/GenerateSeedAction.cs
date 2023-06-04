@@ -51,7 +51,7 @@ public class GenerateSeedAction : SVRAction
         SeedState seedState = generateRandomSeed(ctx.Random, inventoryState.NextSeedId);
         inventoryState = inventoryState.AddSeed(seedState);
 
-        var encodedValue = inventoryState.ToBencodex();
+        var encodedValue = inventoryState.Serialize();
         var statesWithUpdated = states.SetState(ctx.Signer, encodedValue);
 
         return statesWithUpdated;

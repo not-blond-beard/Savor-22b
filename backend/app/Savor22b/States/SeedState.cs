@@ -2,7 +2,7 @@ namespace Savor22b.States;
 
 using Bencodex.Types;
 
-public class SeedState : BencodexData
+public class SeedState : State
 {
     public int Id { get; private set; }
     public int SeedID { get; private set; }
@@ -19,7 +19,7 @@ public class SeedState : BencodexData
         this.SeedID = (int)((Integer)encoded[(Text)"seedId"]).Value;
     }
 
-    public Dictionary ToBencodex()
+    public IValue Serialize()
     {
         var pairs = new[]
         {

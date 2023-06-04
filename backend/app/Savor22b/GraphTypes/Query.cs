@@ -4,11 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using GraphQL;
 using GraphQL.Types;
 using Libplanet;
-using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.Blockchain;
 using Libplanet.Net;
-using Savor22b.Action;
 using Savor22b.States;
 
 public class Query : ObjectGraphType
