@@ -77,7 +77,7 @@ public class SeedStateType : ObjectGraphType<SeedState>
 {
     public SeedStateType()
     {
-        Field<IntGraphType>(
+        Field<GuidGraphType>(
             name: "id",
             description: "The ID of the seed state.",
             resolve: context => context.Source.Id

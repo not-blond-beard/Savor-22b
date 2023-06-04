@@ -1,28 +1,18 @@
 namespace Savor22b;
 public static class Paths
 {
-    public static string GetProjectPath()
+    private static readonly string baseDirectory = AppContext.BaseDirectory;
+
+    public static string ProjectDirectory => Path.GetFullPath(Path.Combine(baseDirectory, "../../../"));
+
+    public static string RootDirectory => Path.GetFullPath(Path.Combine(ProjectDirectory, "../../../"));
+
+    // CSV 파일들이 저장된 디렉토리 경로
+    public static string CsvDirectory => Path.Combine(RootDirectory, "resources/savor22b/tabledata/");
+
+    public static string GetCSVDataPath(string csvFilePath)
     {
-        string currentDirectory = Directory.GetCurrentDirectory();
-        string projectPath = currentDirectory;
-
-        while (!string.IsNullOrEmpty(projectPath))
-        {
-            if (File.Exists(Path.Combine(projectPath, "appsettings.json")))
-            {
-                return projectPath;
-            }
-
-            projectPath = Directory.GetParent(projectPath)?.FullName;
-        }
-
-        return currentDirectory;
-    }
-
-    public static string GetCSVDataPath(string csvFileName)
-    {
-        string projectPath = GetProjectPath();
-        string csvPath = Path.Combine(projectPath, "Data", csvFileName);
+        string csvPath = Path.Combine(CsvDirectory, csvFilePath);
         return csvPath;
     }
 }

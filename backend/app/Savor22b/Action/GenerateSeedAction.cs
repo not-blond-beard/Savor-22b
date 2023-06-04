@@ -24,7 +24,7 @@ public class GenerateSeedAction : SVRAction
     {
     }
 
-    private SeedState generateRandomSeed(IRandom random, int newSeedId)
+    private SeedState generateRandomSeed(IRandom random)
     {
         CsvParser<Seed> csvParser = new CsvParser<Seed>();
 
@@ -34,7 +34,7 @@ public class GenerateSeedAction : SVRAction
         int randomIndex = random.Next(0, seeds.Count);
 
         var randomSeedData = seeds[randomIndex];
-        var randomSeed = new SeedState(newSeedId, randomSeedData.Id);
+        var randomSeed = new SeedState(Guid.NewGuid(), randomSeedData.Id);
 
         return randomSeed;
     }
@@ -48,7 +48,7 @@ public class GenerateSeedAction : SVRAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
-        SeedState seedState = generateRandomSeed(ctx.Random, inventoryState.NextSeedId);
+        SeedState seedState = generateRandomSeed(ctx.Random);
         inventoryState = inventoryState.AddSeed(seedState);
 
         var encodedValue = inventoryState.Serialize();

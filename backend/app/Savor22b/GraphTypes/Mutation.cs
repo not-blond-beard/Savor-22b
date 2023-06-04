@@ -211,7 +211,7 @@ public class Mutation : ObjectGraphType
 
                 var actionList = new List<SVRAction>();
                 var action = new GenerateIngredientAction(
-                    context.GetArgument<int>("seedStateId")
+                    context.GetArgument<Guid>("seedStateId")
                 );
 
                 actionList.Add(action);
