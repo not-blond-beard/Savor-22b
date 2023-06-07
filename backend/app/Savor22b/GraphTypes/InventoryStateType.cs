@@ -23,8 +23,8 @@ public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
 {
     public RefrigeratorStateType()
     {
-        Field<IntGraphType>(
-            name: "id",
+        Field<GuidGraphType>(
+            name: "stateId",
             description: "The ID of the refrigerator state.",
             resolve: context => context.Source.StateID
         );
@@ -78,7 +78,7 @@ public class SeedStateType : ObjectGraphType<SeedState>
     public SeedStateType()
     {
         Field<GuidGraphType>(
-            name: "id",
+            name: "stateId",
             description: "The ID of the seed state.",
             resolve: context => context.Source.StateID
         );
