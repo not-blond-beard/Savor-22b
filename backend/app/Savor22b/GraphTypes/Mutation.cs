@@ -194,7 +194,7 @@ public class Mutation : ObjectGraphType
                     Description = "A hex-encoded private key of the minter.  A made " +
                         "transaction will be signed using this key.",
                 },
-                new QueryArgument<NonNullGraphType<IntGraphType>>
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
                 {
                     Name = "seedStateId",
                     Description = "Seed state Id (PK)",
@@ -221,7 +221,5 @@ public class Mutation : ObjectGraphType
                 return tx;
             }
         );
-
-
     }
 }

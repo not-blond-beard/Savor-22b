@@ -7,5 +7,6 @@ public class Schema : GraphQL.Types.Schema
     {
         Query = services.GetRequiredService<Query>();
         Mutation = services.GetRequiredService<Mutation>();
+        Subscription = services.GetRequiredService<Subscription>();
     }
 }
