@@ -4,8 +4,8 @@ using GraphQL;
 using GraphQL.MicrosoftDI;
 using GraphQL.Server;
 using GraphQL.Server.Transports.AspNetCore;
+using GraphQL.Server.Transports.WebSockets;
 using GraphQL.SystemTextJson;
-using Libplanet.Action;
 using Libplanet.Blockchain.Renderers;
 using Libplanet.Crypto;
 using Libplanet.Explorer.Interfaces;
@@ -109,13 +109,20 @@ app.AddCommand(
         }
 
         var builder = WebApplication.CreateBuilder(args);
+        var renderer = new BlockRenderer();
+
         builder.Services
             .AddLibplanet(builder =>
             {
                 builder
                     .UseConfiguration(headlessConfig)
                     .UseActionLoader(new SVRActionLoader())
-                    .UseRenderers(new List<IRenderer>())
+                    .UseRenderers(
+                        new List<IRenderer>
+                        {
+                            renderer
+                        }
+                    )
                     .UseBlockPolicy(BlockPolicySource.GetPolicy());
 
                 if (validatorKey is { } key)
@@ -128,8 +135,10 @@ app.AddCommand(
                 builder
                     .AddSchema<Schema>()
                     .AddSchema<PlanetExplorerSchema>()
+                    .AddWebSockets()
                     .AddGraphTypes(typeof(ExplorerQuery).Assembly)
                     .AddGraphTypes(typeof(Query).Assembly)
+                    .AddGraphTypes(typeof(Subscription).Assembly)
                     .AddUserContextBuilder<ExplorerContextBuilder>()
                     .AddSystemTextJson();
             })
@@ -137,9 +146,12 @@ app.AddCommand(
             .AddSingleton<Schema>()
             .AddSingleton<Query>()
             .AddSingleton<Mutation>()
+            .AddSingleton<Subscription>()
+            .AddSingleton<BlockRenderer>(_ => renderer)
             .AddSingleton<GraphQLHttpMiddleware<Schema>>()
             .AddSingleton<GraphQLHttpMiddleware<PlanetExplorerSchema>>()
-            .AddSingleton<IBlockChainContext, ExplorerContext>();
+            .AddSingleton<IBlockChainContext, ExplorerContext>()
+            .AddSingleton<GraphQLWebSocketsMiddleware<Schema>>();
 
         if (headlessConfig.GraphQLUri is { } graphqlUri)
         {
@@ -156,6 +168,10 @@ app.AddCommand(
             builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
         });
         app.UseRouting();
+
+        app.UseWebSockets();
+        app.UseGraphQL<Schema>("/graphql");
+        app.UseGraphQLWebSockets<Schema>("/graphql");
 
         if (headlessConfig.GraphQLUri is { LocalPath: { } localPath })
         {
@@ -196,9 +212,9 @@ app.AddCommand("genesis", (
             }
         }
     }
-    if(validatorKey is not null)
+    if (validatorKey is not null)
     {
-        var gesisBlock = GenesisBlockHelper.ProposeGenesisBlock(new PrivateKey[]{ validatorKey }, validatorKey);
+        var gesisBlock = GenesisBlockHelper.ProposeGenesisBlock(new PrivateKey[] { validatorKey }, validatorKey);
         var gesisBlockBytes = GenesisBlockHelper.ExportBlock(gesisBlock);
         File.WriteAllBytes(path, gesisBlockBytes);
     }
