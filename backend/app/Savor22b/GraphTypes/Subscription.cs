@@ -13,6 +13,7 @@ using GraphQL;
 using System.Reactive.Concurrency;
 using Libplanet.Blocks;
 using System.Reactive.Subjects;
+using Libplanet.Tx;
 
 public class Subscription : ObjectGraphType
 {
@@ -59,6 +60,39 @@ public class Subscription : ObjectGraphType
                     return _subject
                         .DistinctUntilChanged()
                         .Select(_ => GetInventoryState(accountAddress));
+                }),
+            }
+        );
+
+        AddField(
+            new FieldType()
+            {
+                Name = "TransactionApplied",
+                Type = typeof(TxAppliedGraphType),
+                Description = "Transaction completed",
+                Arguments = new QueryArguments(
+                    new QueryArgument<NonNullGraphType<StringGraphType>>
+                    {
+                        Name = "txId",
+                        Description = "Transaction id",
+                    }
+                ),
+                Resolver = new FuncFieldResolver<TxApplied>(context =>
+                {
+                    var strId = context.GetArgument<string>("txId");
+                    var txId = new TxId(ByteUtil.ParseHex(strId));
+                    bool transactionExists = _blockChain.GetTransaction(txId) != null;
+
+                    return new TxApplied(_blockChain.GetTransaction(txId) != null);
+                }),
+                StreamResolver = new SourceStreamResolver<TxApplied>((context) =>
+                {
+                    var strId = context.GetArgument<string>("txId");
+                    var txId = new TxId(ByteUtil.ParseHex(strId));
+
+                    return _subject
+                        .DistinctUntilChanged()
+                        .Select(_ => new TxApplied(_blockChain.GetTransaction(txId) != null));
                 }),
             }
         );
