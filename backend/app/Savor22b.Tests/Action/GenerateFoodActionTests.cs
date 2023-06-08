@@ -2,6 +2,7 @@ namespace Savor22b.Tests.Action;
 
 using System;
 using System.Collections;
+using System.Collections.Immutable;
 using Libplanet;
 using Libplanet.Crypto;
 using Libplanet.State;
@@ -93,11 +94,11 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
 
         foreach (var ingredientID in expectUsedIngredientIDs)
         {
-            inventoryState.AddRefrigeratorItem(RefrigeratorState.CreateIngredient(Guid.NewGuid(), ingredientID, "D", 1, 1, 1, 1));
+            inventoryState = inventoryState.AddRefrigeratorItem(RefrigeratorState.CreateIngredient(Guid.NewGuid(), ingredientID, "D", 1, 1, 1, 1));
         }
         foreach (var foodID in expectUsedFoodIDs)
         {
-            inventoryState.AddRefrigeratorItem(RefrigeratorState.CreateFood(Guid.NewGuid(), foodID, "D", 1, 1, 1, 1));
+            inventoryState = inventoryState.AddRefrigeratorItem(RefrigeratorState.CreateFood(Guid.NewGuid(), foodID, "D", 1, 1, 1, 1));
         }
 
         return inventoryState;
@@ -114,7 +115,11 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
         var random = new DummyRandom(1);
 
         var newFoodGuid = Guid.NewGuid();
-        var action = new GenerateFoodAction();
+        var action = new GenerateFoodAction(
+            expectRecipeID,
+            newFoodGuid,
+            (from stateList in beforeInventoryState.RefrigeratorStateList
+             select stateList.StateID).ToList());
 
         var afterState = action.Execute(new DummyActionContext
         {

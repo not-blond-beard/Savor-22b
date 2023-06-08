@@ -84,4 +84,10 @@ public class InventoryState : State
         var refrigeratorStateList = RefrigeratorStateList.Add(item);
         return new InventoryState(SeedStateList, refrigeratorStateList);
     }
+
+    public InventoryState RemoveRefrigeratorItem(Guid stateID)
+    {
+        var stateList = RefrigeratorStateList.RemoveAll(state => state.StateID == stateID);
+        return new InventoryState(SeedStateList, stateList);
+    }
 }
