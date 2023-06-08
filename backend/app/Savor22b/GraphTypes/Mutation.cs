@@ -221,5 +221,47 @@ public class Mutation : ObjectGraphType
                 return tx;
             }
         );
+
+        Field<TransactionType>(
+            "generateFood",
+            description: "Generate Food",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "recipeID",
+                    Description = "Recipe ID",
+                },
+                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
+                {
+                    Name = "refrigeratorStateIDs",
+                    Description = "refrigerator state ID list",
+                }
+            ),
+            resolve: context =>
+            {
+                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+
+                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+
+                var action = new GenerateFoodAction(
+                    context.GetArgument<int>("recipeID"),
+                    Guid.NewGuid(),
+                    context.GetArgument<List<Guid>>("refrigeratorStateIDs")
+                );
+
+                var tx = blockChain.MakeTransaction(
+                    privateKey, new List<SVRAction> { action });
+
+                swarm?.BroadcastTxs(new[] { tx });
+
+                return tx;
+            }
+        );
     }
 }
