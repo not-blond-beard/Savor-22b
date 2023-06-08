@@ -40,7 +40,7 @@ public class RefrigeratorState : State
         );
     }
 
-    public static RefrigeratorState CreateFood(Guid stateID, int? recipeID, string grade, int hp, int def, int atk, int spd)
+    public static RefrigeratorState CreateFood(Guid stateID, int recipeID, string grade, int hp, int def, int atk, int spd)
     {
         return new RefrigeratorState(
             stateID: stateID,

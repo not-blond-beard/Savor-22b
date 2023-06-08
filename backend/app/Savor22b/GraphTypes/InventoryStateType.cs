@@ -35,7 +35,7 @@ public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
             resolve: context => context.Source.IngredientID
         );
 
-        Field<StringGraphType>(
+        Field<IntGraphType>(
             name: "recipeId",
             description: "The Id of the recipe.",
             resolve: context => context.Source.RecipeID
