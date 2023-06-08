@@ -9,6 +9,13 @@
             "path": "../backend/app"
         }
     ],
+    "extensions": {
+        "recommendations": [
+            "editorconfig.editorconfig",
+            "formulahendry.dotnet-test-explorer",
+            "ms-dotnettools.csharp"
+        ]
+    },
     "settings": {
         "dotnet-test-explorer.testProjectPath": "**/*Tests.@(csproj|vbproj|fsproj)"
     }

@@ -89,10 +89,9 @@ public class GenerateIngredientAction : SVRAction
         var defense = ctx.Random.Next(matchedStat.MinDef, matchedStat.MaxDef + 1);
         var speed = ctx.Random.Next(matchedStat.MinSpd, matchedStat.MaxSpd + 1);
 
-        var ingredient = new RefrigeratorState(
+        var ingredient = RefrigeratorState.CreateIngredient(
             RefrigeratorStateID,
             matchedIngredient.SeedId,
-            null,
             gradeString,
             hp,
             attack,

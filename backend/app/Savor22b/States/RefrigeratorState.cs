@@ -26,6 +26,34 @@ public class RefrigeratorState : State
         SPD = spd;
     }
 
+    public static RefrigeratorState CreateIngredient(Guid stateID, int? ingredientID, string grade, int hp, int def, int atk, int spd)
+    {
+        return new RefrigeratorState(
+            stateID: stateID,
+            ingredientID: ingredientID,
+            recipeID: null,
+            grade: grade,
+            hp: hp,
+            def: def,
+            atk: atk,
+            spd: spd
+        );
+    }
+
+    public static RefrigeratorState CreateFood(Guid stateID, int? recipeID, string grade, int hp, int def, int atk, int spd)
+    {
+        return new RefrigeratorState(
+            stateID: stateID,
+            ingredientID: null,
+            recipeID: recipeID,
+            grade: grade,
+            hp: hp,
+            def: def,
+            atk: atk,
+            spd: spd
+        );
+    }
+
     public RefrigeratorState(Bencodex.Types.Dictionary encoded)
     {
         StateID = encoded[nameof(StateID)].ToGuid();
