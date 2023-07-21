@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'backend/app/**'
     tags: ["*"]
   pull_request:
     types: [ready_for_review, opened, reopened, auto_merge_enabled]
-  paths:
-    - 'backend/app/**'
 
 jobs:
   build-and-tests:
@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: '.backend/app/'
+        working-directory: 'backend/app/'
 
     steps:
       - uses: actions/checkout@v3
