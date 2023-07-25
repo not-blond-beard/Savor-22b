@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ccf793b7ca1cc645b9cd36d753b8e3c, type: 3}
+  m_Name: SavorReference
+  m_EditorClassIdentifier: 
+  url: http://localhost:38080/graphql
+  queries: []
+  mutations:
+  - name: CreateNewSeed
+    type: 1
+    query: "mutation CreateNewSeed{\n    generateSeed(  objects :{ privateKeyHex
+      :\"eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4\"} ){\n       
+      id\n        nonce\n        signer\n    }\n}"
+    queryString: generateSeed
+    returnType: Transaction
+    queryOptions:
+    - stage
+    - transferAsset
+    - mintAsset
+    - generateSeed
+    - generateIngredient
+    - generateFood
+    fields:
+    - index: 0
+      name: id
+      type: ID
+      parentIndexes: 
+      hasSubField: 0
+      possibleFields:
+      - name: id
+        type: ID
+      - name: nonce
+        type: Long
+      - name: signer
+        type: Address
+      - name: publicKey
+        type: ByteString
+      - name: updatedAddresses
+        type: Address
+      - name: signature
+        type: ByteString
+      - name: timestamp
+        type: DateTimeOffset
+      - name: actions
+        type: Action
+      - name: serializedPayload
+        type: String
+      - name: blockRef
+        type: Block
+      hasChanged: 0
+    - index: 1
+      name: nonce
+      type: Long
+      parentIndexes: 
+      hasSubField: 0
+      possibleFields:
+      - name: id
+        type: ID
+      - name: nonce
+        type: Long
+      - name: signer
+        type: Address
+      - name: publicKey
+        type: ByteString
+      - name: updatedAddresses
+        type: Address
+      - name: signature
+        type: ByteString
+      - name: timestamp
+        type: DateTimeOffset
+      - name: actions
+        type: Action
+      - name: serializedPayload
+        type: String
+      - name: blockRef
+        type: Block
+      hasChanged: 0
+    - index: 2
+      name: signer
+      type: Address
+      parentIndexes: 
+      hasSubField: 0
+      possibleFields:
+      - name: id
+        type: ID
+      - name: nonce
+        type: Long
+      - name: signer
+        type: Address
+      - name: publicKey
+        type: ByteString
+      - name: updatedAddresses
+        type: Address
+      - name: signature
+        type: ByteString
+      - name: timestamp
+        type: DateTimeOffset
+      - name: actions
+        type: Action
+      - name: serializedPayload
+        type: String
+      - name: blockRef
+        type: Block
+      hasChanged: 0
+    isComplete: 1
+  subscriptions: []
+  loading: 0
