@@ -16,6 +16,13 @@ public class CookingEquipmentState : State
         IsInUse = isInUse;
     }
 
+    public CookingEquipmentState(Guid stateID, int cookingEquipmentID)
+    {
+        StateID = stateID;
+        CookingEquipmentID = cookingEquipmentID;
+        IsInUse = false;
+    }
+
     public CookingEquipmentState(Bencodex.Types.Dictionary encoded)
     {
         StateID = encoded[nameof(StateID)].ToGuid();
