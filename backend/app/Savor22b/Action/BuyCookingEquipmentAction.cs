@@ -17,30 +17,30 @@ using Savor22b.States;
 public class BuyCookingEquipmentAction : SVRAction
 {
     public Guid CookingEquipmentStateID;
-    public int WantToBuyEquipmentID;
+    public int DesiredEquipmentID;
 
     public BuyCookingEquipmentAction()
     {
     }
 
-    public BuyCookingEquipmentAction(Guid cookingEquipmentStateID, int wantToBuyEquipmentID)
+    public BuyCookingEquipmentAction(Guid cookingEquipmentStateID, int desiredEquipmentID)
     {
         CookingEquipmentStateID = cookingEquipmentStateID;
-        WantToBuyEquipmentID = wantToBuyEquipmentID;
+        DesiredEquipmentID = desiredEquipmentID;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
             [nameof(CookingEquipmentStateID)] = CookingEquipmentStateID.Serialize(),
-            [nameof(WantToBuyEquipmentID)] = WantToBuyEquipmentID.Serialize(),
+            [nameof(DesiredEquipmentID)] = DesiredEquipmentID.Serialize(),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
         CookingEquipmentStateID = plainValue[nameof(CookingEquipmentStateID)].ToGuid();
-        WantToBuyEquipmentID = plainValue[nameof(WantToBuyEquipmentID)].ToInteger();
+        DesiredEquipmentID = plainValue[nameof(DesiredEquipmentID)].ToInteger();
     }
 
     private List<CookingEquipment> GetCookingEquipmentCSVData()
@@ -63,12 +63,12 @@ public class BuyCookingEquipmentAction : SVRAction
 
     private CookingEquipment FindCookingEquipment(List<CookingEquipment> csvData)
     {
-        var cookingEquipment = csvData.Find(equipment => equipment.ID == WantToBuyEquipmentID);
+        var cookingEquipment = csvData.Find(equipment => equipment.ID == DesiredEquipmentID);
 
         if (cookingEquipment is null)
         {
             throw new NotFoundTableDataException(
-                $"Invalid {nameof(WantToBuyEquipmentID)}: {WantToBuyEquipmentID}");
+                $"Invalid {nameof(DesiredEquipmentID)}: {DesiredEquipmentID}");
         }
 
         return cookingEquipment;
@@ -90,13 +90,13 @@ public class BuyCookingEquipmentAction : SVRAction
                 : new InventoryState();
 
         var cookingEquipmentList = GetCookingEquipmentCSVData();
-        var wantToBuyEquipment = FindCookingEquipment(cookingEquipmentList);
-        var cookingEquipmentState = new CookingEquipmentState(CookingEquipmentStateID, wantToBuyEquipment.ID);
+        var desiredEquipment = FindCookingEquipment(cookingEquipmentList);
+        var cookingEquipmentState = new CookingEquipmentState(CookingEquipmentStateID, desiredEquipment.ID);
 
         states = states.TransferAsset(
             ctx.Signer,
             Recipient,
-            wantToBuyEquipment.Price,
+            desiredEquipment.Price,
             allowNegativeBalance: false
         );
         inventoryState = inventoryState.AddCookingEquipmentItem(cookingEquipmentState);

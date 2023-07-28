@@ -29,9 +29,9 @@ public class BuyCookingEquipmentTests
             ));
 
         var random = new DummyRandom(1);
-        var wantToBuyEquipmentID = 1;
+        var desiredEquipmentID = 1;
 
-        var action = new BuyCookingEquipmentAction(Guid.NewGuid(), wantToBuyEquipmentID);
+        var action = new BuyCookingEquipmentAction(Guid.NewGuid(), desiredEquipmentID);
 
         state = action.Execute(new DummyActionContext
         {
@@ -51,7 +51,7 @@ public class BuyCookingEquipmentTests
         Assert.Equal(0, inventoryState.SeedStateList.Count);
         Assert.Equal(0, inventoryState.RefrigeratorStateList.Count);
         Assert.Equal(1, inventoryState.CookingEquipmentStateList.Count);
-        Assert.Equal(wantToBuyEquipmentID, inventoryState.CookingEquipmentStateList[0].CookingEquipmentID);
+        Assert.Equal(desiredEquipmentID, inventoryState.CookingEquipmentStateList[0].CookingEquipmentID);
         Assert.Equal(
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
