@@ -163,16 +163,22 @@ public class Mutation : ObjectGraphType
                     Name = "privateKeyHex",
                     Description = "A hex-encoded private key of the minter.  A made " +
                         "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "itemStateIdToUse",
+                    Description = "Item State Id",
                 }
             ),
             resolve: context =>
             {
                 string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+                Guid itemStateIdToUse = context.GetArgument<Guid>("itemStateIdToUse");
 
                 PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
 
                 var actionList = new List<SVRAction>();
-                var action = new UseRandomSeedItemAction(Guid.NewGuid());
+                var action = new UseRandomSeedItemAction(Guid.NewGuid(), itemStateIdToUse);
 
                 actionList.Add(action);
 

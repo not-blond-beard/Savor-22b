@@ -9,9 +9,8 @@ using Savor22b.Action;
 using Savor22b.States;
 using Xunit;
 
-public class BuyRandomSeedItemActionTests
+public class BuyRandomSeedItemActionTests : ActionTests
 {
-    private PrivateKey _signer = new PrivateKey();
 
     public BuyRandomSeedItemActionTests()
     {
@@ -22,7 +21,7 @@ public class BuyRandomSeedItemActionTests
     {
         IAccountStateDelta state = new DummyState();
         state = state.MintAsset(
-            _signer.PublicKey.ToAddress(),
+            SignerAddress(),
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
                 "10"
@@ -36,13 +35,13 @@ public class BuyRandomSeedItemActionTests
         state = action.Execute(new DummyActionContext
         {
             PreviousStates = state,
-            Signer = _signer.PublicKey.ToAddress(),
+            Signer = SignerAddress(),
             Random = random,
             Rehearsal = false,
             BlockIndex = 1,
         });
 
-        var inventoryStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
+        var inventoryStateEncoded = state.GetState(SignerAddress());
         InventoryState inventoryState =
             inventoryStateEncoded is Bencodex.Types.Dictionary bdict
                 ? new InventoryState(bdict)
@@ -58,7 +57,7 @@ public class BuyRandomSeedItemActionTests
                 Currencies.KeyCurrency,
                 "0"
             ),
-            state.GetBalance(_signer.PublicKey.ToAddress(), Currencies.KeyCurrency));
+            state.GetBalance(SignerAddress(), Currencies.KeyCurrency));
         Assert.Equal(
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
