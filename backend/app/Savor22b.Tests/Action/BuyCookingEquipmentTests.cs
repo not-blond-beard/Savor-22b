@@ -18,7 +18,7 @@ public class BuyCookingEquipmentTests
     }
 
     [Fact]
-    public void BuyCookingEquipmentTests_AddsCookingEquipmentToKitchenStateList()
+    public void BuyCookingEquipmentExecute_AddsCookingEquipmentToKitchenStateList()
     {
         IAccountStateDelta state = new DummyState();
         state = state.MintAsset(

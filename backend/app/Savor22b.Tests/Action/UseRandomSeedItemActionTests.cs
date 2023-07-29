@@ -8,21 +8,21 @@ using Savor22b.Action;
 using Savor22b.States;
 using Libplanet;
 
-public class GenerateSeedActionTests
+public class UseRandomSeedItemActionTests
 {
     private PrivateKey _signer = new PrivateKey();
 
-    public GenerateSeedActionTests()
+    public UseRandomSeedItemActionTests()
     {
     }
 
     [Fact]
-    public void GenerateSeedActionExecute_AddsSeedToSeedStateList()
+    public void UseRandomSeedItemActionExecute_AddsSeedToSeedStateList()
     {
         IAccountStateDelta state = new DummyState();
         var random = new DummyRandom(1);
 
-        var action = new GenerateSeedAction();
+        var action = new UseRandomSeedItemAction();
 
         state = action.Execute(new DummyActionContext
         {
@@ -49,7 +49,7 @@ public class GenerateSeedActionTests
     [InlineData(100)]
     [InlineData(1000)]
     [InlineData(10000)]
-    public void GenerateSeedActionExecute_AddsSeedStateToExistsSeedsList(int existsSeedsListLength)
+    public void UseRandomSeedItemActionExecute_AddsSeedStateToExistsSeedsList(int existsSeedsListLength)
     {
         IAccountStateDelta state = new DummyState();
         InventoryState inventoryState = new InventoryState();
@@ -64,7 +64,7 @@ public class GenerateSeedActionTests
 
         var random = new DummyRandom(1);
 
-        var action = new GenerateSeedAction(Guid.NewGuid());
+        var action = new UseRandomSeedItemAction(Guid.NewGuid());
 
         state = action.Execute(new DummyActionContext
         {

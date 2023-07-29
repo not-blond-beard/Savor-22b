@@ -10,16 +10,16 @@ using Savor22b.States;
 using Libplanet.Headless.Extensions;
 
 
-[ActionType(nameof(GenerateSeedAction))]
-public class GenerateSeedAction : SVRAction
+[ActionType(nameof(UseRandomSeedItemAction))]
+public class UseRandomSeedItemAction : SVRAction
 {
     public Guid SeedStateID;
 
-    public GenerateSeedAction()
+    public UseRandomSeedItemAction()
     {
     }
 
-    public GenerateSeedAction(Guid seedStateID)
+    public UseRandomSeedItemAction(Guid seedStateID)
     {
         SeedStateID = seedStateID;
     }
