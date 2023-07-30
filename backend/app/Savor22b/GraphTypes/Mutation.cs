@@ -299,5 +299,55 @@ public class Mutation : ObjectGraphType
                 return tx;
             }
         );
+
+        Field<TransactionType>(
+            "placeUserHouse",
+            description: "Place User House",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "villageId",
+                    Description = "ID of the village you want to move to",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "x",
+                    Description = "x coordinate of the house",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "y",
+                    Description = "y coordinate of the house",
+                }
+            ),
+            resolve: context =>
+            {
+                try
+                {
+                    string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+                    PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+                    var action = new PlaceUserHouseAction(
+                        context.GetArgument<int>("villageId"),
+                        context.GetArgument<int>("x"),
+                        context.GetArgument<int>("y")
+                    );
+                    var tx = blockChain.MakeTransaction(
+                        privateKey, new List<SVRAction> { action });
+                    swarm?.BroadcastTxs(new[] { tx });
+                    return tx;
+                }
+                catch (Exception ex)
+                {
+                    context.Errors.Add(new ExecutionError(ex.Message));
+                }
+                return null;
+            }
+        );
     }
 }

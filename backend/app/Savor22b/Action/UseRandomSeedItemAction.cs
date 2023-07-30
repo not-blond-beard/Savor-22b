@@ -74,17 +74,20 @@ public class UseRandomSeedItemAction : SVRAction
     {
         IAccountStateDelta states = ctx.PreviousStates;
 
-        InventoryState inventoryState =
-            states.GetState(ctx.Signer) is Bencodex.Types.Dictionary stateEncoded
-                ? new InventoryState(stateEncoded)
-                : new InventoryState();
+        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+            ? new RootState(rootStateEncoded)
+            : new RootState();
+
+        InventoryState inventoryState = rootState.InventoryState;
 
 
         SeedState seedState = generateRandomSeed(ctx.Random);
         inventoryState = FindAndRemoveItem(inventoryState);
         inventoryState = inventoryState.AddSeed(seedState);
 
-        var encodedValue = inventoryState.Serialize();
+        rootState.SetInventoryState(inventoryState);
+
+        var encodedValue = rootState.Serialize();
         var statesWithUpdated = states.SetState(ctx.Signer, encodedValue);
 
         return statesWithUpdated;

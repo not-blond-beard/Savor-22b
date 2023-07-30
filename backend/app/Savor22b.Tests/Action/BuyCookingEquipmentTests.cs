@@ -6,6 +6,7 @@ using Libplanet.Assets;
 using Libplanet.Crypto;
 using Libplanet.State;
 using Savor22b.Action;
+using Savor22b.Constants;
 using Savor22b.States;
 using Xunit;
 
@@ -42,11 +43,11 @@ public class BuyCookingEquipmentTests
             BlockIndex = 1,
         });
 
-        var inventoryStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
-        InventoryState inventoryState =
-            inventoryStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new InventoryState(bdict)
-                : throw new Exception();
+        var rootStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
+        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : throw new Exception();
+        InventoryState inventoryState = rootState.InventoryState;
 
         Assert.Equal(0, inventoryState.SeedStateList.Count);
         Assert.Equal(0, inventoryState.RefrigeratorStateList.Count);

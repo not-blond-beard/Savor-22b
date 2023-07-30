@@ -6,6 +6,7 @@ using Libplanet.Assets;
 using Libplanet.Crypto;
 using Libplanet.State;
 using Savor22b.Action;
+using Savor22b.Constants;
 using Savor22b.States;
 using Xunit;
 
