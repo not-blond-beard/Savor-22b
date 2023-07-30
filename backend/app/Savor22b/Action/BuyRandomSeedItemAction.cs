@@ -45,9 +45,9 @@ public class BuyRandomSeedItemAction : SVRAction
 
     private List<Item> GetRandomSeedItemCSVData()
     {
-        // CsvParser<Stat> csvParser = new CsvParser<Stat>();
+        // CsvParser<Item> csvParser = new CsvParser<Item>();
 
-        // var csvPath = Paths.GetCSVDataPath("cooking-equipment.csv");
+        // var csvPath = Paths.GetCSVDataPath("item.csv");
         // var randomSeedItem = csvParser.ParseCsv(csvPath);
         var randomSeedItemList = new List<Item>();
         var randomSeedItem = new Item();

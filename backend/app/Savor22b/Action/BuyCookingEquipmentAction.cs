@@ -45,7 +45,7 @@ public class BuyCookingEquipmentAction : SVRAction
 
     private List<CookingEquipment> GetCookingEquipmentCSVData()
     {
-        // CsvParser<Stat> csvParser = new CsvParser<Stat>();
+        // CsvParser<CookingEquipment> csvParser = new CsvParser<CookingEquipment>();
 
         // var csvPath = Paths.GetCSVDataPath("cooking-equipment.csv");
         // var cookingEquipment = csvParser.ParseCsv(csvPath);
