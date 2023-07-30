@@ -24,8 +24,8 @@ public class GlobalUserHouseState : State
         if (encoded.TryGetValue((Text)nameof(UserHouse), out var userHouse))
         {
             UserHouse = ((Bencodex.Types.Dictionary)userHouse).ToDictionary(
-                kv => kv.Key.ToString()!,
-                kv => (Address)kv.Value.ToAddress()
+                pair => ((Bencodex.Types.Text)pair.Key).Value,
+                pair => pair.Value.ToAddress()
             );
         }
         else

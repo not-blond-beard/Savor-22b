@@ -27,9 +27,32 @@ public class HouseInnerState : State
 
     public HouseInnerState(Bencodex.Types.Dictionary encoded)
     {
-        FirstBurnerEquipmentID = encoded[nameof(FirstBurnerEquipmentID)] == null ? Guid.Empty : encoded[nameof(FirstBurnerEquipmentID)].ToGuid();
-        SecondBurnerEquipmentID = encoded[nameof(SecondBurnerEquipmentID)] == null ? Guid.Empty : encoded[nameof(SecondBurnerEquipmentID)].ToGuid();
-        ThirdBurnerEquipmentID = encoded[nameof(ThirdBurnerEquipmentID)] == null ? Guid.Empty : encoded[nameof(ThirdBurnerEquipmentID)].ToGuid();
+        if (encoded.TryGetValue((Text)nameof(FirstBurnerEquipmentID), out var firstBurnerEquipmentID))
+        {
+            FirstBurnerEquipmentID = firstBurnerEquipmentID.ToGuid();
+        }
+        else
+        {
+            FirstBurnerEquipmentID = Guid.Empty;
+        }
+
+        if (encoded.TryGetValue((Text)nameof(SecondBurnerEquipmentID), out var secondBurnerEquipmentID))
+        {
+            SecondBurnerEquipmentID = secondBurnerEquipmentID.ToGuid();
+        }
+        else
+        {
+            SecondBurnerEquipmentID = Guid.Empty;
+        }
+
+        if (encoded.TryGetValue((Text)nameof(ThirdBurnerEquipmentID), out var thirdBurnerEquipmentID))
+        {
+            ThirdBurnerEquipmentID = thirdBurnerEquipmentID.ToGuid();
+        }
+        else
+        {
+            ThirdBurnerEquipmentID = Guid.Empty;
+        }
     }
 
     public IValue Serialize()

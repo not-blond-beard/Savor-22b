@@ -88,6 +88,14 @@ public class PlaceUserHouseAction : SVRAction
             ? new RootState(rootStateEncoded)
             : new RootState();
 
+        string prevUserHouseKey = rootState.VillageState?.HouseState != null
+            ? globalUserHouseState.CreateKey(
+                rootState.VillageState.HouseState.VillageID,
+                rootState.VillageState.HouseState.PositionX,
+                rootState.VillageState.HouseState.PositionY
+            )
+            : string.Empty;
+
         if (rootState.VillageState == null)
         {
             rootState.SetVillageState(new VillageState(new HouseState(
@@ -96,6 +104,20 @@ public class PlaceUserHouseAction : SVRAction
                 TargetY,
                 new HouseInnerState()
             )));
+        }
+        else
+        {
+            rootState.VillageState.SetHouseState(new HouseState(
+                VillageID,
+                TargetX,
+                TargetY,
+                new HouseInnerState()
+            ));
+        }
+
+        if (prevUserHouseKey != string.Empty)
+        {
+            globalUserHouseState.UserHouse.Remove(prevUserHouseKey);
         }
 
         globalUserHouseState.SetUserHouse(userHouseKey, ctx.Signer);
