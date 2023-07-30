@@ -18,13 +18,18 @@ public class UseRandomSeedItemActionTests : ActionTests
     public void UseRandomSeedItemActionExecute_AddsSeedToSeedStateList()
     {
         var seedStateID = Guid.NewGuid();
-        IAccountStateDelta state = new DummyState();
         var random = new DummyRandom(1);
+
+        IAccountStateDelta state = new DummyState();
+        RootState beforeRootState = new RootState();
         InventoryState beforeInventoryState = new InventoryState();
 
         var itemState = new ItemState(Guid.NewGuid(), 1);
         beforeInventoryState = beforeInventoryState.AddItem(itemState);
-        state = state.SetState(SignerAddress(), beforeInventoryState.Serialize());
+
+        beforeRootState.SetInventoryState(beforeInventoryState);
+
+        state = state.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var action = new UseRandomSeedItemAction(seedStateID, itemState.StateID);
 
