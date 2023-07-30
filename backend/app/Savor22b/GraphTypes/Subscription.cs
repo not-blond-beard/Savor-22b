@@ -81,9 +81,10 @@ public class Subscription : ObjectGraphType
                 {
                     var strId = context.GetArgument<string>("txId");
                     var txId = new TxId(ByteUtil.ParseHex(strId));
+                    var tx = _blockChain.GetTransaction(txId);
                     bool transactionExists = _blockChain.GetTransaction(txId) != null;
 
-                    return new TxApplied(_blockChain.GetTransaction(txId) != null);
+                    return new TxApplied(transactionExists);
                 }),
                 StreamResolver = new SourceStreamResolver<TxApplied>((context) =>
                 {
@@ -92,7 +93,18 @@ public class Subscription : ObjectGraphType
 
                     return _subject
                         .DistinctUntilChanged()
-                        .Select(_ => new TxApplied(_blockChain.GetTransaction(txId) != null));
+                        .Select(_ =>
+                        {
+                            try
+                            {
+                                var tx = _blockChain.GetTransaction(txId);
+                                return new TxApplied(tx != null);
+                            }
+                            catch (Exception e)
+                            {
+                                return new TxApplied(false);
+                            }
+                        });
                 }),
             }
         );

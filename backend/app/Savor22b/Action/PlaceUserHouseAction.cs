@@ -56,6 +56,26 @@ public class PlaceUserHouseAction : SVRAction
         return village.Find(e => e.Id == villageId);
     }
 
+    private bool isAbleToPlaceHouse(Village village, int targetX, int targetY)
+    {
+        int halfWidth = (village.Width - 1) / 2;
+        int halfHeight = (village.Height - 1) / 2;
+
+        // halfWidth는 중심점을 기준으로 좌우 몇칸 설치가 가능한 지를 나타냄. 그러니 절댓값 targetX가 halfWidth보다 크면 설치 불가
+
+        if (Math.Abs(targetX) > halfWidth)
+        {
+            return false;
+        }
+
+        if (Math.Abs(targetY) > halfHeight)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         IAccountStateDelta states = ctx.PreviousStates;
@@ -67,7 +87,7 @@ public class PlaceUserHouseAction : SVRAction
             throw new ArgumentException("Invalid village ID");
         }
 
-        if (TargetX < 0 || TargetX >= village.Width || TargetY < 0 || TargetY >= village.Height)
+        if (!isAbleToPlaceHouse(village, TargetX, TargetY))
         {
             throw new ArgumentException("Invalid target position");
         }

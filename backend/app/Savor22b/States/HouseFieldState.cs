@@ -5,8 +5,8 @@ using Libplanet.Headless.Extensions;
 
 public class HouseFieldState : State
 {
-    public Guid InstalledSeedID { get; private set; }
-    public Guid SeedID { get; private set; }
+    public Guid InstalledSeedGuid { get; private set; }
+    public int? SeedID { get; private set; }
     public int? InstalledBlock { get; private set; }
     public int? TotalBlock { get; private set; }
     public int? LastWeedBlock { get; private set; }
@@ -15,14 +15,13 @@ public class HouseFieldState : State
 
     public HouseFieldState()
     {
-        InstalledSeedID = Guid.Empty;
-        SeedID = Guid.Empty;
+        InstalledSeedGuid = Guid.Empty;
     }
 
-    public HouseFieldState(Guid? installedSeedID, Guid? seedID, int? installedBlock, int? totalBlock, int? lastWeedBlock)
+    public HouseFieldState(Guid? installedSeedGuid, int? seedID, int? installedBlock, int? totalBlock, int? lastWeedBlock)
     {
-        InstalledSeedID = installedSeedID ?? Guid.Empty;
-        SeedID = seedID ?? Guid.Empty;
+        InstalledSeedGuid = installedSeedGuid ?? Guid.Empty;
+        SeedID = seedID;
         InstalledBlock = installedBlock;
         TotalBlock = totalBlock;
         LastWeedBlock = lastWeedBlock;
@@ -30,22 +29,22 @@ public class HouseFieldState : State
 
     public HouseFieldState(Bencodex.Types.Dictionary encoded)
     {
-        if (encoded.ContainsKey(nameof(InstalledSeedID)))
+        if (encoded.ContainsKey(nameof(InstalledSeedGuid)))
         {
-            InstalledSeedID = encoded[nameof(InstalledSeedID)].ToGuid();
+            InstalledSeedGuid = encoded[nameof(InstalledSeedGuid)].ToGuid();
         }
         else
         {
-            InstalledSeedID = Guid.Empty;
+            InstalledSeedGuid = Guid.Empty;
         }
 
         if (encoded.ContainsKey(nameof(SeedID)))
         {
-            SeedID = encoded[nameof(SeedID)].ToGuid();
+            SeedID = encoded[nameof(SeedID)].ToInteger();
         }
         else
         {
-            SeedID = Guid.Empty;
+            SeedID = null;
         }
 
         if (encoded.ContainsKey(nameof(InstalledBlock)))
@@ -82,14 +81,14 @@ public class HouseFieldState : State
 
         var pairs = new KeyValuePair<IKey, IValue>[] { };
 
-        if (InstalledSeedID != Guid.Empty)
+        if (InstalledSeedGuid != Guid.Empty)
         {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(InstalledSeedID), InstalledSeedID.Serialize())).ToArray();
+            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(InstalledSeedGuid), InstalledSeedGuid.Serialize())).ToArray();
         }
 
-        if (SeedID != Guid.Empty)
+        if (SeedID is not null)
         {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(SeedID), SeedID.Serialize())).ToArray();
+            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(SeedID), (Integer)SeedID)).ToArray();
         }
 
         if (InstalledBlock is not null)
