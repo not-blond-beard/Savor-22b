@@ -280,7 +280,7 @@ public class Mutation : ObjectGraphType
                     Description = "A hex-encoded private key of the minter.  A made " +
                         "transaction will be signed using this key.",
                 },
-                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
                 {
                     Name = "itemStateID",
                     Description = "item state id to use",
