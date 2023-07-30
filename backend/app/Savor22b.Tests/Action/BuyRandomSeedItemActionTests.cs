@@ -9,40 +9,39 @@ using Savor22b.Action;
 using Savor22b.States;
 using Xunit;
 
-public class BuyCookingEquipmentTests
+public class BuyRandomSeedItemActionTests : ActionTests
 {
-    private PrivateKey _signer = new PrivateKey();
 
-    public BuyCookingEquipmentTests()
+    public BuyRandomSeedItemActionTests()
     {
     }
 
     [Fact]
-    public void BuyCookingEquipmentExecute_AddsCookingEquipmentToKitchenStateList()
+    public void BuyRandomSeedItemActionExecute_AddsItemToItemStateList()
     {
         IAccountStateDelta state = new DummyState();
         state = state.MintAsset(
-            _signer.PublicKey.ToAddress(),
+            SignerAddress(),
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
                 "10"
             ));
 
         var random = new DummyRandom(1);
-        var desiredEquipmentID = 1;
+        var desiredRandomSeedItemID = 1;
 
-        var action = new BuyCookingEquipmentAction(Guid.NewGuid(), desiredEquipmentID);
+        var action = new BuyRandomSeedItemAction(Guid.NewGuid(), desiredRandomSeedItemID);
 
         state = action.Execute(new DummyActionContext
         {
             PreviousStates = state,
-            Signer = _signer.PublicKey.ToAddress(),
+            Signer = SignerAddress(),
             Random = random,
             Rehearsal = false,
             BlockIndex = 1,
         });
 
-        var inventoryStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
+        var inventoryStateEncoded = state.GetState(SignerAddress());
         InventoryState inventoryState =
             inventoryStateEncoded is Bencodex.Types.Dictionary bdict
                 ? new InventoryState(bdict)
@@ -50,14 +49,15 @@ public class BuyCookingEquipmentTests
 
         Assert.Equal(0, inventoryState.SeedStateList.Count);
         Assert.Equal(0, inventoryState.RefrigeratorStateList.Count);
-        Assert.Equal(1, inventoryState.CookingEquipmentStateList.Count);
-        Assert.Equal(desiredEquipmentID, inventoryState.CookingEquipmentStateList[0].CookingEquipmentID);
+        Assert.Equal(0, inventoryState.CookingEquipmentStateList.Count);
+        Assert.Equal(1, inventoryState.ItemStateList.Count);
+        Assert.Equal(desiredRandomSeedItemID, inventoryState.ItemStateList[0].ItemID);
         Assert.Equal(
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
                 "0"
             ),
-            state.GetBalance(_signer.PublicKey.ToAddress(), Currencies.KeyCurrency));
+            state.GetBalance(SignerAddress(), Currencies.KeyCurrency));
         Assert.Equal(
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,

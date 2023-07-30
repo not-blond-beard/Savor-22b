@@ -8,38 +8,43 @@ using Savor22b.Action;
 using Savor22b.States;
 using Libplanet;
 
-public class GenerateSeedActionTests
+public class UseRandomSeedItemActionTests : ActionTests
 {
-    private PrivateKey _signer = new PrivateKey();
-
-    public GenerateSeedActionTests()
+    public UseRandomSeedItemActionTests()
     {
     }
 
     [Fact]
-    public void GenerateSeedActionExecute_AddsSeedToSeedStateList()
+    public void UseRandomSeedItemActionExecute_AddsSeedToSeedStateList()
     {
+        var seedStateID = Guid.NewGuid();
         IAccountStateDelta state = new DummyState();
         var random = new DummyRandom(1);
+        InventoryState beforeInventoryState = new InventoryState();
 
-        var action = new GenerateSeedAction();
+        var itemState = new ItemState(Guid.NewGuid(), 1);
+        beforeInventoryState = beforeInventoryState.AddItem(itemState);
+        state = state.SetState(SignerAddress(), beforeInventoryState.Serialize());
+
+        var action = new UseRandomSeedItemAction(seedStateID, itemState.StateID);
 
         state = action.Execute(new DummyActionContext
         {
             PreviousStates = state,
-            Signer = _signer.PublicKey.ToAddress(),
+            Signer = SignerAddress(),
             Random = random,
             Rehearsal = false,
             BlockIndex = 1,
         });
 
-        var inventoryStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
+        var inventoryStateEncoded = state.GetState(SignerAddress());
         InventoryState inventoryState =
             inventoryStateEncoded is Bencodex.Types.Dictionary bdict
                 ? new InventoryState(bdict)
                 : throw new Exception();
 
         Assert.Equal(inventoryState.SeedStateList.Count, 1);
+        Assert.Equal(inventoryState.ItemStateList.Count, 0);
     }
 
     [Theory]
@@ -49,38 +54,41 @@ public class GenerateSeedActionTests
     [InlineData(100)]
     [InlineData(1000)]
     [InlineData(10000)]
-    public void GenerateSeedActionExecute_AddsSeedStateToExistsSeedsList(int existsSeedsListLength)
+    public void UseRandomSeedItemActionExecute_AddsSeedStateToExistsSeedsList(int existsSeedsListLength)
     {
         IAccountStateDelta state = new DummyState();
-        InventoryState inventoryState = new InventoryState();
+        InventoryState beforeInventoryState = new InventoryState();
+        var itemState = new ItemState(Guid.NewGuid(), 1);
 
         for (int i = 0; i < existsSeedsListLength; i++)
         {
             var newSeed = new SeedState(Guid.NewGuid(), 1);
-            inventoryState = inventoryState.AddSeed(newSeed);
+            beforeInventoryState = beforeInventoryState.AddSeed(newSeed);
         }
 
-        state = state.SetState(_signer.PublicKey.ToAddress(), inventoryState.Serialize());
+        beforeInventoryState = beforeInventoryState.AddItem(itemState);
+        state = state.SetState(SignerAddress(), beforeInventoryState.Serialize());
 
         var random = new DummyRandom(1);
 
-        var action = new GenerateSeedAction(Guid.NewGuid());
+        var action = new UseRandomSeedItemAction(Guid.NewGuid(), itemState.StateID);
 
         state = action.Execute(new DummyActionContext
         {
             PreviousStates = state,
-            Signer = _signer.PublicKey.ToAddress(),
+            Signer = SignerAddress(),
             Random = random,
             Rehearsal = false,
             BlockIndex = 1,
         });
 
-        var afterInventoryStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
+        var afterInventoryStateEncoded = state.GetState(SignerAddress());
         InventoryState afterInventoryState =
             afterInventoryStateEncoded is Bencodex.Types.Dictionary bdict
                 ? new InventoryState(bdict)
                 : throw new Exception();
 
         Assert.Equal(existsSeedsListLength + 1, afterInventoryState.SeedStateList.Count);
+        Assert.Equal(afterInventoryState.ItemStateList.Count, 0);
     }
 }

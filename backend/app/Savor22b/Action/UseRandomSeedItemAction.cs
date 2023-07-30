@@ -3,37 +3,42 @@ namespace Savor22b.Action;
 using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet.Action;
+using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
-using Libplanet.Headless.Extensions;
 
 
-[ActionType(nameof(GenerateSeedAction))]
-public class GenerateSeedAction : SVRAction
+[ActionType(nameof(UseRandomSeedItemAction))]
+public class UseRandomSeedItemAction : SVRAction
 {
     public Guid SeedStateID;
+    public Guid ItemStateIdToUse;
 
-    public GenerateSeedAction()
+    public UseRandomSeedItemAction()
     {
     }
 
-    public GenerateSeedAction(Guid seedStateID)
+    public UseRandomSeedItemAction(Guid seedStateID, Guid itemStateIdToUse)
     {
         SeedStateID = seedStateID;
+        ItemStateIdToUse = itemStateIdToUse;
     }
 
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
-        new Dictionary<string, IValue>(){
-            [nameof(SeedStateID)] = SeedStateID.Serialize()
+        new Dictionary<string, IValue>()
+        {
+            [nameof(SeedStateID)] = SeedStateID.Serialize(),
+            [nameof(ItemStateIdToUse)] = ItemStateIdToUse.Serialize()
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
         SeedStateID = plainValue[nameof(SeedStateID)].ToGuid();
+        ItemStateIdToUse = plainValue[nameof(ItemStateIdToUse)].ToGuid();
     }
 
     private SeedState generateRandomSeed(IRandom random)
@@ -51,6 +56,20 @@ public class GenerateSeedAction : SVRAction
         return randomSeed;
     }
 
+    private InventoryState FindAndRemoveItem(InventoryState state)
+    {
+        var item = state.ItemStateList.Find(state => state.StateID == ItemStateIdToUse);
+
+        if (item is null)
+        {
+            throw new NotEnoughRawMaterialsException($"You don't have `{ItemStateIdToUse}` item");
+        }
+
+        state = state.RemoveItem(ItemStateIdToUse);
+
+        return state;
+    }
+
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         IAccountStateDelta states = ctx.PreviousStates;
@@ -60,7 +79,9 @@ public class GenerateSeedAction : SVRAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
+
         SeedState seedState = generateRandomSeed(ctx.Random);
+        inventoryState = FindAndRemoveItem(inventoryState);
         inventoryState = inventoryState.AddSeed(seedState);
 
         var encodedValue = inventoryState.Serialize();
