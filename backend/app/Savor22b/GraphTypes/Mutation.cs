@@ -152,44 +152,6 @@ public class Mutation : ObjectGraphType
             }
         );
 
-        // TODO: This mutation should be upstreamed to Libplanet.Explorer so that any native tokens
-        // can work together with this mutation:
-        Field<TransactionType>(
-            "generateSeed",
-            description: "Generate Seed",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
-                },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
-                {
-                    Name = "itemStateIdToUse",
-                    Description = "Item State Id",
-                }
-            ),
-            resolve: context =>
-            {
-                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
-                Guid itemStateIdToUse = context.GetArgument<Guid>("itemStateIdToUse");
-
-                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
-
-                var actionList = new List<SVRAction>();
-                var action = new UseRandomSeedItemAction(Guid.NewGuid(), itemStateIdToUse);
-
-                actionList.Add(action);
-
-                var tx = blockChain.MakeTransaction(privateKey, actionList);
-
-                swarm?.BroadcastTxs(new[] { tx });
-
-                return tx;
-            }
-        );
-
         Field<TransactionType>(
             "generateIngredient",
             description: "Generate Ingredient",
@@ -302,6 +264,38 @@ public class Mutation : ObjectGraphType
 
                 swarm?.BroadcastTxs(new[] { tx });
 
+                return tx;
+            }
+        );
+
+
+        Field<TransactionType>(
+            "buyCookingEquipment",
+            description: "Buy cooking equipment",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "desiredEquipmentID",
+                    Description = "Desired Equipment ID",
+                }
+            ),
+            resolve: context =>
+            {
+                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+                var action = new BuyCookingEquipmentAction(
+                    Guid.NewGuid(),
+                    context.GetArgument<int>("desiredEquipmentID")
+                );
+                var tx = blockChain.MakeTransaction(
+                    privateKey, new List<SVRAction> { action });
+                swarm?.BroadcastTxs(new[] { tx });
                 return tx;
             }
         );
