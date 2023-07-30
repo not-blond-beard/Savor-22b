@@ -269,5 +269,41 @@ public class Mutation : ObjectGraphType
                 return tx;
             }
         );
+
+        Field<TransactionType>(
+            "useRandomSeedItem",
+            description: "Use Random Seed Item",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
+                {
+                    Name = "itemStateID",
+                    Description = "item state id to use",
+                }
+            ),
+            resolve: context =>
+            {
+                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+
+                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+
+                var action = new UseRandomSeedItemAction(
+                    Guid.NewGuid(),
+                    context.GetArgument<Guid>("itemStateID")
+                );
+
+                var tx = blockChain.MakeTransaction(
+                    privateKey, new List<SVRAction> { action });
+
+                swarm?.BroadcastTxs(new[] { tx });
+
+                return tx;
+            }
+        );
     }
 }
