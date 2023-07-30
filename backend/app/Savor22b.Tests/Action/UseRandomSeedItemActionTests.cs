@@ -37,11 +37,11 @@ public class UseRandomSeedItemActionTests : ActionTests
             BlockIndex = 1,
         });
 
-        var inventoryStateEncoded = state.GetState(SignerAddress());
-        InventoryState inventoryState =
-            inventoryStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new InventoryState(bdict)
-                : throw new Exception();
+        var rootStateEncoded = state.GetState(SignerAddress());
+        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : throw new Exception();
+        InventoryState inventoryState = rootState.InventoryState;
 
         Assert.Equal(inventoryState.SeedStateList.Count, 1);
         Assert.Equal(inventoryState.ItemStateList.Count, 0);
@@ -57,8 +57,9 @@ public class UseRandomSeedItemActionTests : ActionTests
     public void UseRandomSeedItemActionExecute_AddsSeedStateToExistsSeedsList(int existsSeedsListLength)
     {
         IAccountStateDelta state = new DummyState();
-        InventoryState beforeInventoryState = new InventoryState();
         var itemState = new ItemState(Guid.NewGuid(), 1);
+        RootState rootState = new RootState();
+        InventoryState beforeInventoryState = new InventoryState();
 
         for (int i = 0; i < existsSeedsListLength; i++)
         {
@@ -67,7 +68,9 @@ public class UseRandomSeedItemActionTests : ActionTests
         }
 
         beforeInventoryState = beforeInventoryState.AddItem(itemState);
-        state = state.SetState(SignerAddress(), beforeInventoryState.Serialize());
+        rootState.SetInventoryState(beforeInventoryState);
+
+        state = state.SetState(SignerAddress(), rootState.Serialize());
 
         var random = new DummyRandom(1);
 
@@ -82,13 +85,13 @@ public class UseRandomSeedItemActionTests : ActionTests
             BlockIndex = 1,
         });
 
-        var afterInventoryStateEncoded = state.GetState(SignerAddress());
-        InventoryState afterInventoryState =
-            afterInventoryStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new InventoryState(bdict)
-                : throw new Exception();
+        var afterRootStateEncoded = state.GetState(SignerAddress());
 
-        Assert.Equal(existsSeedsListLength + 1, afterInventoryState.SeedStateList.Count);
-        Assert.Equal(afterInventoryState.ItemStateList.Count, 0);
+        RootState afterRootState = afterRootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : throw new Exception();
+
+        Assert.Equal(existsSeedsListLength + 1, afterRootState.InventoryState.SeedStateList.Count);
+        Assert.Equal(afterRootState.InventoryState.ItemStateList.Count, 0);
     }
 }

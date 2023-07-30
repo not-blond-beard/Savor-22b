@@ -85,10 +85,11 @@ public class BuyCookingEquipmentAction : SVRAction
         IAccountStateDelta states = ctx.PreviousStates;
         Address Recipient = Addresses.ShopVaultAddress;
 
-        InventoryState inventoryState =
-            states.GetState(ctx.Signer) is Bencodex.Types.Dictionary stateEncoded
-                ? new InventoryState(stateEncoded)
-                : new InventoryState();
+        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+            ? new RootState(rootStateEncoded)
+            : new RootState();
+
+        InventoryState inventoryState = rootState.InventoryState;
 
         var cookingEquipmentList = GetCookingEquipmentCSVData();
         var desiredEquipment = FindCookingEquipment(cookingEquipmentList);
@@ -100,8 +101,8 @@ public class BuyCookingEquipmentAction : SVRAction
             desiredEquipment.Price,
             allowNegativeBalance: false
         );
-        inventoryState = inventoryState.AddCookingEquipmentItem(cookingEquipmentState);
+        rootState.SetInventoryState(inventoryState.AddCookingEquipmentItem(cookingEquipmentState));
 
-        return states.SetState(ctx.Signer, inventoryState.Serialize());
+        return states.SetState(ctx.Signer, rootState.Serialize());
     }
 }

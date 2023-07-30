@@ -224,15 +224,18 @@ public class GenerateFoodAction : SVRAction
 
         IAccountStateDelta states = ctx.PreviousStates;
 
-        InventoryState inventoryState =
-            states.GetState(ctx.Signer) is Bencodex.Types.Dictionary stateEncoded
-                ? new InventoryState(stateEncoded)
-                : new InventoryState();
+        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+            ? new RootState(rootStateEncoded)
+            : new RootState();
+
+        InventoryState inventoryState = rootState.InventoryState;
 
         inventoryState = CheckAndRemoveForRecipe(inventoryState);
         RefrigeratorState food = GenerateFood(ctx.Random);
         inventoryState = inventoryState.AddRefrigeratorItem(food);
 
-        return states.SetState(ctx.Signer, inventoryState.Serialize());
+        rootState.SetInventoryState(inventoryState);
+
+        return states.SetState(ctx.Signer, rootState.Serialize());
     }
 }

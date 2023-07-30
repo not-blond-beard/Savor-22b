@@ -38,9 +38,9 @@ public class Subscription : ObjectGraphType
         AddField(
             new FieldType()
             {
-                Name = "Inventory",
-                Type = typeof(InventoryStateType),
-                Description = "Inventory state",
+                Name = "UserState",
+                Type = typeof(UserStateType),
+                Description = "User State",
                 Arguments = new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>>
                     {
@@ -48,18 +48,18 @@ public class Subscription : ObjectGraphType
                         Description = "The account holder's 40-hex address",
                     }
                 ),
-                Resolver = new FuncFieldResolver<InventoryState>(context =>
+                Resolver = new FuncFieldResolver<RootState>(context =>
                 {
                     var accountAddress = new Address(context.GetArgument<string>("address"));
-                    return GetInventoryState(accountAddress);
+                    return GetRootState(accountAddress);
                 }),
-                StreamResolver = new SourceStreamResolver<InventoryState>((context) =>
+                StreamResolver = new SourceStreamResolver<RootState>((context) =>
                 {
                     var accountAddress = new Address(context.GetArgument<string>("address"));
 
                     return _subject
                         .DistinctUntilChanged()
-                        .Select(_ => GetInventoryState(accountAddress));
+                        .Select(_ => GetRootState(accountAddress));
                 }),
             }
         );
@@ -102,16 +102,16 @@ public class Subscription : ObjectGraphType
                 .Subscribe(RenderBlock);
     }
 
-    private InventoryState GetInventoryState(Address address)
+    private RootState GetRootState(Address address)
     {
-        var inventoryStateEncoded = _blockChain.GetState(address);
+        var rootStateEncoded = _blockChain.GetState(address);
 
-        InventoryState inventoryState =
-            inventoryStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new InventoryState(bdict)
-                : new InventoryState();
+        RootState rootState =
+            rootStateEncoded is Bencodex.Types.Dictionary bdict
+                ? new RootState(bdict)
+                : new RootState();
 
-        return inventoryState;
+        return rootState;
     }
 
     private void RenderBlock((Block OldTip, Block NewTip) pair)

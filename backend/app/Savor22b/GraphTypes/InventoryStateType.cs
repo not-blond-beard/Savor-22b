@@ -1,6 +1,18 @@
 using GraphQL.Types;
 using Savor22b.States;
 
+public class UserStateType : ObjectGraphType<RootState>
+{
+    public UserStateType()
+    {
+        Field<InventoryStateType>(
+            name: "inventoryState",
+            description: "The inventory state of the user.",
+            resolve: context => context.Source.InventoryState
+        );
+    }
+}
+
 public class InventoryStateType : ObjectGraphType<InventoryState>
 {
     public InventoryStateType()

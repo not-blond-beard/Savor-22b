@@ -88,8 +88,9 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
         yield return new object[] { recipeID, preset.Item1, preset.Item2 };
     }
 
-    public InventoryState CreateInventoryStateFromExpectValues(List<int> expectUsedIngredientIDs, List<int> expectUsedFoodIDs)
+    public RootState CreateRootStateFromExpectValues(List<int> expectUsedIngredientIDs, List<int> expectUsedFoodIDs)
     {
+        RootState rootState = new RootState();
         InventoryState inventoryState = new InventoryState();
 
         foreach (var ingredientID in expectUsedIngredientIDs)
@@ -101,7 +102,9 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
             inventoryState = inventoryState.AddRefrigeratorItem(RefrigeratorState.CreateFood(Guid.NewGuid(), foodID, "D", 1, 1, 1, 1));
         }
 
-        return inventoryState;
+        rootState.SetInventoryState(inventoryState);
+
+        return rootState;
     }
 
     [Theory]
@@ -109,8 +112,8 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
     public void GenerateFoodActionExecute_AddsFoodToRefrigeratorStateList(int expectRecipeID, List<int> expectUsedIngredients, List<int> expectUsedFoods)
     {
         IAccountStateDelta beforeState = new DummyState();
-        var beforeInventoryState = CreateInventoryStateFromExpectValues(expectUsedIngredients, expectUsedFoods);
-        beforeState = beforeState.SetState(_signer.PublicKey.ToAddress(), beforeInventoryState.Serialize());
+        var beforeRootState = CreateRootStateFromExpectValues(expectUsedIngredients, expectUsedFoods);
+        beforeState = beforeState.SetState(_signer.PublicKey.ToAddress(), beforeRootState.Serialize());
 
         var random = new DummyRandom(1);
 
@@ -118,7 +121,7 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
         var action = new GenerateFoodAction(
             expectRecipeID,
             newFoodGuid,
-            (from stateList in beforeInventoryState.RefrigeratorStateList
+            (from stateList in beforeRootState.InventoryState.RefrigeratorStateList
              select stateList.StateID).ToList());
 
         var afterState = action.Execute(new DummyActionContext
@@ -130,11 +133,11 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
             BlockIndex = 1,
         });
 
-        var inventoryStateEncoded = afterState.GetState(_signer.PublicKey.ToAddress());
-        InventoryState afterInventoryState =
-            inventoryStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new InventoryState(bdict)
-                : throw new Exception();
+        var rootStateEncoded = afterState.GetState(_signer.PublicKey.ToAddress());
+        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : throw new Exception();
+        InventoryState afterInventoryState = rootState.InventoryState;
 
         Assert.Equal(afterInventoryState.RefrigeratorStateList.Count, 1);
         Assert.Equal(afterInventoryState.RefrigeratorStateList[0].RecipeID, expectRecipeID);

@@ -54,6 +54,11 @@ public class RootState : State
         VillageState = villageState;
     }
 
+    public void SetInventoryState(InventoryState inventoryState)
+    {
+        InventoryState = inventoryState;
+    }
+
     public IValue Serialize()
     {
         var pairs = new[]
