@@ -10,6 +10,7 @@ using Savor22b.States;
 using Libplanet.Headless.Extensions;
 using Savor22b.Constants;
 using Libplanet;
+using Savor22b.Action.Exceptions;
 
 [ActionType(nameof(PlaceUserHouseAction))]
 public class PlaceUserHouseAction : SVRAction
@@ -84,12 +85,12 @@ public class PlaceUserHouseAction : SVRAction
 
         if (village == null)
         {
-            throw new ArgumentException("Invalid village ID");
+            throw new InvalidVillageException("Invalid village ID");
         }
 
         if (!isAbleToPlaceHouse(village, TargetX, TargetY))
         {
-            throw new ArgumentException("Invalid target position");
+            throw new InvalidVillageException("Invalid target position");
         }
 
         GlobalUserHouseState globalUserHouseState =
@@ -101,7 +102,7 @@ public class PlaceUserHouseAction : SVRAction
 
         if (globalUserHouseState.UserHouse.ContainsKey(userHouseKey))
         {
-            throw new ArgumentException("House already placed");
+            throw new HouseAlreadyPlacedException("House already placed");
         }
 
         RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded

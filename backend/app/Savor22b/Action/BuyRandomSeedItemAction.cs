@@ -8,6 +8,7 @@ using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
+using Savor22b.Action.Exceptions;
 using Savor22b.Constants;
 using Savor22b.Helpers;
 using Savor22b.Model;
