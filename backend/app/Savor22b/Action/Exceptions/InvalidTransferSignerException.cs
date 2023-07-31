@@ -1,4 +1,4 @@
-namespace Savor22b.Action;
+namespace Savor22b.Action.Exceptions;
 
 using System.Runtime.Serialization;
 using Libplanet;
