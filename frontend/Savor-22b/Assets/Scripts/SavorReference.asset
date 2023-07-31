@@ -111,6 +111,102 @@ MonoBehaviour:
         type: Block
       hasChanged: 0
     isComplete: 1
+  - name: CreateNewIngredient
+    type: 1
+    query: "mutation CreateNewIngredients{\n    generateIngredient{\n        id\n       
+      nonce\n        signer\n    }\n}"
+    queryString: generateIngredient
+    returnType: Transaction
+    queryOptions:
+    - stage
+    - transferAsset
+    - mintAsset
+    - generateSeed
+    - generateIngredient
+    - generateFood
+    fields:
+    - index: 0
+      name: id
+      type: ID
+      parentIndexes: 
+      hasSubField: 0
+      possibleFields:
+      - name: id
+        type: ID
+      - name: nonce
+        type: Long
+      - name: signer
+        type: Address
+      - name: publicKey
+        type: ByteString
+      - name: updatedAddresses
+        type: Address
+      - name: signature
+        type: ByteString
+      - name: timestamp
+        type: DateTimeOffset
+      - name: actions
+        type: Action
+      - name: serializedPayload
+        type: String
+      - name: blockRef
+        type: Block
+      hasChanged: 0
+    - index: 1
+      name: nonce
+      type: Long
+      parentIndexes: 
+      hasSubField: 0
+      possibleFields:
+      - name: id
+        type: ID
+      - name: nonce
+        type: Long
+      - name: signer
+        type: Address
+      - name: publicKey
+        type: ByteString
+      - name: updatedAddresses
+        type: Address
+      - name: signature
+        type: ByteString
+      - name: timestamp
+        type: DateTimeOffset
+      - name: actions
+        type: Action
+      - name: serializedPayload
+        type: String
+      - name: blockRef
+        type: Block
+      hasChanged: 0
+    - index: 2
+      name: signer
+      type: Address
+      parentIndexes: 
+      hasSubField: 0
+      possibleFields:
+      - name: id
+        type: ID
+      - name: nonce
+        type: Long
+      - name: signer
+        type: Address
+      - name: publicKey
+        type: ByteString
+      - name: updatedAddresses
+        type: Address
+      - name: signature
+        type: ByteString
+      - name: timestamp
+        type: DateTimeOffset
+      - name: actions
+        type: Action
+      - name: serializedPayload
+        type: String
+      - name: blockRef
+        type: Block
+      hasChanged: 0
+    isComplete: 1
   subscriptions:
   - name: ReadAllSeed
     type: 2
