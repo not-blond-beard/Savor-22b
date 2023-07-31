@@ -17,9 +17,8 @@ MonoBehaviour:
   mutations:
   - name: CreateNewSeed
     type: 1
-    query: "mutation CreateNewSeed{\n    generateSeed(  objects :{ privateKeyHex
-      :\"eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4\"} ){\n       
-      id\n        nonce\n        signer\n    }\n}"
+    query: "mutation CreateNewSeed{\n    generateSeed(  privateKeyHex :\"eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4\"
+      ){\n        id\n        nonce\n        signer\n    }\n}"
     queryString: generateSeed
     returnType: Transaction
     queryOptions:
@@ -112,5 +111,50 @@ MonoBehaviour:
         type: Block
       hasChanged: 0
     isComplete: 1
-  subscriptions: []
+  subscriptions:
+  - name: ReadAllSeed
+    type: 2
+    query: "subscription ReadAllSeed{\n    inventory(  address :\"0x53103C2D7875D2f5f02AeC3075155e268a6e3A94\"
+      ){\n        seedStateList{\n            stateId\n            seedId\n       
+      }\n    }\n}"
+    queryString: inventory
+    returnType: InventoryStateType
+    queryOptions:
+    - inventory
+    - transactionApplied
+    fields:
+    - index: 0
+      name: seedStateList
+      type: SeedStateType
+      parentIndexes: 
+      hasSubField: 1
+      possibleFields:
+      - name: seedStateList
+        type: SeedStateType
+      - name: refrigeratorStateList
+        type: RefrigeratorStateType
+      hasChanged: 0
+    - index: 0
+      name: stateId
+      type: Guid
+      parentIndexes: 00000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: seedId
+        type: Int
+      hasChanged: 0
+    - index: 1
+      name: seedId
+      type: Int
+      parentIndexes: 00000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: seedId
+        type: Int
+      hasChanged: 0
+    isComplete: 1
   loading: 0
