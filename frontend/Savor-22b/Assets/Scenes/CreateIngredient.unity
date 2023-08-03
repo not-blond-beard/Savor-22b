@@ -559,7 +559,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pkHex: eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4
-  seedSID: f2076c04-bd3d-4ed3-8475-63fbe84fd124
+  seedSId: f2076c04-bd3d-4ed3-8475-63fbe84fd124
   loading: {fileID: 579831179}
   SavorReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
   inputString: {fileID: 341224860}
@@ -915,9 +915,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CreateSeed, Assembly-CSharp
-        m_MethodName: createNewSeed
+      - m_Target: {fileID: 579831182}
+        m_TargetAssemblyTypeName: CreateIngredient, Assembly-CSharp
+        m_MethodName: createNewIngredient
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

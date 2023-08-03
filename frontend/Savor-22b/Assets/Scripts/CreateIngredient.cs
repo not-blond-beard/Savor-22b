@@ -30,8 +30,7 @@ public class CreateIngredient : MonoBehaviour
 	
 	//Converts the JSON object to an argument string and sets the queries argument"
         createIngredient.SetArgs(new{privateKeyHex = pkHex, seedStateId = seedSId});
-        //createIngredient.SetArgs(new{privateKeyHex = "eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4"});
-	    //createIngredient.SetArgs(new{seedStateId = seedSId});
+        
 	//Performs Post request to server
         UnityWebRequest request = await SavorReference.Post(createIngredient);
 
