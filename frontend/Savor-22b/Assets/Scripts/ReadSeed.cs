@@ -19,29 +19,6 @@ using TMPro; // Textmeshpro
 
 public class ReadSeed : MonoBehaviour
 {
-    string samplejson = @"
-        {
-            ""type"": ""data"",
-            ""id"": ""default"",
-            ""payload"": {
-                ""data"": {
-                    ""inventory"": {
-                        ""seedStateList"": [
-                            {
-                                ""stateId"": ""359a2ee0-8786-4093-b92a-a1d1f9eb735b"",
-                                ""seedId"": 5
-                            },
-                            {
-                                ""stateId"": ""c38273ea-4d54-4cbf-8559-7e60801f18ab"",
-                                ""seedId"": 4
-                            }
-                        ]
-                    }
-                }
-            }
-        }";
-
-
     public GameObject loading;
 
     public GraphApi SavorReference;
@@ -68,12 +45,6 @@ public class ReadSeed : MonoBehaviour
     public async void GetAllSeeds()
     {
         Subscribe();
-
-        //SubscribeAwaiter();
-
-
-
-        //CancelSubscribe();
     }
 
     public async void Subscribe()
@@ -86,8 +57,6 @@ public class ReadSeed : MonoBehaviour
         cws = await SavorReference.Subscribe(readSeed, "default");
 
         Debug.Log("Subscribe Activated");
-
-
     }
 
     public void DisplayData(OnSubscriptionDataReceived subscriptionDataReceived)
@@ -101,7 +70,6 @@ public class ReadSeed : MonoBehaviour
         {
             ParseJson();
         }
-
     }
 
     public void CancelSubscribe()
@@ -110,7 +78,7 @@ public class ReadSeed : MonoBehaviour
         {
             SavorReference.CancelSubscription(cws);
         }
-
+        Debug.Log("Subscribe Cancelled");
     }
 
     // Data parsing and getting data from JSON string
@@ -118,54 +86,39 @@ public class ReadSeed : MonoBehaviour
     {
         string resultText = "";
         JObject json = JObject.Parse(jsontext);
-        Debug.Log(json["payload"]["data"]["inventory"]["seedStateList"][0]["stateId"]);
-        Debug.Log(json["payload"]["data"]["inventory"]["seedStateList"][0]["seedId"]);
-        Debug.Log(json["payload"]["data"]["inventory"]["seedStateList"][1]["stateId"]);
-        Debug.Log(json["payload"]["data"]["inventory"]["seedStateList"][1]["seedId"]);
+        // Debug.Log(json["payload"]["data"]["inventory"]["seedStateList"][0]["stateId"]);
+        // Debug.Log(json["payload"]["data"]["inventory"]["seedStateList"][0]["seedId"]);
+
+
+        SeedState[] seedStatesArray = new SeedState[json.Count - 1];
+
         for (int i = 0; i < json.Count - 1; i++)
         {
+            seedStatesArray[i] = new SeedState();
+
             string state = json["payload"]["data"]["inventory"]["seedStateList"][i]["stateId"].ToString();
             string seed = json["payload"]["data"]["inventory"]["seedStateList"][i]["seedId"].ToString();
             string result = "State: " + state + "\nSeed: " + seed;
+
+            seedStatesArray[i].stateId = state;
+            seedStatesArray[i].seedId = seed;
+
             resultText = string.Concat(resultText, result, "\n");
+
+
+            Debug.Log("Stored : " + seedStatesArray[0].stateId);
+            Debug.Log("Stored : " + seedStatesArray[0].seedId);
         }
 
         seedDisplay.text = resultText;
+        CancelSubscribe();
+
     }
-
-
 
     [System.Serializable]
     public class SeedState
     {
         public string stateId;
-        public int seedId;
-
+        public string seedId;
     }
-
-    public async Task SubscribeAwaiter()
-    {
-        Subscribe();
-
-        string text = jsontext;
-
-        await JsonController(text);
-    }
-
-    public async Task JsonController(string text)
-    {
-        if (text != null)
-        {
-            ParseJson();
-
-            await Task.Delay(1000);
-        }
-    }
-
-
-
-
-
-
-
 }

@@ -113,8 +113,10 @@ MonoBehaviour:
     isComplete: 1
   - name: CreateNewIngredient
     type: 1
-    query: "mutation CreateNewIngredients{\n    generateIngredient{\n        id\n       
-      nonce\n        signer\n    }\n}"
+    query: "mutation CreateNewIngredient{\n    generateIngredient(  privateKeyHex
+      :\"eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4\", seedStateId
+      :\"359a2ee0-8786-4093-b92a-a1d1f9eb735b\" ){\n        id\n        nonce\n       
+      signer\n    }\n}"
     queryString: generateIngredient
     returnType: Transaction
     queryOptions:
