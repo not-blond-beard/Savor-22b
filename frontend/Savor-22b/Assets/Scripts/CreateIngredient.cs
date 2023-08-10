@@ -153,20 +153,17 @@ public class CreateIngredient : MonoBehaviour
             DisplayDebugLog(resultText);
         }
         // Cancel Subscibe if you want
-        CancelSubscribe();
+        //CancelSubscribe();
+
+        // Create List from parsed data
+        ReadSeedList();
     }
 
     // Read Seed List via Subscription
-
-    public TMP_Text buttonStatus;
     public void ReadSeedList()
     {
-
-        buttonStatus.text = "Loading Seeds...";
         Task.Delay(1000);
-
         CreateList();
-        buttonStatus.text = "Seeds Loaded";
     }
 
     // Create Seed List from seedStatesArray and display it on UI
@@ -181,35 +178,41 @@ public class CreateIngredient : MonoBehaviour
 
         for (int i = 0; i < seedListCount; i++)
         {
-            GameObject gameObj = MonoBehaviour.Instantiate(seedListObject, new Vector3(0, 0, 0), Quaternion.identity);
-
-            // Adding SeedStateScript to each list and setting its values
-            gameObj.AddComponent<SeedStateScript>();
-            SeedStateScript seedStateScript = gameObj.GetComponent<SeedStateScript>();
-            seedStateScript.stateId = seedStatesArray[i].stateId;
-            seedStateScript.seedId = seedStatesArray[i].seedId;
-
-            // Setting Location and Size of Each list
-            gameObj.transform.position = locObject.position + new Vector3(0, -i * 200, 0);
-            gameObj.transform.rotation = locObject.rotation;
-            gameObj.transform.localScale = locObject.localScale;
-            gameObj.transform.SetParent(canvasObject.transform, false);
-            gameObj.transform.localScale = new Vector3(1, 1, 1);
-
-            // Link button infos
-            Button button = gameObj.GetComponentInChildren<Button>();
-            if (button != null)
+            GameObject exsistingObj = GameObject.Find("Seed " + i);
+            if (exsistingObj == null)
             {
-                seedStateScript.linkedButton = button;
-                button.onClick.AddListener(() => HandleButtonClick(seedStateScript));
-            }
-            // Setting Names of each list
-            gameObj.name = "Seed " + i;
-            DisplayDebugLog(gameObj.name + "Created");
+                GameObject gameObj = MonoBehaviour.Instantiate(seedListObject, new Vector3(0, 0, 0), Quaternion.identity);
 
-            // Display SeedState ID and Seed ID on each list
-            var textArea = gameObj.transform.Find("SelectionInfo");
-            textArea.GetComponent<TextMeshProUGUI>().text = "Seed ID : " + seedStatesArray[i].seedId + "\n" + "State ID : " + seedStatesArray[i].stateId;
+                // Adding SeedStateScript to each list and setting its values
+                gameObj.AddComponent<SeedStateScript>();
+                SeedStateScript seedStateScript = gameObj.GetComponent<SeedStateScript>();
+                seedStateScript.stateId = seedStatesArray[i].stateId;
+                seedStateScript.seedId = seedStatesArray[i].seedId;
+
+                // Setting Location and Size of Each list
+                gameObj.transform.position = locObject.position + new Vector3(0, -i * 200, 0);
+                gameObj.transform.rotation = locObject.rotation;
+                gameObj.transform.localScale = locObject.localScale;
+                gameObj.transform.SetParent(canvasObject.transform, false);
+                gameObj.transform.localScale = new Vector3(1, 1, 1);
+
+                // Link button infos
+                Button button = gameObj.GetComponentInChildren<Button>();
+                if (button != null)
+                {
+                    seedStateScript.linkedButton = button;
+                    button.onClick.AddListener(() => HandleButtonClick(seedStateScript));
+                }
+                // Setting Names of each list
+                gameObj.name = "Seed " + i;
+                DisplayDebugLog(gameObj.name + "Created");
+
+                // Display SeedState ID and Seed ID on each list
+                var textArea = gameObj.transform.Find("SelectionInfo");
+                textArea.GetComponent<TextMeshProUGUI>().text = "Seed ID : " + seedStatesArray[i].seedId + "\n" + "State ID : " + seedStatesArray[i].stateId;
+
+            }
+
         }
     }
 
@@ -240,35 +243,22 @@ public class CreateIngredient : MonoBehaviour
     /// Start is called on the frame when a script is enabled just before
     /// any of the Update methods is called the first time.
     /// </summary>
-    private bool buttonStatusbool = false;
-    public GameObject Target;
+
+
     void Start()
     {
         debugLog.text = "";
-        if (buttonStatusbool == false)
-        {
-            Subscribe();
-            DisplayDebugLog("Read Button Deactivated");
-        }
+
+        Subscribe();
+
+
     }
     /// <summary>
     /// Update is called every frame, if the MonoBehaviour is enabled.
     /// </summary>
     void Update()
     {
-        if (seedStatesArray != null)
-        {
-            buttonStatusbool = true;
-        }
 
-        if (buttonStatusbool == true)
-        {
-            Target.SetActive(true);
-        }
-        else
-        {
-            Target.SetActive(false);
-        }
     }
 
     // Debug Log display
