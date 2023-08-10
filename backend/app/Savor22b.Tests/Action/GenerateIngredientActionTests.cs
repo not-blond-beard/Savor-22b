@@ -35,11 +35,11 @@ public class GenerateIngredientActionTests
             BlockIndex = 1,
         });
 
-        var inventoryStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
-        InventoryState inventoryState =
-            inventoryStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new InventoryState(bdict)
-                : throw new Exception();
+        var rootStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
+        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : throw new Exception();
+        InventoryState inventoryState = rootState.InventoryState;
 
         Assert.Equal(inventoryState.SeedStateList.Count, 0);
         Assert.Equal(inventoryState.RefrigeratorStateList.Count, 1);
@@ -47,10 +47,13 @@ public class GenerateIngredientActionTests
 
     private (IAccountStateDelta, Guid) AddSeedState(IAccountStateDelta state)
     {
+        RootState rootState = new RootState();
         InventoryState inventoryState = new InventoryState();
         var newSeed = new SeedState(Guid.NewGuid(), 1);
         inventoryState = inventoryState.AddSeed(newSeed);
 
-        return (state.SetState(_signer.PublicKey.ToAddress(), inventoryState.Serialize()), newSeed.StateID);
+        rootState.SetInventoryState(inventoryState);
+
+        return (state.SetState(_signer.PublicKey.ToAddress(), rootState.Serialize()), newSeed.StateID);
     }
 }

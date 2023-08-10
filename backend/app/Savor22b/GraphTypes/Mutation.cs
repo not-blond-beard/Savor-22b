@@ -152,38 +152,6 @@ public class Mutation : ObjectGraphType
             }
         );
 
-        // TODO: This mutation should be upstreamed to Libplanet.Explorer so that any native tokens
-        // can work together with this mutation:
-        Field<TransactionType>(
-            "generateSeed",
-            description: "Generate Seed",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
-                }
-            ),
-            resolve: context =>
-            {
-                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
-
-                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
-
-                var actionList = new List<SVRAction>();
-                var action = new GenerateSeedAction(Guid.NewGuid());
-
-                actionList.Add(action);
-
-                var tx = blockChain.MakeTransaction(privateKey, actionList);
-
-                swarm?.BroadcastTxs(new[] { tx });
-
-                return tx;
-            }
-        );
-
         Field<TransactionType>(
             "generateIngredient",
             description: "Generate Ingredient",
@@ -261,6 +229,124 @@ public class Mutation : ObjectGraphType
                 swarm?.BroadcastTxs(new[] { tx });
 
                 return tx;
+            }
+        );
+
+        Field<TransactionType>(
+            "useRandomSeedItem",
+            description: "Use Random Seed Item",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "itemStateID",
+                    Description = "item state id to use",
+                }
+            ),
+            resolve: context =>
+            {
+                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+
+                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+
+                var action = new UseRandomSeedItemAction(
+                    Guid.NewGuid(),
+                    context.GetArgument<Guid>("itemStateID")
+                );
+
+                var tx = blockChain.MakeTransaction(
+                    privateKey, new List<SVRAction> { action });
+
+                swarm?.BroadcastTxs(new[] { tx });
+
+                return tx;
+            }
+        );
+
+
+        Field<TransactionType>(
+            "buyCookingEquipment",
+            description: "Buy cooking equipment",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "desiredEquipmentID",
+                    Description = "Desired Equipment ID",
+                }
+            ),
+            resolve: context =>
+            {
+                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+                var action = new BuyCookingEquipmentAction(
+                    Guid.NewGuid(),
+                    context.GetArgument<int>("desiredEquipmentID")
+                );
+                var tx = blockChain.MakeTransaction(
+                    privateKey, new List<SVRAction> { action });
+                swarm?.BroadcastTxs(new[] { tx });
+                return tx;
+            }
+        );
+
+        Field<TransactionType>(
+            "placeUserHouse",
+            description: "Place User House",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "privateKeyHex",
+                    Description = "A hex-encoded private key of the minter.  A made " +
+                        "transaction will be signed using this key.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "villageId",
+                    Description = "ID of the village you want to move to",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "x",
+                    Description = "x coordinate of the house",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "y",
+                    Description = "y coordinate of the house",
+                }
+            ),
+            resolve: context =>
+            {
+                try
+                {
+                    string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+                    PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+                    var action = new PlaceUserHouseAction(
+                        context.GetArgument<int>("villageId"),
+                        context.GetArgument<int>("x"),
+                        context.GetArgument<int>("y")
+                    );
+                    var tx = blockChain.MakeTransaction(
+                        privateKey, new List<SVRAction> { action });
+                    swarm?.BroadcastTxs(new[] { tx });
+                    return tx;
+                }
+                catch (Exception ex)
+                {
+                    context.Errors.Add(new ExecutionError(ex.Message));
+                }
+                return null;
             }
         );
     }

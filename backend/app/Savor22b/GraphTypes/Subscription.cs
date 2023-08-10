@@ -12,8 +12,10 @@ using Savor22b.States;
 using GraphQL;
 using System.Reactive.Concurrency;
 using Libplanet.Blocks;
+using Libplanet.Store;
 using System.Reactive.Subjects;
 using Libplanet.Tx;
+using Libplanet.Explorer.GraphTypes;
 
 public class Subscription : ObjectGraphType
 {
@@ -24,23 +26,27 @@ public class Subscription : ObjectGraphType
 
     private readonly BlockChain _blockChain;
     private readonly BlockRenderer _blockRenderer;
+    private readonly IStore _store;
     private readonly Subject<Libplanet.Blocks.BlockHash> _subject;
+
     public Subscription(
         BlockChain blockChain,
         BlockRenderer blockRenderer,
+        IStore store,
         Swarm? swarm = null
         )
     {
         _blockChain = blockChain;
         _blockRenderer = blockRenderer;
+        _store = store;
         _subject = new Subject<Libplanet.Blocks.BlockHash>();
 
         AddField(
             new FieldType()
             {
-                Name = "Inventory",
-                Type = typeof(InventoryStateType),
-                Description = "Inventory state",
+                Name = "UserState",
+                Type = typeof(UserStateType),
+                Description = "User State",
                 Arguments = new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>>
                     {
@@ -48,18 +54,18 @@ public class Subscription : ObjectGraphType
                         Description = "The account holder's 40-hex address",
                     }
                 ),
-                Resolver = new FuncFieldResolver<InventoryState>(context =>
+                Resolver = new FuncFieldResolver<RootState>(context =>
                 {
                     var accountAddress = new Address(context.GetArgument<string>("address"));
-                    return GetInventoryState(accountAddress);
+                    return GetRootState(accountAddress);
                 }),
-                StreamResolver = new SourceStreamResolver<InventoryState>((context) =>
+                StreamResolver = new SourceStreamResolver<RootState>((context) =>
                 {
                     var accountAddress = new Address(context.GetArgument<string>("address"));
 
                     return _subject
                         .DistinctUntilChanged()
-                        .Select(_ => GetInventoryState(accountAddress));
+                        .Select(_ => GetRootState(accountAddress));
                 }),
             }
         );
@@ -67,9 +73,9 @@ public class Subscription : ObjectGraphType
         AddField(
             new FieldType()
             {
-                Name = "TransactionApplied",
-                Type = typeof(TxAppliedGraphType),
-                Description = "Transaction completed",
+                Name = "TransactionResult",
+                Type = typeof(TxResultExtendType),
+                Description = "Transaction Result",
                 Arguments = new QueryArguments(
                     new QueryArgument<NonNullGraphType<StringGraphType>>
                     {
@@ -77,23 +83,58 @@ public class Subscription : ObjectGraphType
                         Description = "Transaction id",
                     }
                 ),
-                Resolver = new FuncFieldResolver<TxApplied>(context =>
+                Resolver = new FuncFieldResolver<TxResult>(context =>
                 {
+                    if (!(_blockChain is BlockChain blockChain))
+                    {
+                        throw new ExecutionError(
+                            "blockChain was not set yet!");
+                    }
+
+                    if (!(_store is IStore store))
+                    {
+                        throw new ExecutionError(
+                        "store was not set yet!");
+                    }
+
                     var strId = context.GetArgument<string>("txId");
                     var txId = new TxId(ByteUtil.ParseHex(strId));
-                    bool transactionExists = _blockChain.GetTransaction(txId) != null;
 
-                    return new TxApplied(_blockChain.GetTransaction(txId) != null);
-                }),
-                StreamResolver = new SourceStreamResolver<TxApplied>((context) =>
-                {
-                    var strId = context.GetArgument<string>("txId");
-                    var txId = new TxId(ByteUtil.ParseHex(strId));
+                    if (!(store.GetFirstTxIdBlockHashIndex(txId) is { } txExecutedBlockHash))
+                    {
+                        if (_blockChain.GetStagedTransactionIds().Contains(txId))
+                        {
+                            return new TxResult(TxStatus.STAGING, null, null, null, null, null, null, null, null);
+                        }
+                        else
+                        {
+                            return new TxResult(TxStatus.INVALID, null, null, null, null, null, null, null, null);
+                        }
+                    }
 
-                    return _subject
-                        .DistinctUntilChanged()
-                        .Select(_ => new TxApplied(_blockChain.GetTransaction(txId) != null));
+                    try
+                    {
+                        TxExecution execution = blockChain.GetTxExecution(txExecutedBlockHash, txId);
+                        Block txExecutedBlock = blockChain[txExecutedBlockHash];
+
+                        return execution switch
+                        {
+                            TxSuccess txSuccess => new TxResult(TxStatus.SUCCESS, txExecutedBlock.Index,
+                                txExecutedBlock.Hash.ToString(), null, null, txSuccess.UpdatedStates, txSuccess.FungibleAssetsDelta, txSuccess.UpdatedFungibleAssets, txSuccess.ActionsLogsList),
+                            TxFailure txFailure => new TxResult(TxStatus.FAILURE, txExecutedBlock.Index,
+                                txExecutedBlock.Hash.ToString(), txFailure.ExceptionName, txFailure.ExceptionMetadata, null, null, null, null),
+                            _ => throw new NotImplementedException(
+                                $"{nameof(execution)} is not expected concrete class.")
+                        };
+                    }
+                    catch (Exception)
+                    {
+                        return new TxResult(TxStatus.INVALID, null, null, null, null, null, null, null, null);
+                    }
                 }),
+                StreamResolver = new SourceStreamResolver<Subject<BlockHash>>(
+                    (context) => _subject.DistinctUntilChanged().Select(_ => _subject)
+                )
             }
         );
 
@@ -102,16 +143,16 @@ public class Subscription : ObjectGraphType
                 .Subscribe(RenderBlock);
     }
 
-    private InventoryState GetInventoryState(Address address)
+    private RootState GetRootState(Address address)
     {
-        var inventoryStateEncoded = _blockChain.GetState(address);
+        var rootStateEncoded = _blockChain.GetState(address);
 
-        InventoryState inventoryState =
-            inventoryStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new InventoryState(bdict)
-                : new InventoryState();
+        RootState rootState =
+            rootStateEncoded is Bencodex.Types.Dictionary bdict
+                ? new RootState(bdict)
+                : new RootState();
 
-        return inventoryState;
+        return rootState;
     }
 
     private void RenderBlock((Block OldTip, Block NewTip) pair)

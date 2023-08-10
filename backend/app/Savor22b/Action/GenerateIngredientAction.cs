@@ -28,7 +28,8 @@ public class GenerateIngredientAction : SVRAction
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
-        new Dictionary<string, IValue>(){
+        new Dictionary<string, IValue>()
+        {
             [nameof(SeedStateID)] = SeedStateID.Serialize(),
             [nameof(RefrigeratorStateID)] = RefrigeratorStateID.Serialize()
         }.ToImmutableDictionary();
@@ -111,10 +112,12 @@ public class GenerateIngredientAction : SVRAction
 
         IAccountStateDelta states = ctx.PreviousStates;
 
-        InventoryState inventoryState =
-            states.GetState(ctx.Signer) is Bencodex.Types.Dictionary stateEncoded
-                ? new InventoryState(stateEncoded)
-                : new InventoryState();
+
+        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+            ? new RootState(rootStateEncoded)
+            : new RootState();
+
+        InventoryState inventoryState = rootState.InventoryState;
 
         var seed = inventoryState.SeedStateList.Find(seed => seed.StateID == SeedStateID);
 
@@ -129,6 +132,8 @@ public class GenerateIngredientAction : SVRAction
         inventoryState = inventoryState.AddRefrigeratorItem(ingredient);
         inventoryState = inventoryState.RemoveSeed(SeedStateID);
 
-        return states.SetState(ctx.Signer, inventoryState.Serialize());
+        rootState.SetInventoryState(inventoryState);
+
+        return states.SetState(ctx.Signer, rootState.Serialize());
     }
 }
