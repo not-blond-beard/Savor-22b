@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/CreateSeed.unity
+    guid: 187b8937b873f41ea8677c5f8e0d615c
+  - enabled: 1
+    path: Assets/Scenes/CreateIngredient.unity
+    guid: be2bc9577c43646e3b1fee393e72b1d4
   m_configObjects: {}
