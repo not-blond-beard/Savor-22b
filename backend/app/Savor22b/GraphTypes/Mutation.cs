@@ -152,202 +152,40 @@ public class Mutation : ObjectGraphType
             }
         );
 
-        Field<TransactionType>(
-            "generateIngredient",
-            description: "Generate Ingredient",
+
+
+
+
+        Field<NonNullGraphType<ByteStringType>>(
+            name: "stageTransaction",
             arguments: new QueryArguments(
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
-                    Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
+                    Name = "unsignedTransaction",
+                    Description = "The hexadecimal string of unsigned transaction to attach the given signature."
                 },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
-                    Name = "seedStateId",
-                    Description = "Seed state Id (PK)",
+                    Name = "signature",
+                    Description = "The hexadecimal string of signature of the given unsigned transaction."
                 }
             ),
             resolve: context =>
             {
-                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
+                byte[] signature = ByteUtil.ParseHex(context.GetArgument<string>("signature"));
+                IUnsignedTx unsignedTransaction =
+                    TxMarshaler.DeserializeUnsignedTx(
+                        ByteUtil.ParseHex(context.GetArgument<string>("unsignedTransaction")));
 
-                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
+                Transaction signedTransaction =
+                    new Transaction(unsignedTransaction, signature.ToImmutableArray());
 
-                var actionList = new List<SVRAction>();
-                var action = new GenerateIngredientAction(
-                    context.GetArgument<Guid>("seedStateId"),
-                    Guid.NewGuid()
-                );
+                blockChain.StageTransaction(signedTransaction);
+                swarm?.BroadcastTxs(new[] { signedTransaction });
 
-                actionList.Add(action);
-
-                var tx = blockChain.MakeTransaction(privateKey, actionList);
-
-                swarm?.BroadcastTxs(new[] { tx });
-
-                return tx;
+                return signedTransaction.Serialize();
             }
         );
 
-        Field<TransactionType>(
-            "generateFood",
-            description: "Generate Food",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
-                },
-                new QueryArgument<NonNullGraphType<IntGraphType>>
-                {
-                    Name = "recipeID",
-                    Description = "Recipe ID",
-                },
-                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
-                {
-                    Name = "refrigeratorStateIDs",
-                    Description = "refrigerator state ID list",
-                }
-            ),
-            resolve: context =>
-            {
-                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
-
-                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
-
-                var action = new GenerateFoodAction(
-                    context.GetArgument<int>("recipeID"),
-                    Guid.NewGuid(),
-                    context.GetArgument<List<Guid>>("refrigeratorStateIDs")
-                );
-
-                var tx = blockChain.MakeTransaction(
-                    privateKey, new List<SVRAction> { action });
-
-                swarm?.BroadcastTxs(new[] { tx });
-
-                return tx;
-            }
-        );
-
-        Field<TransactionType>(
-            "useRandomSeedItem",
-            description: "Use Random Seed Item",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
-                },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
-                {
-                    Name = "itemStateID",
-                    Description = "item state id to use",
-                }
-            ),
-            resolve: context =>
-            {
-                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
-
-                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
-
-                var action = new UseRandomSeedItemAction(
-                    Guid.NewGuid(),
-                    context.GetArgument<Guid>("itemStateID")
-                );
-
-                var tx = blockChain.MakeTransaction(
-                    privateKey, new List<SVRAction> { action });
-
-                swarm?.BroadcastTxs(new[] { tx });
-
-                return tx;
-            }
-        );
-
-
-        Field<TransactionType>(
-            "buyCookingEquipment",
-            description: "Buy cooking equipment",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
-                },
-                new QueryArgument<NonNullGraphType<IntGraphType>>
-                {
-                    Name = "desiredEquipmentID",
-                    Description = "Desired Equipment ID",
-                }
-            ),
-            resolve: context =>
-            {
-                string privateKeyHex = context.GetArgument<string>("privateKeyHex");
-                PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
-                var action = new BuyCookingEquipmentAction(
-                    Guid.NewGuid(),
-                    context.GetArgument<int>("desiredEquipmentID")
-                );
-                var tx = blockChain.MakeTransaction(
-                    privateKey, new List<SVRAction> { action });
-                swarm?.BroadcastTxs(new[] { tx });
-                return tx;
-            }
-        );
-
-        Field<TransactionType>(
-            "placeUserHouse",
-            description: "Place User House",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
-                },
-                new QueryArgument<NonNullGraphType<IntGraphType>>
-                {
-                    Name = "villageId",
-                    Description = "ID of the village you want to move to",
-                },
-                new QueryArgument<NonNullGraphType<IntGraphType>>
-                {
-                    Name = "x",
-                    Description = "x coordinate of the house",
-                },
-                new QueryArgument<NonNullGraphType<IntGraphType>>
-                {
-                    Name = "y",
-                    Description = "y coordinate of the house",
-                }
-            ),
-            resolve: context =>
-            {
-                try
-                {
-                    string privateKeyHex = context.GetArgument<string>("privateKeyHex");
-                    PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
-                    var action = new PlaceUserHouseAction(
-                        context.GetArgument<int>("villageId"),
-                        context.GetArgument<int>("x"),
-                        context.GetArgument<int>("y")
-                    );
-                    var tx = blockChain.MakeTransaction(
-                        privateKey, new List<SVRAction> { action });
-                    swarm?.BroadcastTxs(new[] { tx });
-                    return tx;
-                }
-                catch (Exception ex)
-                {
-                    context.Errors.Add(new ExecutionError(ex.Message));
-                }
-                return null;
-            }
-        );
     }
 }
