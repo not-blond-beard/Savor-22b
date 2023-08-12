@@ -47,7 +47,7 @@ public class CreateIngredient : MonoBehaviour
     // Create New Ingredient
     public async Task CreateNewIngredient(string seedstateId)
     {
-        loading.SetActive(true);
+        //loading.SetActive(true);
 
         //Gets the needed query from the Api Reference
         GraphApi.Query createIngredient = SavorReference.GetQueryByName("CreateNewIngredient", GraphApi.Query.Type.Mutation);
@@ -58,7 +58,7 @@ public class CreateIngredient : MonoBehaviour
         //Performs Post request to server
         UnityWebRequest request = await SavorReference.Post(createIngredient);
 
-        loading.SetActive(false);
+        //loading.SetActive(false);
 
         mutationDisplay.text = HttpHandler.FormatJson(request.downloadHandler.text);
 
