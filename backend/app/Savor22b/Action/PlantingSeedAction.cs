@@ -97,7 +97,7 @@ public class PlantingSeedAction : SVRAction
 
         Seed seed = getMatchedSeed(seedState.SeedID)!;
 
-        HouseFieldState newHouseFieldState = new HouseFieldState(
+        HouseFieldState houseFieldState = new HouseFieldState(
             SeedGuid,
             seedState.SeedID,
             ctx.BlockIndex,
@@ -107,7 +107,7 @@ public class PlantingSeedAction : SVRAction
 
         rootState.VillageState!.UpdateHouseFieldState(
             FieldIndex,
-            newHouseFieldState
+            houseFieldState
         );
 
         states = states.SetState(ctx.Signer, rootState.Serialize());
