@@ -3,6 +3,7 @@ A private key that can be used for validation is generated.
 - Address: `0x53103C2D7875D2f5f02AeC3075155e268a6e3A94`
 - Passphrase: `11C25ECB4F3B5F8CB53A59A36DF15C67A192E14708016053D20367A51742B859`
 - PrivateKey: `eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4`
+- PublicKey: `034b83cb8ce52392ad9e46faf398f96c5cd7cdb95a9ea990a9a55cc575237d2b34`
 
 ----
 
