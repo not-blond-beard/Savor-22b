@@ -1,0 +1,7 @@
+ID,CookingEquipmentCategoryID,Name,BlockTimeReductionPercent,Price
+1,1,코팅팬,0,2
+2,1,고급 코팅팬,10,300
+3,2,칼,0,2
+4,2,고급 칼,10,300
+5,3,튀김기,0,500
+6,3,고급 튀김기,10,1000
