@@ -36,7 +36,7 @@ public class PlantingSeedActionTests : ActionTests
         return villageState;
     }
 
-    private RootState getRootState()
+    private RootState createRootStatePreset()
     {
         RootState rootState = new RootState();
         InventoryState inventoryState = getInventoryState();
@@ -52,7 +52,7 @@ public class PlantingSeedActionTests : ActionTests
     public void Execute_ValidAction()
     {
         IAccountStateDelta beforeState = new DummyState();
-        RootState beforeRootState = getRootState();
+        RootState beforeRootState = createRootStatePreset();
 
         beforeState = beforeState.SetState(
             SignerAddress(),
@@ -124,7 +124,7 @@ public class PlantingSeedActionTests : ActionTests
     {
         IAccountStateDelta beforeState = new DummyState();
 
-        RootState beforeRootState = getRootState();
+        RootState beforeRootState = createRootStatePreset();
 
         beforeState = beforeState.SetState(
             SignerAddress(),
@@ -156,7 +156,7 @@ public class PlantingSeedActionTests : ActionTests
     {
         IAccountStateDelta beforeState = new DummyState();
 
-        RootState beforeRootState = getRootState();
+        RootState beforeRootState = createRootStatePreset();
 
         beforeState = beforeState.SetState(
             SignerAddress(),

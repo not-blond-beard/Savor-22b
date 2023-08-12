@@ -10,7 +10,7 @@ public class VillageState : State
     public Dictionary<int, HouseFieldState?> HouseFieldStates { get; private set; }
     public HouseState HouseState { get; private set; }
 
-    public Dictionary<int, HouseFieldState?> GetInitialHouseFieldStates()
+    public Dictionary<int, HouseFieldState?> InitializeHouseFieldStates()
     {
         Dictionary<int, HouseFieldState?> houseFieldStates = new();
         for (int i = 0; i < HouseFieldCount; i++)
@@ -21,7 +21,7 @@ public class VillageState : State
         return houseFieldStates;
     }
 
-    private Dictionary<int, HouseFieldState?> getInitialHouseFieldStatesFromData(Dictionary<int, HouseFieldState> existingHouseFieldStates)
+    private Dictionary<int, HouseFieldState?> InitializeHouseFieldStatesFromData(Dictionary<int, HouseFieldState> existingHouseFieldStates)
     {
         Dictionary<int, HouseFieldState?> houseFieldStates = new();
         for (int i = 0; i < HouseFieldCount; i++)
@@ -41,7 +41,7 @@ public class VillageState : State
     public VillageState(HouseState houseState)
     {
         HouseState = houseState;
-        HouseFieldStates = GetInitialHouseFieldStates();
+        HouseFieldStates = InitializeHouseFieldStates();
     }
 
     public VillageState(HouseState houseState, Dictionary<int, HouseFieldState?> houseFieldStates)
@@ -58,7 +58,7 @@ public class VillageState : State
                 pair => int.Parse(((Text)pair.Key).Value),
                 pair => new HouseFieldState((Dictionary)pair.Value)
             );
-        HouseFieldStates = getInitialHouseFieldStatesFromData(existingHouseFieldStates);
+        HouseFieldStates = InitializeHouseFieldStatesFromData(existingHouseFieldStates);
     }
 
     public IValue Serialize()
