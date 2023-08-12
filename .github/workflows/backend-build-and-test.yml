@@ -2,13 +2,11 @@ name: Backend build and test
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'backend/app/**'
     tags: ["*"]
   pull_request:
     types: [ready_for_review, opened, reopened, auto_merge_enabled]
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   build-and-tests:

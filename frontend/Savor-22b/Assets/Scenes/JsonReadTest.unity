@@ -524,8 +524,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1605245898}
-        m_TargetAssemblyTypeName: ReadSeed, Assembly-CSharp
-        m_MethodName: GetAllSeeds
+        m_TargetAssemblyTypeName: JsonParser, Assembly-CSharp
+        m_MethodName: ParseJson
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -650,14 +650,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1605245894}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82ee511ecd96c4135a3bef8309b16480, type: 3}
+  m_Script: {fileID: 11500000, guid: fb9fc4e1d17084b7d85ad20ef7929812, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loading: {fileID: 1605245894}
-  SavorReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
-  seedDisplay: {fileID: 1958919877}
-  subscriptionDisplay: {fileID: 2091507586}
-  jsontext: 
+  SeedDisplay: {fileID: 1958919877}
 --- !u!1 &1725600283
 GameObject:
   m_ObjectHideFlags: 0
@@ -800,7 +796,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: After Parsing
+  m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1019,7 +1015,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Before Parsing
+  m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
