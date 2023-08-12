@@ -41,4 +41,14 @@ public static class BencodexExtensions
         int.Parse(((Text)serialized).Value, CultureInfo.InvariantCulture);
 
     #endregion int
+
+    #region long
+
+    public static IValue Serialize(this long number) =>
+        (Text)number.ToString(CultureInfo.InvariantCulture);
+
+    public static long ToLong(this IValue serialized) =>
+        long.Parse(((Text)serialized).Value, CultureInfo.InvariantCulture);
+
+    #endregion long
 }
