@@ -140,4 +140,9 @@ public class InventoryState : State
         var stateList = ItemStateList.RemoveAll(state => state.StateID == stateID);
         return new InventoryState(SeedStateList, RefrigeratorStateList, CookingEquipmentStateList, stateList);
     }
+
+    public SeedState? GetSeedState(Guid stateID)
+    {
+        return SeedStateList.Find(seedState => seedState.StateID == stateID);
+    }
 }

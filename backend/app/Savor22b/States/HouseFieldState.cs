@@ -6,11 +6,10 @@ using Libplanet.Headless.Extensions;
 public class HouseFieldState : State
 {
     public Guid InstalledSeedGuid { get; private set; }
-    public int? SeedID { get; private set; }
-    public int? InstalledBlock { get; private set; }
-    public int? TotalBlock { get; private set; }
-    public int? LastWeedBlock { get; private set; }
-
+    public int SeedID { get; private set; }
+    public long InstalledBlock { get; private set; }
+    public int TotalBlock { get; private set; }
+    public long? LastWeedBlock { get; private set; }
 
 
     public HouseFieldState()
@@ -18,94 +17,39 @@ public class HouseFieldState : State
         InstalledSeedGuid = Guid.Empty;
     }
 
-    public HouseFieldState(Guid? installedSeedGuid, int? seedID, int? installedBlock, int? totalBlock, int? lastWeedBlock)
+    public HouseFieldState(Guid installedSeedGuid, int seedID, long installedBlock, int totalBlock, long? lastWeedBlock)
     {
-        InstalledSeedGuid = installedSeedGuid ?? Guid.Empty;
+        InstalledSeedGuid = installedSeedGuid;
         SeedID = seedID;
         InstalledBlock = installedBlock;
         TotalBlock = totalBlock;
-        LastWeedBlock = lastWeedBlock;
+        LastWeedBlock = lastWeedBlock ?? null;
     }
 
-    public HouseFieldState(Bencodex.Types.Dictionary encoded)
+    public HouseFieldState(Dictionary encoded)
     {
-        if (encoded.ContainsKey(nameof(InstalledSeedGuid)))
-        {
-            InstalledSeedGuid = encoded[nameof(InstalledSeedGuid)].ToGuid();
-        }
-        else
-        {
-            InstalledSeedGuid = Guid.Empty;
-        }
-
-        if (encoded.ContainsKey(nameof(SeedID)))
-        {
-            SeedID = encoded[nameof(SeedID)].ToInteger();
-        }
-        else
-        {
-            SeedID = null;
-        }
-
-        if (encoded.ContainsKey(nameof(InstalledBlock)))
-        {
-            InstalledBlock = encoded[nameof(InstalledBlock)].ToInteger();
-        }
-        else
-        {
-            InstalledBlock = null;
-        }
-
-        if (encoded.ContainsKey(nameof(TotalBlock)))
-        {
-            TotalBlock = encoded[nameof(TotalBlock)].ToInteger();
-        }
-        else
-        {
-            TotalBlock = null;
-        }
-
-        if (encoded.ContainsKey(nameof(LastWeedBlock)))
-        {
-            LastWeedBlock = encoded[nameof(LastWeedBlock)].ToInteger();
-        }
-        else
-        {
-            LastWeedBlock = null;
-        }
+        InstalledSeedGuid = encoded[nameof(InstalledSeedGuid)].ToGuid();
+        SeedID = encoded[nameof(SeedID)].ToInteger();
+        InstalledBlock = encoded[nameof(InstalledBlock)].ToLong();
+        TotalBlock = encoded[nameof(TotalBlock)].ToInteger();
+        LastWeedBlock = encoded.TryGetValue((Text)nameof(LastWeedBlock), out var lastWeedBlock) ? lastWeedBlock.ToLong() : null;
     }
 
 
     public IValue Serialize()
     {
-
-        var pairs = new KeyValuePair<IKey, IValue>[] { };
-
-        if (InstalledSeedGuid != Guid.Empty)
+        var pairs = new[]
         {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(InstalledSeedGuid), InstalledSeedGuid.Serialize())).ToArray();
-        }
-
-        if (SeedID is not null)
-        {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(SeedID), (Integer)SeedID)).ToArray();
-        }
-
-        if (InstalledBlock is not null)
-        {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(InstalledBlock), (Integer)InstalledBlock)).ToArray();
-        }
-
-        if (TotalBlock is not null)
-        {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(TotalBlock), (Integer)TotalBlock)).ToArray();
-        }
+            new KeyValuePair<IKey, IValue>((Text)nameof(InstalledSeedGuid), InstalledSeedGuid.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(SeedID), SeedID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(InstalledBlock), InstalledBlock.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(TotalBlock), TotalBlock.Serialize())
+        };
 
         if (LastWeedBlock is not null)
         {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(LastWeedBlock), (Integer)LastWeedBlock)).ToArray();
+            pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(LastWeedBlock), ((long)LastWeedBlock).Serialize()));
         }
-
 
         return new Dictionary(pairs);
     }
