@@ -10,6 +10,7 @@ using Savor22b.States;
 using Libplanet.Headless.Extensions;
 using Savor22b.Action.Exceptions;
 
+[ActionType(nameof(PlantingSeedAction))]
 public class PlantingSeedAction : SVRAction
 {
     public Guid SeedGuid;
