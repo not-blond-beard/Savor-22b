@@ -1,8 +1,6 @@
 namespace Savor22b.GraphTypes;
 
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using Bencodex.Types;
 using GraphQL;
 using GraphQL.Types;
 using Libplanet;
@@ -13,8 +11,6 @@ using Libplanet.Crypto;
 using Libplanet.Net;
 using Libplanet.Tx;
 using Savor22b.Action;
-using Savor22b.Helpers;
-using Savor22b.Model;
 
 public class Query : ObjectGraphType
 {
@@ -68,14 +64,7 @@ public class Query : ObjectGraphType
             "recipe",
             resolve: context =>
                 {
-                    CsvParser<Recipe> recipeCsvParser = new CsvParser<Recipe>();
-                    var recipeList = recipeCsvParser.ParseCsv(Paths.GetCSVDataPath("recipe.csv"));
-                    CsvParser<Food> FoodCsvParser = new CsvParser<Food>();
-                    var foodList = FoodCsvParser.ParseCsv(Paths.GetCSVDataPath("food.csv"));
-                    CsvParser<Ingredient> IngredientCsvParser = new CsvParser<Ingredient>();
-                    var ingredientList = IngredientCsvParser.ParseCsv(Paths.GetCSVDataPath("ingredient.csv"));
-
-                    var recipes = combineRecipeData(recipeList, ingredientList, foodList);
+                    var recipes = combineRecipeData();
 
                     return recipes;
                 }
@@ -348,13 +337,13 @@ public class Query : ObjectGraphType
         return unsignedTransactionHex;
     }
 
-    private List<RecipeResponse> combineRecipeData(List<Recipe> recipeList, List<Ingredient> ingredientList, List<Food> foodList)
+    private List<RecipeResponse> combineRecipeData()
     {
-        var foodDict = foodList.ToDictionary(x => x.ID);
-        var ingredientDict = ingredientList.ToDictionary(x => x.ID);
+        var foodDict = CsvDataHelper.GetFoodCSVData().ToDictionary(x => x.ID);
+        var ingredientDict = CsvDataHelper.GetIngredientCSVData().ToDictionary(x => x.ID);
 
         var recipes = new List<RecipeResponse>();
-        foreach (var recipe in recipeList)
+        foreach (var recipe in CsvDataHelper.GetRecipeCSVData())
         {
             var recipeIngredientComponents = recipe.IngredientIDList
                 .Select(ingredientID => new RecipeComponent(ingredientID, ingredientDict[ingredientID].Name))

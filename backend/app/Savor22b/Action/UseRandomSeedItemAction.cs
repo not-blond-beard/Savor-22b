@@ -6,8 +6,6 @@ using Libplanet.Action;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Action.Exceptions;
-using Savor22b.Helpers;
-using Savor22b.Model;
 using Savor22b.States;
 
 
@@ -44,11 +42,7 @@ public class UseRandomSeedItemAction : SVRAction
 
     private SeedState generateRandomSeed(IRandom random)
     {
-        CsvParser<Seed> csvParser = new CsvParser<Seed>();
-
-        var csvPath = Paths.GetCSVDataPath("seed.csv");
-
-        var seeds = csvParser.ParseCsv(csvPath);
+        var seeds = CsvDataHelper.GetSeedCSVData();
         int randomIndex = random.Next(0, seeds.Count);
 
         var randomSeedData = seeds[randomIndex];

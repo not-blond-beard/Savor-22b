@@ -67,19 +67,6 @@ public class PlantingSeedAction : SVRAction
         }
     }
 
-    private Seed? getMatchedSeed(int seedId)
-    {
-        CsvParser<Seed> csvParser = new CsvParser<Seed>();
-
-        var csvPath = Paths.GetCSVDataPath("seed.csv");
-
-        var seeds = csvParser.ParseCsv(csvPath);
-
-        var matchedSeed = seeds.Find(seed => seed.Id == seedId);
-
-        return matchedSeed;
-    }
-
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         IAccountStateDelta states = ctx.PreviousStates;
@@ -95,7 +82,7 @@ public class PlantingSeedAction : SVRAction
         inventoryState = inventoryState.RemoveSeed(SeedGuid);
         rootState.SetInventoryState(inventoryState);
 
-        Seed seed = getMatchedSeed(seedState.SeedID)!;
+        Seed seed = CsvDataHelper.GetSeedById(seedState.SeedID)!;
 
         HouseFieldState houseFieldState = new HouseFieldState(
             SeedGuid,

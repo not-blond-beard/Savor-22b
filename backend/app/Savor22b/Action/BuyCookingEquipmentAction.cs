@@ -45,19 +45,9 @@ public class BuyCookingEquipmentAction : SVRAction
         DesiredEquipmentID = plainValue[nameof(DesiredEquipmentID)].ToInteger();
     }
 
-    private List<CookingEquipment> GetCookingEquipmentCSVData()
+    private CookingEquipment FindCookingEquipment()
     {
-        CsvParser<CookingEquipment> csvParser = new CsvParser<CookingEquipment>();
-
-        var csvPath = Paths.GetCSVDataPath("cooking_equipment.csv");
-        var cookingEquipmentList = csvParser.ParseCsv(csvPath);
-
-        return cookingEquipmentList;
-    }
-
-    private CookingEquipment FindCookingEquipment(List<CookingEquipment> csvData)
-    {
-        var cookingEquipment = csvData.Find(equipment => equipment.ID == DesiredEquipmentID);
+        var cookingEquipment = CsvDataHelper.GetCookingEquipmentByID(DesiredEquipmentID);
 
         if (cookingEquipment is null)
         {
@@ -84,8 +74,7 @@ public class BuyCookingEquipmentAction : SVRAction
 
         InventoryState inventoryState = rootState.InventoryState;
 
-        var cookingEquipmentList = GetCookingEquipmentCSVData();
-        var desiredEquipment = FindCookingEquipment(cookingEquipmentList);
+        var desiredEquipment = FindCookingEquipment();
         var cookingEquipmentState = new CookingEquipmentState(CookingEquipmentStateID, desiredEquipment.ID);
 
         states = states.TransferAsset(

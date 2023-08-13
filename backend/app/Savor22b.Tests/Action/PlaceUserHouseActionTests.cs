@@ -9,10 +9,8 @@ using Savor22b.States;
 using Libplanet;
 using Savor22b.Constants;
 
-public class PlaceUserHouseActionTests
+public class PlaceUserHouseActionTests : ActionTests
 {
-    private PrivateKey _signer = new PrivateKey();
-
     public PlaceUserHouseActionTests()
     {
     }
@@ -39,13 +37,13 @@ public class PlaceUserHouseActionTests
         state = action.Execute(new DummyActionContext
         {
             PreviousStates = state,
-            Signer = _signer.PublicKey.ToAddress(),
+            Signer = SignerAddress(),
             Random = random,
             Rehearsal = false,
             BlockIndex = 1,
         });
 
-        var rootStateEncoded = state.GetState(_signer.PublicKey.ToAddress());
+        var rootStateEncoded = state.GetState(SignerAddress());
         rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
             ? new RootState(bdict)
             : throw new Exception();
@@ -61,6 +59,6 @@ public class PlaceUserHouseActionTests
             : throw new Exception();
 
 
-        Assert.Equal(_signer.PublicKey.ToAddress(), globalUserHouseState.UserHouse[$"{villageId},{targetX},{targetY}"]);
+        Assert.Equal(SignerAddress(), globalUserHouseState.UserHouse[$"{villageId},{targetX},{targetY}"]);
     }
 }
