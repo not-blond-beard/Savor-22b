@@ -14,7 +14,7 @@ public class RemovePlantedSeedActionTests : ActionTests
     }
 
     [Fact]
-    public void Execute_ValidAction()
+    public void Execute_Success_Normal()
     {
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = new RootState(
