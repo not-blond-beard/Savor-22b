@@ -30,8 +30,7 @@ public class RemovePlantedSeedActionTests : ActionTests
             Guid.NewGuid(),
             1,
             1,
-            5,
-            null
+            5
         ));
 
         beforeState = beforeState.SetState(
