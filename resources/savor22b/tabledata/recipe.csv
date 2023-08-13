@@ -1,4 +1,4 @@
-ID,Name,IngredientIDList,FoodIDList,RequiredCookingEquipmentCategories,ResultFoodID
+ID,Name,IngredientIDList,FoodIDList,RequiredCookingEquipmentCategoryList,ResultFoodID
 1,김밥 레시피,1;2,,2,1
 2,야채 김밥 레시피,3;4,1,2,2
 3,불고기 김밥 레시피,4;6,1,2,3

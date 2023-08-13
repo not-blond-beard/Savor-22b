@@ -6,11 +6,11 @@ using System.Collections.Immutable;
 
 public class CsvDataFixture
 {
-    public ImmutableList<RecipeReference> RecipeReferences { get; private set; }
+    public ImmutableList<Recipe> Recipes { get; private set; }
 
     public CsvDataFixture() {
-        CsvParser<RecipeReference> csvParser = new CsvParser<RecipeReference>();
+        CsvParser<Recipe> csvParser = new CsvParser<Recipe>();
         var csvPath = Paths.GetCSVDataPath("recipe.csv");
-        RecipeReferences = csvParser.ParseCsv(csvPath).ToImmutableList();
+        Recipes = csvParser.ParseCsv(csvPath).ToImmutableList();
     }
 }

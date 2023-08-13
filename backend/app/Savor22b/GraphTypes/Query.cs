@@ -64,17 +64,18 @@ public class Query : ObjectGraphType
                 ? throw new InvalidOperationException("Network settings is not set.")
                 : swarm.AsPeer.PeerString);
 
-        Field<ListGraphType<RecipeGraphType.RecipeType>>(
+        Field<ListGraphType<RecipeGraphType.RecipeResponseType>>(
             "recipe",
             resolve: context =>
                 {
-                    CsvParser<RecipeReference> recipeCsvParser = new CsvParser<RecipeReference>();
+                    CsvParser<Recipe> recipeCsvParser = new CsvParser<Recipe>();
                     var recipeList = recipeCsvParser.ParseCsv(Paths.GetCSVDataPath("recipe.csv"));
+                    CsvParser<Food> FoodCsvParser = new CsvParser<Food>();
+                    var foodList = FoodCsvParser.ParseCsv(Paths.GetCSVDataPath("food.csv"));
+                    CsvParser<Ingredient> IngredientCsvParser = new CsvParser<Ingredient>();
+                    var ingredientList = IngredientCsvParser.ParseCsv(Paths.GetCSVDataPath("ingredient.csv"));
 
-                    CsvParser<RecipeStat> recipeStatCsvParser = new CsvParser<RecipeStat>();
-                    var recipeStatList = recipeStatCsvParser.ParseCsv(Paths.GetCSVDataPath("recipe_stat.csv"));
-
-                    var recipes = GetRecipeList(recipeList, recipeStatList);
+                    var recipes = combineRecipeData(recipeList, ingredientList, foodList);
 
                     return recipes;
                 }
@@ -320,43 +321,28 @@ public class Query : ObjectGraphType
         return unsignedTransactionHex;
     }
 
-
-    private List<Recipe> GetRecipeList(List<RecipeReference> recipeList, List<RecipeStat> recipeStatList)
+    private List<RecipeResponse> combineRecipeData(List<Recipe> recipeList, List<Ingredient> ingredientList, List<Food> foodList)
     {
-        var recipeStatDictionary = CreateRecipeStatDictionary(recipeStatList);
+        var foodDict = foodList.ToDictionary(x => x.ID);
+        var ingredientDict = ingredientList.ToDictionary(x => x.ID);
 
-        var recipes = recipeList.GroupBy(recipe => recipe.ID)
-            .Select(group => CreateRecipe(group.Key, group.ToList(), recipeStatDictionary))
-            .ToList();
+        var recipes = new List<RecipeResponse>();
+        foreach (var recipe in recipeList)
+        {
+            var recipeIngredientComponents = recipe.IngredientIDList
+                .Select(ingredientID => new RecipeComponent(ingredientID, ingredientDict[ingredientID].Name))
+                .ToList();
+            var recipeFoodComponents = recipe.FoodIDList
+                .Select(foodID => new RecipeComponent(foodID, foodDict[foodID].Name))
+                .ToList();
+
+            recipes.Add(new RecipeResponse(
+                recipe.ID,
+                recipe.Name,
+                recipeIngredientComponents,
+                recipeFoodComponents));
+        }
 
         return recipes;
-    }
-
-    private Dictionary<int, RecipeStat> CreateRecipeStatDictionary(List<RecipeStat> recipeStatList)
-    {
-        return recipeStatList.ToDictionary(rs => rs.ID);
-    }
-
-    private Recipe CreateRecipe(int recipeId, List<RecipeReference> recipeReferences, Dictionary<int, RecipeStat> recipeStatDictionary)
-    {
-        var ingredients = recipeReferences.Select(recipeReference =>
-        {
-            var id = recipeReference.IngredientID ?? recipeReference.ReferencedRecipeID!.Value;
-            var name = recipeReference.IngredientID != null
-                ? recipeReference.IngredientName!
-                : recipeReference.ReferencedRecipeName!;
-            var type = recipeReference.IngredientID != null ? "ingredient" : "food";
-            return new RecipeIngredient(id, name, type);
-        }).ToList();
-
-        var recipeStat = recipeStatDictionary[recipeId];
-
-        return new Recipe(
-            recipeId,
-            recipeStat.Name,
-            ingredients,
-            recipeStat.MinGrade,
-            recipeStat.MaxGrade
-        );
     }
 }
