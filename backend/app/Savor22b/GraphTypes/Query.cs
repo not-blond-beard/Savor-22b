@@ -298,6 +298,33 @@ public class Query : ObjectGraphType
                 return getUnsignedTransactionHex(action, publicKey);
             }
         );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_RemoveWeed",
+            description: "Remove Weed",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "fieldIndex",
+                    Description = "Target field Index",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+
+                var action = new RemoveWeedAction(
+                    context.GetArgument<int>("fieldIndex")
+                );
+
+                return getUnsignedTransactionHex(action, publicKey);
+            }
+        );
     }
 
     private string getUnsignedTransactionHex(IAction action, PublicKey publicKey)
