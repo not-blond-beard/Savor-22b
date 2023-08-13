@@ -101,8 +101,7 @@ public class PlantingSeedAction : SVRAction
             SeedGuid,
             seedState.SeedID,
             ctx.BlockIndex,
-            seed.RequiredBlock,
-            null
+            seed.RequiredBlock
         );
 
         rootState.VillageState!.UpdateHouseFieldState(
