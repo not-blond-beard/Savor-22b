@@ -1,3 +1,5 @@
+namespace Savor22b.GraphTypes;
+
 using GraphQL.Types;
 using Savor22b.States;
 
@@ -156,9 +158,9 @@ public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
         );
 
         Field<IntGraphType>(
-            name: "recipeId",
-            description: "The Id of the recipe.",
-            resolve: context => context.Source.RecipeID
+            name: "foodID",
+            description: "The Id of the food.",
+            resolve: context => context.Source.FoodID
         );
 
         Field<StringGraphType>(

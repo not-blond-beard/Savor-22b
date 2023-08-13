@@ -47,18 +47,10 @@ public class BuyCookingEquipmentAction : SVRAction
 
     private List<CookingEquipment> GetCookingEquipmentCSVData()
     {
-        // CsvParser<CookingEquipment> csvParser = new CsvParser<CookingEquipment>();
+        CsvParser<CookingEquipment> csvParser = new CsvParser<CookingEquipment>();
 
-        // var csvPath = Paths.GetCSVDataPath("cooking-equipment.csv");
-        // var cookingEquipment = csvParser.ParseCsv(csvPath);
-        var cookingEquipmentList = new List<CookingEquipment>();
-        var cookingEquipment = new CookingEquipment();
-        cookingEquipment.ID = 1;
-        cookingEquipment.Name = "TempData";
-        cookingEquipment.BlockTimeReductionPercent = 0.05;
-        cookingEquipment.Price = FungibleAssetValue.Parse(Currencies.KeyCurrency, "10");
-
-        cookingEquipmentList.Add(cookingEquipment);
+        var csvPath = Paths.GetCSVDataPath("cooking_equipment.csv");
+        var cookingEquipmentList = csvParser.ParseCsv(csvPath);
 
         return cookingEquipmentList;
     }
@@ -99,7 +91,7 @@ public class BuyCookingEquipmentAction : SVRAction
         states = states.TransferAsset(
             ctx.Signer,
             Recipient,
-            desiredEquipment.Price,
+            desiredEquipment.PriceToFungibleAssetValue(),
             allowNegativeBalance: false
         );
         rootState.SetInventoryState(inventoryState.AddCookingEquipmentItem(cookingEquipmentState));

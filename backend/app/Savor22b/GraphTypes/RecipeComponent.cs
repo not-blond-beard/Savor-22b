@@ -1,15 +1,13 @@
 namespace Savor22b.GraphTypes;
 
-public class RecipeIngredient
+public class RecipeComponent
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public string Type { get; set; }
 
-    public RecipeIngredient(int id, string name, string type)
+    public RecipeComponent(int id, string name)
     {
         Id = id;
         Name = name;
-        Type = type;
     }
 }

@@ -3,6 +3,7 @@ namespace Savor22b.Tests.Action;
 using System;
 using System.Collections;
 using System.Collections.Immutable;
+using Humanizer;
 using Libplanet;
 using Libplanet.Crypto;
 using Libplanet.State;
@@ -12,47 +13,9 @@ using Savor22b.Tests.Fixtures;
 using Xunit;
 
 
-public class IngredientsSamplesData : IEnumerable<object[]>
+public class GenerateFoodActionTests : ActionTests, IClassFixture<CsvDataFixture>
 {
     private CsvDataFixture _fixture;
-
-    public IngredientsSamplesData()
-    {
-        _fixture = new CsvDataFixture();
-    }
-
-    public IEnumerator<object[]> GetEnumerator()
-    {
-        var recipeIDs = new[] { 1, 2, 3 };
-        foreach (var recipeID in recipeIDs)
-        {
-            var preset = CreateRefrigeratorStatePreSet(recipeID);
-            yield return new object[] { recipeID, preset.Item1, preset.Item2 };
-        }
-    }
-
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-    private (List<int>, List<int>) CreateRefrigeratorStatePreSet(int recipeID)
-    {
-        var data = _fixture.RecipeReferences;
-
-        var recipe1 = data.FindAll(recipe => recipe.ID == recipeID);
-        var expectUsedIngredientIDs = from r1 in recipe1
-                                      where r1.IngredientID.HasValue
-                                      select r1.IngredientID.Value;
-        var expectUsedFoodIDs = from r1 in recipe1
-                                where r1.ReferencedRecipeID.HasValue
-                                select r1.ReferencedRecipeID.Value;
-
-        return (expectUsedIngredientIDs.ToList(), expectUsedFoodIDs.ToList());
-    }
-
-}
-
-public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
-{
-    CsvDataFixture _fixture;
     private PrivateKey _signer = new PrivateKey();
 
     public GenerateFoodActionTests(CsvDataFixture fixture)
@@ -60,66 +23,57 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
         _fixture = fixture;
     }
 
-    public (List<int>, List<int>) CreateRefrigeratorStatePreSet(int recipeID)
-    {
-        var data = _fixture.RecipeReferences;
-
-        var recipe1 = data.FindAll(recipe => recipe.ID == recipeID);
-        var expectUsedIngredientIDs = from r1 in recipe1
-                                      where r1.IngredientID is not null
-                                      select r1.IngredientID;
-        var expectUsedFoodIDs = from r1 in recipe1
-                                where r1.ReferencedRecipeID is not null
-                                select r1.ReferencedRecipeID;
-
-        return ((List<int>)expectUsedIngredientIDs, (List<int>)expectUsedFoodIDs);
-    }
-
-    public IEnumerable<object[]> IngredientsSamples()
-    {
-        var recipeID = 1;
-        var preset = CreateRefrigeratorStatePreSet(recipeID);
-        yield return new object[] { recipeID, preset.Item1, preset.Item2 };
-        recipeID = 2;
-        preset = CreateRefrigeratorStatePreSet(recipeID);
-        yield return new object[] { recipeID, preset.Item1, preset.Item2 };
-        recipeID = 3;
-        preset = CreateRefrigeratorStatePreSet(recipeID);
-        yield return new object[] { recipeID, preset.Item1, preset.Item2 };
-    }
-
-    public RootState CreateRootStateFromExpectValues(List<int> expectUsedIngredientIDs, List<int> expectUsedFoodIDs)
-    {
-        RootState rootState = new RootState();
-        InventoryState inventoryState = new InventoryState();
-
-        foreach (var ingredientID in expectUsedIngredientIDs)
-        {
-            inventoryState = inventoryState.AddRefrigeratorItem(RefrigeratorState.CreateIngredient(Guid.NewGuid(), ingredientID, "D", 1, 1, 1, 1));
-        }
-        foreach (var foodID in expectUsedFoodIDs)
-        {
-            inventoryState = inventoryState.AddRefrigeratorItem(RefrigeratorState.CreateFood(Guid.NewGuid(), foodID, "D", 1, 1, 1, 1));
-        }
-
-        rootState.SetInventoryState(inventoryState);
-
-        return rootState;
-    }
-
     [Theory]
-    [ClassData(typeof(IngredientsSamplesData))]
-    public void GenerateFoodActionExecute_AddsFoodToRefrigeratorStateList(int expectRecipeID, List<int> expectUsedIngredients, List<int> expectUsedFoods)
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(3)]
+    public void GenerateFoodActionExecute_AddsFoodToRefrigeratorStateList(int recipeID)
     {
         IAccountStateDelta beforeState = new DummyState();
-        var beforeRootState = CreateRootStateFromExpectValues(expectUsedIngredients, expectUsedFoods);
+
+        var recipe = _fixture.Recipes.Find(recipe => recipe.ID == recipeID);
+
+        if (recipe is null)
+        {
+            throw new Exception();
+        }
+
+        InventoryState beforeInventoryState = new InventoryState();
+        foreach (var ingredientID in recipe.IngredientIDList)
+        {
+            beforeInventoryState = beforeInventoryState.AddRefrigeratorItem(
+                RefrigeratorState.CreateIngredient(
+                    Guid.NewGuid(),
+                    ingredientID,
+                    "D",
+                    1,
+                    1,
+                    1,
+                    1
+                ));
+        }
+        foreach (var foodID in recipe.FoodIDList)
+        {
+            beforeInventoryState = beforeInventoryState.AddRefrigeratorItem(
+                RefrigeratorState.CreateFood(
+                    Guid.NewGuid(),
+                    foodID,
+                    "D",
+                    1,
+                    1,
+                    1,
+                    1
+                ));
+        }
+        var beforeRootState = new RootState(beforeInventoryState);
+
         beforeState = beforeState.SetState(_signer.PublicKey.ToAddress(), beforeRootState.Serialize());
 
         var random = new DummyRandom(1);
 
         var newFoodGuid = Guid.NewGuid();
         var action = new GenerateFoodAction(
-            expectRecipeID,
+            recipe.ID,
             newFoodGuid,
             (from stateList in beforeRootState.InventoryState.RefrigeratorStateList
              select stateList.StateID).ToList());
@@ -140,6 +94,6 @@ public class GenerateFoodActionTests : IClassFixture<CsvDataFixture>
         InventoryState afterInventoryState = rootState.InventoryState;
 
         Assert.Equal(afterInventoryState.RefrigeratorStateList.Count, 1);
-        Assert.Equal(afterInventoryState.RefrigeratorStateList[0].RecipeID, expectRecipeID);
+        Assert.Equal(afterInventoryState.RefrigeratorStateList[0].FoodID, recipe.ResultFoodID);
     }
 }
