@@ -122,34 +122,6 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
-            "createAction_GenerateIngredient",
-            description: "Generate Ingredient",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "publicKey",
-                    Description = "The base64-encoded public key for Transaction.",
-                },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
-                {
-                    Name = "seedStateId",
-                    Description = "Seed state Id (PK)",
-                }
-            ),
-            resolve: context =>
-            {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
-
-                var action = new GenerateIngredientAction(
-                    context.GetArgument<Guid>("seedStateId"),
-                    Guid.NewGuid()
-                );
-
-                return getUnsignedTransactionHex(action, publicKey);
-            }
-        );
-
-        Field<NonNullGraphType<StringGraphType>>(
             "createAction_GenerateFood",
             description: "Generate Food",
             arguments: new QueryArguments(
@@ -321,6 +293,34 @@ public class Query : ObjectGraphType
 
                 var action = new RemoveWeedAction(
                     context.GetArgument<int>("fieldIndex")
+                );
+
+                return getUnsignedTransactionHex(action, publicKey);
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_HarvestingSeed",
+            description: "Harvesting Seed",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "fieldIndex",
+                    Description = "Target field Index",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+
+                var action = new HarvestingSeedAction(
+                    context.GetArgument<int>("fieldIndex"),
+                    Guid.NewGuid()
                 );
 
                 return getUnsignedTransactionHex(action, publicKey);

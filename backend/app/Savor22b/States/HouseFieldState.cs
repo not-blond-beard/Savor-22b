@@ -111,6 +111,8 @@ public class HouseFieldState : State
 
     public bool IsHarvestable(long currentBlockIndex)
     {
-        return InstalledBlock + TotalBlock <= currentBlockIndex;
+        long harvestableBlock = InstalledBlock + TotalBlock;
+        int weedRemovalImpact = WeedRemovalImpactBlock() * WeedRemovalCount;
+        return harvestableBlock - weedRemovalImpact <= currentBlockIndex;
     }
 }

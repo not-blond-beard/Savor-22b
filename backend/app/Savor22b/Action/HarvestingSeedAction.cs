@@ -2,43 +2,60 @@ namespace Savor22b.Action;
 
 using System.Collections.Immutable;
 using Bencodex.Types;
-using System;
 using Libplanet.Action;
 using Libplanet.State;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
 using Libplanet.Headless.Extensions;
+using Savor22b.Action.Exceptions;
 
-
-[ActionType(nameof(GenerateIngredientAction))]
-public class GenerateIngredientAction : SVRAction
+[ActionType(nameof(HarvestingSeedAction))]
+public class HarvestingSeedAction : SVRAction
 {
+    public int HarvestedFieldIndex;
     public Guid RefrigeratorStateID;
-    public Guid SeedStateID;
 
-    public GenerateIngredientAction()
+    public HarvestingSeedAction()
     {
+
     }
 
-    public GenerateIngredientAction(Guid seedStateID, Guid refrigeratorStateID)
+    public HarvestingSeedAction(int harvestedFieldIndex, Guid refrigeratorStateID)
     {
-        SeedStateID = seedStateID;
+        HarvestedFieldIndex = harvestedFieldIndex;
         RefrigeratorStateID = refrigeratorStateID;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
-            [nameof(SeedStateID)] = SeedStateID.Serialize(),
-            [nameof(RefrigeratorStateID)] = RefrigeratorStateID.Serialize()
+            [nameof(HarvestedFieldIndex)] = HarvestedFieldIndex.Serialize(),
+            [nameof(RefrigeratorStateID)] = RefrigeratorStateID.Serialize(),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
-        SeedStateID = plainValue[nameof(SeedStateID)].ToGuid();
+        HarvestedFieldIndex = plainValue[nameof(HarvestedFieldIndex)].ToInteger();
         RefrigeratorStateID = plainValue[nameof(RefrigeratorStateID)].ToGuid();
+    }
+
+    private VillageState getVillageState(RootState rootState)
+    {
+        if (rootState.VillageState is null)
+        {
+            throw new InvalidVillageStateException("VillageState is null");
+        }
+
+        return rootState.VillageState;
+    }
+
+    private HouseFieldState getHouseFieldState(VillageState villageState, int index)
+    {
+        HouseFieldState houseFieldState = villageState.HouseFieldStates[index] ?? throw new InvalidFieldIndexException("FieldIndex is invalid");
+
+        return houseFieldState;
     }
 
     private Ingredient? getMatchedIngredient(int seedId)
@@ -105,35 +122,33 @@ public class GenerateIngredientAction : SVRAction
 
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
-        if (ctx.Rehearsal)
-        {
-            return ctx.PreviousStates;
-        }
-
         IAccountStateDelta states = ctx.PreviousStates;
-
-
-        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
 
+        VillageState villageState = getVillageState(rootState);
         InventoryState inventoryState = rootState.InventoryState;
+        HouseFieldState houseFieldState = getHouseFieldState(villageState, HarvestedFieldIndex);
 
-        var seed = inventoryState.SeedStateList.Find(seed => seed.StateID == SeedStateID);
-
-        if (seed == null)
+        if (!houseFieldState.IsHarvestable(ctx.BlockIndex))
         {
-            throw new ArgumentException(
-                $"Invalid {nameof(SeedStateID)}: {SeedStateID}");
+            throw new HarvestableFieldException("Field is not harvestable");
         }
 
-        var ingredient = generateIngredient(ctx, seed.SeedID);
+        villageState.RemoveHouseFieldState(HarvestedFieldIndex);
 
+        RefrigeratorState ingredient = generateIngredient(
+            ctx,
+            houseFieldState.SeedID
+        );
         inventoryState = inventoryState.AddRefrigeratorItem(ingredient);
-        inventoryState = inventoryState.RemoveSeed(SeedStateID);
 
         rootState.SetInventoryState(inventoryState);
 
-        return states.SetState(ctx.Signer, rootState.Serialize());
+        states = states.SetState(ctx.Signer, rootState.Serialize());
+
+        return states;
     }
+
 }
