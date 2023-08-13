@@ -46,8 +46,9 @@ app.AddCommand(
         .ReadFrom.Configuration(config);
         Log.Logger = loggerConf.CreateLogger();
 
-        var headlessConfig = new Configuration();
-        config.Bind(headlessConfig);
+        var svrConfig = new Savor22bConfiguration();
+        CsvDataHelper.Initialize(svrConfig.CsvDataResourcePath);
+        config.Bind(svrConfig);
 
         PrivateKey? validatorKey = null;
         if (validatorKeyId is { } keyId)
@@ -68,7 +69,7 @@ app.AddCommand(
                 }
             }
 
-            if (headlessConfig.Network is null)
+            if (svrConfig.Network is null)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.BackgroundColor = ConsoleColor.DarkBlue;
@@ -96,7 +97,7 @@ app.AddCommand(
             Console.WriteLine();
             Console.WriteLine("... and then pass the key ID to this command with its argument.");
             Console.Write(new string('-', Console.WindowWidth));
-            if (headlessConfig.Network is null)
+            if (svrConfig.Network is null)
             {
                 Console.WriteLine("As the network is not configured, this node will not be able to " +
                     "see any new blocks. If you intended to sync blocks from remote nodes, please " +
@@ -115,7 +116,7 @@ app.AddCommand(
             .AddLibplanet(builder =>
             {
                 builder
-                    .UseConfiguration(headlessConfig)
+                    .UseConfiguration(svrConfig)
                     .UseActionLoader(new SVRActionLoader())
                     .UseRenderers(
                         new List<IRenderer>
@@ -153,7 +154,7 @@ app.AddCommand(
             .AddSingleton<IBlockChainContext, ExplorerContext>()
             .AddSingleton<GraphQLWebSocketsMiddleware<Schema>>();
 
-        if (headlessConfig.GraphQLUri is { } graphqlUri)
+        if (svrConfig.GraphQLUri is { } graphqlUri)
         {
             builder.WebHost
                 .ConfigureKestrel(options =>
@@ -173,7 +174,7 @@ app.AddCommand(
         app.UseGraphQL<Schema>("/graphql");
         app.UseGraphQLWebSockets<Schema>("/graphql");
 
-        if (headlessConfig.GraphQLUri is { LocalPath: { } localPath })
+        if (svrConfig.GraphQLUri is { LocalPath: { } localPath })
         {
             app.UseEndpoints(endpoints =>
             {
