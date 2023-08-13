@@ -28,7 +28,7 @@ jobs:
         run: dotnet restore
 
       - name: Create local setttings.json
-        run: sh scripts/create-local-appsettings.sh
+        run: bash scripts/create-local-appsettings.sh
 
       - name: Build and test
         run: |
