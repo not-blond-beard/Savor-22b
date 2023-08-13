@@ -53,4 +53,9 @@ public class HouseFieldState : State
 
         return new Dictionary(pairs);
     }
+
+    public bool IsHarvestable(long currentBlockIndex)
+    {
+        return InstalledBlock + TotalBlock <= currentBlockIndex;
+    }
 }
