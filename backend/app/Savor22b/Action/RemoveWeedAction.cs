@@ -67,9 +67,7 @@ public class RemoveWeedAction : SVRAction
         villageState.UpdateHouseFieldState(FieldIndex, houseFieldState);
         rootState.SetVillageState(villageState);
 
-        var aa = rootState.Serialize();
-
-        states = states.SetState(ctx.Signer, aa);
+        states = states.SetState(ctx.Signer, rootState.Serialize());
 
         return states;
     }
