@@ -90,4 +90,9 @@ public class VillageState : State
     {
         HouseFieldStates[fieldIndex] = houseFieldState;
     }
+
+    public void RemoveHouseFieldState(int fieldIndex)
+    {
+        HouseFieldStates[fieldIndex] = null;
+    }
 }
