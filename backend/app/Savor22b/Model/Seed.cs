@@ -4,5 +4,5 @@ public class Seed
 {
     public int Id { get; set; }
     public string Name { get; set; }
-    public long RequiredBlock { get; set; }
+    public int RequiredBlock { get; set; }
 }
