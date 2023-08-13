@@ -255,4 +255,73 @@ MonoBehaviour:
         type: Int
       hasChanged: 0
     isComplete: 1
+  - name: ReadAllIngredient
+    type: 2
+    query: "subscription ReadAllIngredient{\n    inventory(  address :\"0x53103C2D7875D2f5f02AeC3075155e268a6e3A94\"
+      ){\n        refrigeratorStateList{\n            stateId\n            ingredientId\n       
+      }\n    }\n}"
+    queryString: inventory
+    returnType: InventoryStateType
+    queryOptions:
+    - inventory
+    - transactionApplied
+    fields:
+    - index: 1
+      name: refrigeratorStateList
+      type: RefrigeratorStateType
+      parentIndexes: 
+      hasSubField: 1
+      possibleFields:
+      - name: seedStateList
+        type: SeedStateType
+      - name: refrigeratorStateList
+        type: RefrigeratorStateType
+      hasChanged: 0
+    - index: 0
+      name: stateId
+      type: Guid
+      parentIndexes: 00000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 1
+      name: ingredientId
+      type: Int
+      parentIndexes: 00000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    isComplete: 1
   loading: 0
