@@ -5,7 +5,7 @@ public class UserStateType : ObjectGraphType<RootState>
 {
     public UserStateType()
     {
-        Field<InventoryStateType>(
+        Field<NonNullGraphType<InventoryStateType>>(
             name: "inventoryState",
             description: "The inventory state of the user.",
             resolve: context => context.Source.InventoryState
@@ -22,22 +22,22 @@ public class HouseFieldStateType : ObjectGraphType<HouseFieldState>
 {
     public HouseFieldStateType()
     {
-        Field<GuidGraphType>(
+        Field<NonNullGraphType<GuidGraphType>>(
             name: "InstalledSeedGuid",
             description: "The ID of the installed seed.",
             resolve: context => context.Source.InstalledSeedGuid
         );
-        Field<IntGraphType>(
+        Field<NonNullGraphType<IntGraphType>>(
             name: "SeedID",
             description: "The ID of the seed.",
             resolve: context => context.Source.SeedID
         );
-        Field<LongGraphType>(
+        Field<NonNullGraphType<LongGraphType>>(
             name: "InstalledBlock",
             description: "The block number when the seed was planted.",
             resolve: context => context.Source.InstalledBlock
         );
-        Field<IntGraphType>(
+        Field<NonNullGraphType<IntGraphType>>(
             name: "TotalBlock",
             description: "The total block number of the seed.",
             resolve: context => context.Source.TotalBlock
@@ -47,6 +47,11 @@ public class HouseFieldStateType : ObjectGraphType<HouseFieldState>
             description: "The block number when the field was last weeded.",
             resolve: context => context.Source.LastWeedBlock
         );
+        Field<NonNullGraphType<IntGraphType>>(
+            name: "WeedRemovalCount",
+            description: "The number of times the field was weeded.",
+            resolve: context => context.Source.WeedRemovalCount
+        );
     }
 }
 
@@ -54,12 +59,12 @@ public class VillageStateType: ObjectGraphType<VillageState>
 {
     public VillageStateType()
     {
-        Field<ListGraphType<HouseFieldStateType>>(
+        Field<NonNullGraphType<ListGraphType<HouseFieldStateType>>>(
             name: "houseFieldStates",
             description: "The list of house field states in the village.",
             resolve: context => context.Source.HouseFieldStates.ToList()
         );
-        Field<HouseStateType>(
+        Field<NonNullGraphType<HouseStateType>>(
             name: "houseState",
             description: "The house state in the village.",
             resolve: context => context.Source.HouseState
@@ -93,22 +98,22 @@ public class HouseStateType : ObjectGraphType<HouseState>
 {
     public HouseStateType()
     {
-        Field<IntGraphType>(
+        Field<NonNullGraphType<IntGraphType>>(
             name: "villageId",
             description: "The ID of the village.",
             resolve: context => context.Source.VillageID
         );
-        Field<IntGraphType>(
+        Field<NonNullGraphType<IntGraphType>>(
             name: "positionX",
             description: "The X position of the house.",
             resolve: context => context.Source.PositionX
         );
-        Field<IntGraphType>(
+        Field<NonNullGraphType<IntGraphType>>(
             name: "positionY",
             description: "The Y position of the house.",
             resolve: context => context.Source.PositionY
         );
-        Field<HouseInnerStateType>(
+        Field<NonNullGraphType<HouseInnerStateType>>(
             name: "innerState",
             description: "The inner state of the house.",
             resolve: context => context.Source.InnerState
