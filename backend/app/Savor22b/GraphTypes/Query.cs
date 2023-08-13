@@ -326,6 +326,34 @@ public class Query : ObjectGraphType
                 return getUnsignedTransactionHex(action, publicKey);
             }
         );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_HarvestingSeed",
+            description: "Harvesting Seed",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "fieldIndex",
+                    Description = "Target field Index",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+
+                var action = new HarvestingSeedAction(
+                    context.GetArgument<int>("fieldIndex"),
+                    Guid.NewGuid()
+                );
+
+                return getUnsignedTransactionHex(action, publicKey);
+            }
+        );
     }
 
     private string getUnsignedTransactionHex(IAction action, PublicKey publicKey)
