@@ -5,7 +5,6 @@ using Bencodex.Types;
 using Libplanet.Action;
 using Libplanet.State;
 using Savor22b.Helpers;
-using Savor22b.Model;
 using Savor22b.States;
 using Libplanet.Headless.Extensions;
 using Savor22b.Action.Exceptions;
@@ -58,32 +57,9 @@ public class HarvestingSeedAction : SVRAction
         return houseFieldState;
     }
 
-    private Ingredient? getMatchedIngredient(int seedId)
-    {
-        CsvParser<Ingredient> csvParser = new CsvParser<Ingredient>();
-
-        var csvPath = Paths.GetCSVDataPath("ingredient.csv");
-        var ingredients = csvParser.ParseCsv(csvPath);
-        var matchedIngredient = ingredients.Find(ingredient => ingredient.SeedId == seedId);
-
-        return matchedIngredient;
-    }
-
-    private Stat? getMatchedStat(int ingredientId, string grade)
-    {
-        CsvParser<Stat> csvParser = new CsvParser<Stat>();
-
-        var csvPath = Paths.GetCSVDataPath("stat.csv");
-        var stats = csvParser.ParseCsv(csvPath);
-
-        var matchedStat = stats.Find(stat => stat.IngredientID == ingredientId && stat.Grade == grade);
-
-        return matchedStat;
-    }
-
     private RefrigeratorState generateIngredient(IActionContext ctx, int seedId)
     {
-        var matchedIngredient = getMatchedIngredient(seedId);
+        var matchedIngredient = CsvDataHelper.GetIngredientBySeedId(seedId);
         var gradeExtractor = new GradeExtractor(ctx.Random, 0.1);
 
         if (matchedIngredient == null)
@@ -94,7 +70,7 @@ public class HarvestingSeedAction : SVRAction
 
         var grade = gradeExtractor.ExtractGrade(matchedIngredient.MinGrade, matchedIngredient.MaxGrade);
         var gradeString = GradeExtractor.GetGrade(grade);
-        var matchedStat = getMatchedStat(matchedIngredient.ID, gradeString);
+        var matchedStat = CsvDataHelper.GetStatByIngredientIDAndGrade(matchedIngredient.ID, gradeString);
 
         if (matchedStat == null)
         {

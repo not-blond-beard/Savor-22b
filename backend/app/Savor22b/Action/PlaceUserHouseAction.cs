@@ -47,16 +47,6 @@ public class PlaceUserHouseAction : SVRAction
         TargetY = plainValue[nameof(TargetY)].ToInteger();
     }
 
-    private Village? getVillageData(int villageId)
-    {
-        CsvParser<Village> csvParser = new CsvParser<Village>();
-
-        var csvPath = Paths.GetCSVDataPath("villages.csv");
-        var village = csvParser.ParseCsv(csvPath);
-
-        return village.Find(e => e.Id == villageId);
-    }
-
     private bool isAbleToPlaceHouse(Village village, int targetX, int targetY)
     {
         int halfWidth = (village.Width - 1) / 2;
@@ -81,7 +71,7 @@ public class PlaceUserHouseAction : SVRAction
     {
         IAccountStateDelta states = ctx.PreviousStates;
 
-        var village = getVillageData(VillageID);
+        var village = CsvDataHelper.GetVillageByID(VillageID);
 
         if (village == null)
         {

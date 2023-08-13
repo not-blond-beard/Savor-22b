@@ -1,27 +1,17 @@
 namespace Savor22b.Tests.Action;
 
 using System;
-using System.Collections;
-using System.Collections.Immutable;
-using Humanizer;
 using Libplanet;
 using Libplanet.Crypto;
 using Libplanet.State;
 using Savor22b.Action;
 using Savor22b.States;
-using Savor22b.Tests.Fixtures;
 using Xunit;
 
 
-public class GenerateFoodActionTests : ActionTests, IClassFixture<CsvDataFixture>
+public class GenerateFoodActionTests : ActionTests
 {
-    private CsvDataFixture _fixture;
     private PrivateKey _signer = new PrivateKey();
-
-    public GenerateFoodActionTests(CsvDataFixture fixture)
-    {
-        _fixture = fixture;
-    }
 
     [Theory]
     [InlineData(1)]
@@ -31,7 +21,7 @@ public class GenerateFoodActionTests : ActionTests, IClassFixture<CsvDataFixture
     {
         IAccountStateDelta beforeState = new DummyState();
 
-        var recipe = _fixture.Recipes.Find(recipe => recipe.ID == recipeID);
+        var recipe = CsvDataHelper.GetRecipeById(recipeID);
 
         if (recipe is null)
         {
