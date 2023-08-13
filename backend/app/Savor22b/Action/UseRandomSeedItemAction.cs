@@ -81,7 +81,6 @@ public class UseRandomSeedItemAction : SVRAction
 
         InventoryState inventoryState = rootState.InventoryState;
 
-
         SeedState seedState = generateRandomSeed(ctx.Random);
         inventoryState = FindAndRemoveItem(inventoryState);
         inventoryState = inventoryState.AddSeed(seedState);

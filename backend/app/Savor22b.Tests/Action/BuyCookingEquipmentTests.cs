@@ -26,7 +26,7 @@ public class BuyCookingEquipmentTests
             _signer.PublicKey.ToAddress(),
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
-                "10"
+                "2"
             ));
 
         var random = new DummyRandom(1);
@@ -62,7 +62,7 @@ public class BuyCookingEquipmentTests
         Assert.Equal(
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
-                "10"
+                "2"
             ),
             state.GetBalance(Addresses.ShopVaultAddress, Currencies.KeyCurrency));
     }

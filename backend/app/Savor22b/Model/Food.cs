@@ -1,6 +1,6 @@
 namespace Savor22b.Model;
 
-public class RecipeStat
+public class Food
 {
     public int ID { get; set; }
     public string Name { get; set; }

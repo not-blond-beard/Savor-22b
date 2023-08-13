@@ -44,25 +44,29 @@ public class CsvParser<T> where T : class, new()
             {
                 string fieldName = type.GetProperties()[i].Name;
                 Type fieldType = type.GetProperties()[i].PropertyType;
+                Type underlyingType = Nullable.GetUnderlyingType(fieldType) ?? fieldType;
 
-                if (!string.IsNullOrEmpty(fields[i]))
+                if (fieldName.Contains("List") && fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
                 {
-                    object fieldValue = null;
+                    Type listType = underlyingType.GetGenericArguments()[0];
+                    string[] stringValues = fields[i].Split(';');
+                    var list = Activator.CreateInstance(fieldType) as System.Collections.IList;
 
-                    Type underlyingType = Nullable.GetUnderlyingType(fieldType);
-
-                    if (underlyingType != null)
+                    foreach (var value in stringValues)
                     {
-                        fieldValue = Convert.ChangeType(fields[i], underlyingType);
-                    }
-                    else
-                    {
-                        fieldValue = Convert.ChangeType(fields[i], fieldType);
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            list.Add(Convert.ChangeType(value, listType));
+                        }
                     }
 
+                    type.GetProperty(fieldName).SetValue(item, list);
+                }
+                else if (!string.IsNullOrEmpty(fields[i]))
+                {
+                    object fieldValue = Convert.ChangeType(fields[i], underlyingType);
                     type.GetProperty(fieldName).SetValue(item, fieldValue);
                 }
-
             }
 
             return item;
