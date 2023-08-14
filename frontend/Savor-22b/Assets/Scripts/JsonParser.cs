@@ -60,4 +60,123 @@ public class JsonParser : MonoBehaviour
 
         SeedDisplay.text = resultText;
     }
+
+    string jsonText = @"
+    {
+        ""data"": {
+        ""recipe"": [
+            {
+            ""id"": 1,
+            ""name"": ""김밥 레시피"",
+            ""minGrade"": ""D"",
+            ""maxGrade"": ""B"",
+            ""ingredients"": [
+                {
+                ""id"": 1,
+                ""name"": ""쌀"",
+                ""type"": ""ingredient""
+                },
+                {
+                ""id"": 2,
+                ""name"": ""김"",
+                ""type"": ""ingredient""
+                }
+            ]
+            },
+            {
+            ""id"": 2,
+            ""name"": ""야채 김밥 레시피"",
+            ""minGrade"": ""B"",
+            ""maxGrade"": ""A"",
+            ""ingredients"": [
+                {
+                ""id"": 4,
+                ""name"": ""당근"",
+                ""type"": ""ingredient""
+                },
+                {
+                ""id"": 1,
+                ""name"": ""김밥 레시피"",
+                ""type"": ""food""
+                }
+            ]
+            },
+            {
+            ""id"": 3,
+            ""name"": ""불고기 김밥 레시피"",
+            ""minGrade"": ""A"",
+            ""maxGrade"": ""S"",
+            ""ingredients"": [
+                {
+                ""id"": 2,
+                ""name"": ""야채 김밥 레시피"",
+                ""type"": ""food""
+                },
+                {
+                ""id"": 5,
+                ""name"": ""소"",
+                ""type"": ""ingredient""
+                }
+            ]
+            },
+            {
+            ""id"": 4,
+            ""name"": ""트러플 불고기 김밥 레시피"",
+            ""minGrade"": ""S"",
+            ""maxGrade"": ""SS"",
+            ""ingredients"": [
+                {
+                ""id"": 3,
+                ""name"": ""케비어"",
+                ""type"": ""ingredient""
+                },
+                {
+                ""id"": 3,
+                ""name"": ""불고기 김밥 레시피"",
+                ""type"": ""food""
+                }
+            ]
+            }
+        ]
+        }
+    }";
+
+    int sampleid;
+    string samplestring;
+    public void ParseJsonny()
+    {
+        Debug.Log(jsonText);
+        JObject json = JObject.Parse(jsonText);
+        JArray recipeArray = (JArray)json["data"]["recipe"];
+        int recipeCount = recipeArray.Count;
+        Debug.Log("Recipe Count: " + recipeCount);
+
+        for (int i = 0; i < recipeCount; i++)
+        {
+            Debug.Log("Recipe ID: " + json["data"]["recipe"][i]["id"]);
+            Debug.Log("Recipe Name: " + json["data"]["recipe"][i]["name"]);
+            Debug.Log("Recipe MinGrade: " + json["data"]["recipe"][i]["minGrade"]);
+            Debug.Log("Recipe MaxGrade: " + json["data"]["recipe"][i]["maxGrade"]);
+
+            sampleid = (int)json["data"]["recipe"][i]["id"];
+            Debug.Log("SAMPLE ID: " + sampleid);
+            samplestring = json["data"]["recipe"][i]["name"].ToString();
+            Debug.Log("SAMPLE STRING: " + samplestring);
+
+            JArray ingredientsArray = (JArray)json["data"]["recipe"][i]["ingredients"];
+            int ingredientsCount = ingredientsArray.Count;
+            for (int j = 0; j < ingredientsCount; j++)
+            {
+                Debug.Log("Recipe Ingredient ID: " + json["data"]["recipe"][i]["ingredients"][j]["id"]);
+                Debug.Log("Recipe Ingredient Name: " + json["data"]["recipe"][i]["ingredients"][j]["name"]);
+                Debug.Log("Recipe Ingredient Type: " + json["data"]["recipe"][i]["ingredients"][j]["type"]);
+            }
+        }
+
+    }
+
+    private void Start()
+    {
+        ParseJsonny();
+    }
 }
