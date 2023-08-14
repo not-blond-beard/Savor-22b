@@ -45,4 +45,4 @@ UpgradeLog.htm
 mono_crash.*.json
 mono_crash.*.blob
 
-appsettings.local.json
+appsettings.json

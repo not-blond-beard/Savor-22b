@@ -46,37 +46,7 @@ public class GenerateFoodAction : SVRAction
         RefrigeratorStateIDs = ((List)plainValue[nameof(RefrigeratorStateIDs)]).Select(e => e.ToGuid()).ToList();
     }
 
-    private List<RecipeReference> GetRecipeCSVData()
-    {
-        CsvParser<RecipeReference> csvParser = new CsvParser<RecipeReference>();
-
-        var csvPath = Paths.GetCSVDataPath("recipe.csv");
-        var recipe = csvParser.ParseCsv(csvPath);
-
-        return recipe;
-    }
-
-    private List<RecipeStat> GetRecipeStatCSVData()
-    {
-        CsvParser<RecipeStat> csvParser = new CsvParser<RecipeStat>();
-
-        var csvPath = Paths.GetCSVDataPath("recipe_stat.csv");
-        var recipeStat = csvParser.ParseCsv(csvPath);
-
-        return recipeStat;
-    }
-
-    private List<Stat> GetStatCSVData()
-    {
-        CsvParser<Stat> csvParser = new CsvParser<Stat>();
-
-        var csvPath = Paths.GetCSVDataPath("stat.csv");
-        var stat = csvParser.ParseCsv(csvPath);
-
-        return stat;
-    }
-
-    private RefrigeratorState FindIngredient(InventoryState state, int ingredientID)
+    private RefrigeratorState FindIngredientInState(InventoryState state, int ingredientID)
     {
         var ingredient = state.RefrigeratorStateList.Find(state => state.IngredientID == ingredientID);
 
@@ -88,46 +58,40 @@ public class GenerateFoodAction : SVRAction
         return ingredient;
     }
 
-    private RefrigeratorState FindFood(InventoryState state, int recipeID)
+    private RefrigeratorState FindFoodInState(InventoryState state, int foodID)
     {
-        var food = state.RefrigeratorStateList.Find(state => state.RecipeID == recipeID);
+        var food = state.RefrigeratorStateList.Find(state => state.FoodID == foodID);
 
         if (food is null)
         {
-            throw new NotEnoughRawMaterialsException($"You don't have `{recipeID}` food");
+            throw new NotEnoughRawMaterialsException($"You don't have `{foodID}` food");
         }
 
         return food;
     }
 
-    private List<Guid> FindOwnMaterials(InventoryState state)
+    private List<Guid> FindOwnMaterials(Recipe recipe, InventoryState state)
     {
-        var result = new List<Guid>();
-        var recipeList = GetRecipeCSVData();
-        var filteredRecipeList = recipeList.FindAll(recipe => recipe.ID == RecipeID);
-        foreach (var recipe in filteredRecipeList)
-        {
-            Guid? stateID = null;
-            if (recipe.IngredientID.HasValue)
-            {
-                stateID = FindIngredient(state, recipe.IngredientID.Value).StateID;
-            }
-            else if (recipe.ReferencedRecipeID.HasValue)
-            {
-                stateID = FindFood(state, recipe.ReferencedRecipeID.Value).StateID;
-            }
+        List<Guid> resultStateIDList = new List<Guid>();
 
-            if (stateID.HasValue)
-            {
-                result.Add(stateID.Value);
-            }
-            else
-            {
-                throw new NotEnoughRawMaterialsException($"You don't have any materials");
-            }
+        foreach (var ingredientID in recipe.IngredientIDList)
+        {
+            var ingredientStateID = FindIngredientInState(state, ingredientID).StateID;
+            resultStateIDList.Add(ingredientStateID);
         }
 
-        return result;
+        foreach (var foodID in recipe.FoodIDList)
+        {
+            var foodStateID = FindFoodInState(state, foodID).StateID;
+            resultStateIDList.Add(foodStateID);
+        }
+
+        if (resultStateIDList.Count == 0)
+        {
+            throw new NotEnoughRawMaterialsException($"You don't have any materials");
+        }
+
+        return resultStateIDList;
     }
 
     private InventoryState RemoveMaterials(InventoryState state, List<Guid> stateIDs)
@@ -141,37 +105,35 @@ public class GenerateFoodAction : SVRAction
         return result;
     }
 
-    private InventoryState CheckAndRemoveForRecipe(InventoryState state)
+    private InventoryState CheckAndRemoveForRecipe(Recipe recipe, InventoryState state)
     {
-        InventoryState result = state;
-
-        var materialsForRemoval = FindOwnMaterials(state);
-        result = RemoveMaterials(state, materialsForRemoval);
+        var materialsForRemoval = FindOwnMaterials(recipe, state);
+        var result = RemoveMaterials(state, materialsForRemoval);
 
         return result;
     }
 
-    private RecipeStat FindRecipeStat(List<RecipeStat> csvData)
+    private Food FindFoodInCSV(int foodID)
     {
-        var recipeStat = csvData.Find(stat => stat.ID == RecipeID);
+        var Food = CsvDataHelper.GetFoodById(foodID);
 
-        if (recipeStat is null)
+        if (Food is null)
         {
             throw new NotFoundTableDataException(
                 $"Invalid {nameof(RecipeID)}: {RecipeID}");
         }
 
-        return recipeStat;
+        return Food;
     }
 
-    private Stat FindStat(List<Stat> csvData, string grade)
+    private Stat FindStatInCSV(int foodID, string grade)
     {
-        var stat = csvData.Find(stat => stat.RecipeID == RecipeID && stat.Grade == grade);
+        var stat = CsvDataHelper.GetStatByFoodIDAndGrade(foodID, grade);
 
         if (stat == null)
         {
             throw new NotFoundTableDataException(
-                $"Invalid {nameof(grade)}, {nameof(RecipeID)}: {grade}, {RecipeID}");
+                $"Invalid {nameof(grade)}, {nameof(foodID)}: {grade}, {foodID}");
         }
 
         return stat;
@@ -188,18 +150,16 @@ public class GenerateFoodAction : SVRAction
         return (HP: hp, ATK: attack, DEF: defense, SPD: speed);
     }
 
-    private RefrigeratorState GenerateFood(IRandom random)
+    private RefrigeratorState GenerateFood(Recipe recipe, IRandom random)
     {
         var gradeExtractor = new GradeExtractor(random, 0.1);
 
-        var recipeStatCSVData = GetRecipeStatCSVData();
-        var recipeStat = FindRecipeStat(recipeStatCSVData);
+        var foodCsvData = FindFoodInCSV(recipe.ResultFoodID);
 
         var grade = GradeExtractor.GetGrade(
-            gradeExtractor.ExtractGrade(recipeStat.MinGrade, recipeStat.MaxGrade));
+            gradeExtractor.ExtractGrade(foodCsvData.MinGrade, foodCsvData.MaxGrade));
 
-        var statCSVData = GetStatCSVData();
-        var stat = FindStat(statCSVData, grade);
+        var stat = FindStatInCSV(foodCsvData.ID, grade);
 
         var generatedStat = GenerateStat(random, stat);
 
@@ -231,8 +191,16 @@ public class GenerateFoodAction : SVRAction
 
         InventoryState inventoryState = rootState.InventoryState;
 
-        inventoryState = CheckAndRemoveForRecipe(inventoryState);
-        RefrigeratorState food = GenerateFood(ctx.Random);
+        var recipe = CsvDataHelper.GetRecipeById(RecipeID);
+
+        if (recipe is null)
+        {
+            throw new NotFoundTableDataException(
+                $"Invalid {nameof(RecipeID)}: {RecipeID}");
+        }
+
+        inventoryState = CheckAndRemoveForRecipe(recipe, inventoryState);
+        RefrigeratorState food = GenerateFood(recipe, ctx.Random);
         inventoryState = inventoryState.AddRefrigeratorItem(food);
 
         rootState.SetInventoryState(inventoryState);

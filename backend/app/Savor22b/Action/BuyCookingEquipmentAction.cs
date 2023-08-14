@@ -45,27 +45,9 @@ public class BuyCookingEquipmentAction : SVRAction
         DesiredEquipmentID = plainValue[nameof(DesiredEquipmentID)].ToInteger();
     }
 
-    private List<CookingEquipment> GetCookingEquipmentCSVData()
+    private CookingEquipment FindCookingEquipment()
     {
-        // CsvParser<CookingEquipment> csvParser = new CsvParser<CookingEquipment>();
-
-        // var csvPath = Paths.GetCSVDataPath("cooking-equipment.csv");
-        // var cookingEquipment = csvParser.ParseCsv(csvPath);
-        var cookingEquipmentList = new List<CookingEquipment>();
-        var cookingEquipment = new CookingEquipment();
-        cookingEquipment.ID = 1;
-        cookingEquipment.Name = "TempData";
-        cookingEquipment.BlockTimeReductionPercent = 0.05;
-        cookingEquipment.Price = FungibleAssetValue.Parse(Currencies.KeyCurrency, "10");
-
-        cookingEquipmentList.Add(cookingEquipment);
-
-        return cookingEquipmentList;
-    }
-
-    private CookingEquipment FindCookingEquipment(List<CookingEquipment> csvData)
-    {
-        var cookingEquipment = csvData.Find(equipment => equipment.ID == DesiredEquipmentID);
+        var cookingEquipment = CsvDataHelper.GetCookingEquipmentByID(DesiredEquipmentID);
 
         if (cookingEquipment is null)
         {
@@ -92,14 +74,13 @@ public class BuyCookingEquipmentAction : SVRAction
 
         InventoryState inventoryState = rootState.InventoryState;
 
-        var cookingEquipmentList = GetCookingEquipmentCSVData();
-        var desiredEquipment = FindCookingEquipment(cookingEquipmentList);
+        var desiredEquipment = FindCookingEquipment();
         var cookingEquipmentState = new CookingEquipmentState(CookingEquipmentStateID, desiredEquipment.ID);
 
         states = states.TransferAsset(
             ctx.Signer,
             Recipient,
-            desiredEquipment.Price,
+            desiredEquipment.PriceToFungibleAssetValue(),
             allowNegativeBalance: false
         );
         rootState.SetInventoryState(inventoryState.AddCookingEquipmentItem(cookingEquipmentState));

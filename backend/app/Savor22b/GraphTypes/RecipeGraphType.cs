@@ -5,9 +5,9 @@ using GraphQL.Types;
 public class RecipeGraphType
 {
 
-    public class RecipeType : ObjectGraphType<Recipe>
+    public class RecipeResponseType : ObjectGraphType<RecipeResponse>
     {
-        public RecipeType()
+        public RecipeResponseType()
         {
             Field<IntGraphType>(
                 name: "id",
@@ -24,34 +24,27 @@ public class RecipeGraphType
                 resolve: context => context.Source.Name
             );
 
-            Field<ListGraphType<IngredientType>>(
-                name: "ingredients",
+            Field<ListGraphType<RecipeComponentType>>(
+                name: "ingredientIDList",
                 description: "The list of ingredients in the recipe.",
-                resolve: context => context.Source.Ingredients.ToList()
+                resolve: context => context.Source.IngredientList.ToList()
             );
 
-            Field<StringGraphType>(
-                name: "minGrade",
-                description: "The minimum grade of the recipe.",
-                resolve: context => context.Source.MinGrade
-
-            );
-
-            Field<StringGraphType>(
-                name: "maxGrade",
-                description: "The maximum grade of the recipe.",
-                resolve: context => context.Source.MaxGrade
+            Field<ListGraphType<RecipeComponentType>>(
+                name: "foodIDList",
+                description: "The list of ingredients in the recipe.",
+                resolve: context => context.Source.FoodList.ToList()
             );
         }
     }
 
-    public class IngredientType : ObjectGraphType<RecipeIngredient>
+    public class RecipeComponentType : ObjectGraphType<RecipeComponent>
     {
-        public IngredientType()
+        public RecipeComponentType()
         {
             Field<IntGraphType>(
                 name: "id",
-                description: "The ID of the ingredient.",
+                description: "The ID of the recipe component.",
                 resolve: context =>
                 {
                     return context.Source.Id;
@@ -60,14 +53,8 @@ public class RecipeGraphType
 
             Field<StringGraphType>(
                 name: "name",
-                description: "The name of the ingredient.",
+                description: "The name of the recipe component.",
                 resolve: context => context.Source.Name
-            );
-
-            Field<StringGraphType>(
-                name: "type",
-                description: "The type of the ingredient.",
-                resolve: context => context.Source.Type
             );
         }
     }

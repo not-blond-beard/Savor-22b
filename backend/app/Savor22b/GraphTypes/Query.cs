@@ -1,8 +1,6 @@
 namespace Savor22b.GraphTypes;
 
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
-using Bencodex.Types;
 using GraphQL;
 using GraphQL.Types;
 using Libplanet;
@@ -13,8 +11,6 @@ using Libplanet.Crypto;
 using Libplanet.Net;
 using Libplanet.Tx;
 using Savor22b.Action;
-using Savor22b.Helpers;
-using Savor22b.Model;
 
 public class Query : ObjectGraphType
 {
@@ -64,17 +60,11 @@ public class Query : ObjectGraphType
                 ? throw new InvalidOperationException("Network settings is not set.")
                 : swarm.AsPeer.PeerString);
 
-        Field<ListGraphType<RecipeGraphType.RecipeType>>(
+        Field<ListGraphType<RecipeGraphType.RecipeResponseType>>(
             "recipe",
             resolve: context =>
                 {
-                    CsvParser<RecipeReference> recipeCsvParser = new CsvParser<RecipeReference>();
-                    var recipeList = recipeCsvParser.ParseCsv(Paths.GetCSVDataPath("recipe.csv"));
-
-                    CsvParser<RecipeStat> recipeStatCsvParser = new CsvParser<RecipeStat>();
-                    var recipeStatList = recipeStatCsvParser.ParseCsv(Paths.GetCSVDataPath("recipe_stat.csv"));
-
-                    var recipes = GetRecipeList(recipeList, recipeStatList);
+                    var recipes = combineRecipeData();
 
                     return recipes;
                 }
@@ -114,34 +104,6 @@ public class Query : ObjectGraphType
                     context.GetArgument<int>("villageId"),
                     context.GetArgument<int>("x"),
                     context.GetArgument<int>("y")
-                );
-
-                return getUnsignedTransactionHex(action, publicKey);
-            }
-        );
-
-        Field<NonNullGraphType<StringGraphType>>(
-            "createAction_GenerateIngredient",
-            description: "Generate Ingredient",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "publicKey",
-                    Description = "The base64-encoded public key for Transaction.",
-                },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
-                {
-                    Name = "seedStateId",
-                    Description = "Seed state Id (PK)",
-                }
-            ),
-            resolve: context =>
-            {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
-
-                var action = new GenerateIngredientAction(
-                    context.GetArgument<Guid>("seedStateId"),
-                    Guid.NewGuid()
                 );
 
                 return getUnsignedTransactionHex(action, publicKey);
@@ -270,6 +232,89 @@ public class Query : ObjectGraphType
                 return getUnsignedTransactionHex(action, publicKey);
             }
         );
+
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_RemovePlantedSeed",
+            description: "Remove Planted Seed",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "fieldIndex",
+                    Description = "Target field Index",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+
+                var action = new RemovePlantedSeedAction(
+                    context.GetArgument<int>("fieldIndex")
+                );
+
+                return getUnsignedTransactionHex(action, publicKey);
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_RemoveWeed",
+            description: "Remove Weed",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "fieldIndex",
+                    Description = "Target field Index",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+
+                var action = new RemoveWeedAction(
+                    context.GetArgument<int>("fieldIndex")
+                );
+
+                return getUnsignedTransactionHex(action, publicKey);
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_HarvestingSeed",
+            description: "Harvesting Seed",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "fieldIndex",
+                    Description = "Target field Index",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+
+                var action = new HarvestingSeedAction(
+                    context.GetArgument<int>("fieldIndex"),
+                    Guid.NewGuid()
+                );
+
+                return getUnsignedTransactionHex(action, publicKey);
+            }
+        );
     }
 
     private string getUnsignedTransactionHex(IAction action, PublicKey publicKey)
@@ -292,43 +337,28 @@ public class Query : ObjectGraphType
         return unsignedTransactionHex;
     }
 
-
-    private List<Recipe> GetRecipeList(List<RecipeReference> recipeList, List<RecipeStat> recipeStatList)
+    private List<RecipeResponse> combineRecipeData()
     {
-        var recipeStatDictionary = CreateRecipeStatDictionary(recipeStatList);
+        var foodDict = CsvDataHelper.GetFoodCSVData().ToDictionary(x => x.ID);
+        var ingredientDict = CsvDataHelper.GetIngredientCSVData().ToDictionary(x => x.ID);
 
-        var recipes = recipeList.GroupBy(recipe => recipe.ID)
-            .Select(group => CreateRecipe(group.Key, group.ToList(), recipeStatDictionary))
-            .ToList();
+        var recipes = new List<RecipeResponse>();
+        foreach (var recipe in CsvDataHelper.GetRecipeCSVData())
+        {
+            var recipeIngredientComponents = recipe.IngredientIDList
+                .Select(ingredientID => new RecipeComponent(ingredientID, ingredientDict[ingredientID].Name))
+                .ToList();
+            var recipeFoodComponents = recipe.FoodIDList
+                .Select(foodID => new RecipeComponent(foodID, foodDict[foodID].Name))
+                .ToList();
+
+            recipes.Add(new RecipeResponse(
+                recipe.ID,
+                recipe.Name,
+                recipeIngredientComponents,
+                recipeFoodComponents));
+        }
 
         return recipes;
-    }
-
-    private Dictionary<int, RecipeStat> CreateRecipeStatDictionary(List<RecipeStat> recipeStatList)
-    {
-        return recipeStatList.ToDictionary(rs => rs.ID);
-    }
-
-    private Recipe CreateRecipe(int recipeId, List<RecipeReference> recipeReferences, Dictionary<int, RecipeStat> recipeStatDictionary)
-    {
-        var ingredients = recipeReferences.Select(recipeReference =>
-        {
-            var id = recipeReference.IngredientID ?? recipeReference.ReferencedRecipeID!.Value;
-            var name = recipeReference.IngredientID != null
-                ? recipeReference.IngredientName!
-                : recipeReference.ReferencedRecipeName!;
-            var type = recipeReference.IngredientID != null ? "ingredient" : "food";
-            return new RecipeIngredient(id, name, type);
-        }).ToList();
-
-        var recipeStat = recipeStatDictionary[recipeId];
-
-        return new Recipe(
-            recipeId,
-            recipeStat.Name,
-            ingredients,
-            recipeStat.MinGrade,
-            recipeStat.MaxGrade
-        );
     }
 }

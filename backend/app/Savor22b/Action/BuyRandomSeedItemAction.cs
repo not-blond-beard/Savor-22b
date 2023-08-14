@@ -45,26 +45,9 @@ public class BuyRandomSeedItemAction : SVRAction
         DesiredRandomSeedItemID = plainValue[nameof(DesiredRandomSeedItemID)].ToInteger();
     }
 
-    private List<Item> GetRandomSeedItemCSVData()
+    private Item FindRandomSeedItem()
     {
-        // CsvParser<Item> csvParser = new CsvParser<Item>();
-
-        // var csvPath = Paths.GetCSVDataPath("item.csv");
-        // var randomSeedItem = csvParser.ParseCsv(csvPath);
-        var randomSeedItemList = new List<Item>();
-        var randomSeedItem = new Item();
-        randomSeedItem.ID = 1;
-        randomSeedItem.Name = "TempData";
-        randomSeedItem.Price = FungibleAssetValue.Parse(Currencies.KeyCurrency, "10");
-
-        randomSeedItemList.Add(randomSeedItem);
-
-        return randomSeedItemList;
-    }
-
-    private Item FindRandomSeedItem(List<Item> csvData)
-    {
-        var randomSeedItem = csvData.Find(equipment => equipment.ID == DesiredRandomSeedItemID);
+        var randomSeedItem = CsvDataHelper.GetItemByID(DesiredRandomSeedItemID);
 
         if (randomSeedItem is null)
         {
@@ -90,14 +73,13 @@ public class BuyRandomSeedItemAction : SVRAction
                 ? new InventoryState(stateEncoded)
                 : new InventoryState();
 
-        var randomSeedItemList = GetRandomSeedItemCSVData();
-        var desiredEquipment = FindRandomSeedItem(randomSeedItemList);
+        var desiredEquipment = FindRandomSeedItem();
         var randomSeedItemState = new ItemState(RandomSeedItemStateID, desiredEquipment.ID);
 
         states = states.TransferAsset(
             ctx.Signer,
             Recipient,
-            desiredEquipment.Price,
+            desiredEquipment.PriceToFungibleAssetValue(),
             allowNegativeBalance: false
         );
         inventoryState = inventoryState.AddItem(randomSeedItemState);

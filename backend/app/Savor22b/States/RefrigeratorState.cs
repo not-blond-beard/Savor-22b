@@ -7,18 +7,18 @@ public class RefrigeratorState : State
 {
     public Guid StateID { get; set; }
     public int? IngredientID { get; set; }
-    public int? RecipeID { get; set; }
+    public int? FoodID { get; set; }
     public string Grade { get; set; }
     public int HP { get; set; }
     public int DEF { get; set; }
     public int ATK { get; set; }
     public int SPD { get; set; }
 
-    public RefrigeratorState(Guid stateID, int? ingredientID, int? recipeID, string grade, int hp, int def, int atk, int spd)
+    public RefrigeratorState(Guid stateID, int? ingredientID, int? foodID, string grade, int hp, int def, int atk, int spd)
     {
         StateID = stateID;
         IngredientID = ingredientID;
-        RecipeID = recipeID;
+        FoodID = foodID;
         Grade = grade;
         HP = hp;
         DEF = def;
@@ -31,7 +31,7 @@ public class RefrigeratorState : State
         return new RefrigeratorState(
             stateID: stateID,
             ingredientID: ingredientID,
-            recipeID: null,
+            foodID: null,
             grade: grade,
             hp: hp,
             def: def,
@@ -40,12 +40,12 @@ public class RefrigeratorState : State
         );
     }
 
-    public static RefrigeratorState CreateFood(Guid stateID, int recipeID, string grade, int hp, int def, int atk, int spd)
+    public static RefrigeratorState CreateFood(Guid stateID, int foodID, string grade, int hp, int def, int atk, int spd)
     {
         return new RefrigeratorState(
             stateID: stateID,
             ingredientID: null,
-            recipeID: recipeID,
+            foodID: foodID,
             grade: grade,
             hp: hp,
             def: def,
@@ -68,9 +68,9 @@ public class RefrigeratorState : State
             this.IngredientID = (int)((Integer)encoded[(Text)nameof(IngredientID)]).Value;
         }
 
-        if (encoded.ContainsKey((Text)nameof(RecipeID)))
+        if (encoded.ContainsKey((Text)nameof(FoodID)))
         {
-            this.RecipeID = (int)((Integer)encoded[(Text)nameof(RecipeID)]).Value;
+            this.FoodID = (int)((Integer)encoded[(Text)nameof(FoodID)]).Value;
         }
     }
 
@@ -90,9 +90,9 @@ public class RefrigeratorState : State
             pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), (Integer)IngredientID.Value));
         }
 
-        if (RecipeID.HasValue)
+        if (FoodID.HasValue)
         {
-            pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(RecipeID), (Integer)RecipeID.Value));
+            pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(FoodID), (Integer)FoodID.Value));
         }
 
         return new Dictionary(pairs);
