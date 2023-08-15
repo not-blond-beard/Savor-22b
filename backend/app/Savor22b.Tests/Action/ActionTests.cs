@@ -9,6 +9,8 @@ public class ActionTests
     private readonly PrivateKey _signer = new PrivateKey();
     private readonly string csvDataResourcePath;
 
+    protected DummyRandom random = new DummyRandom(1);
+
     public ActionTests()
     {
         string configPath = Environment.GetEnvironmentVariable("SAVOR22B_CONFIG_FILE") ?? "appsettings.local.json";
