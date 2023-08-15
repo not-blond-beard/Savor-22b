@@ -15,47 +15,47 @@ using Savor22b.Model;
 using Savor22b.States;
 
 
-[ActionType(nameof(BuyCookingEquipmentAction))]
-public class BuyCookingEquipmentAction : SVRAction
+[ActionType(nameof(BuyKitchenEquipmentAction))]
+public class BuyKitchenEquipmentAction : SVRAction
 {
-    public Guid CookingEquipmentStateID;
+    public Guid KitchenEquipmentStateID;
     public int DesiredEquipmentID;
 
-    public BuyCookingEquipmentAction()
+    public BuyKitchenEquipmentAction()
     {
     }
 
-    public BuyCookingEquipmentAction(Guid cookingEquipmentStateID, int desiredEquipmentID)
+    public BuyKitchenEquipmentAction(Guid kitchenEquipmentStateID, int desiredEquipmentID)
     {
-        CookingEquipmentStateID = cookingEquipmentStateID;
+        KitchenEquipmentStateID = kitchenEquipmentStateID;
         DesiredEquipmentID = desiredEquipmentID;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
-            [nameof(CookingEquipmentStateID)] = CookingEquipmentStateID.Serialize(),
+            [nameof(KitchenEquipmentStateID)] = KitchenEquipmentStateID.Serialize(),
             [nameof(DesiredEquipmentID)] = DesiredEquipmentID.Serialize(),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(
         IImmutableDictionary<string, IValue> plainValue)
     {
-        CookingEquipmentStateID = plainValue[nameof(CookingEquipmentStateID)].ToGuid();
+        KitchenEquipmentStateID = plainValue[nameof(KitchenEquipmentStateID)].ToGuid();
         DesiredEquipmentID = plainValue[nameof(DesiredEquipmentID)].ToInteger();
     }
 
-    private CookingEquipment FindCookingEquipment()
+    private KitchenEquipment FindKitchenEquipment()
     {
-        var cookingEquipment = CsvDataHelper.GetCookingEquipmentByID(DesiredEquipmentID);
+        var kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(DesiredEquipmentID);
 
-        if (cookingEquipment is null)
+        if (kitchenEquipment is null)
         {
             throw new NotFoundTableDataException(
                 $"Invalid {nameof(DesiredEquipmentID)}: {DesiredEquipmentID}");
         }
 
-        return cookingEquipment;
+        return kitchenEquipment;
     }
 
     public override IAccountStateDelta Execute(IActionContext ctx)
@@ -74,8 +74,8 @@ public class BuyCookingEquipmentAction : SVRAction
 
         InventoryState inventoryState = rootState.InventoryState;
 
-        var desiredEquipment = FindCookingEquipment();
-        var cookingEquipmentState = new CookingEquipmentState(CookingEquipmentStateID, desiredEquipment.ID);
+        var desiredEquipment = FindKitchenEquipment();
+        var kitchenEquipmentState = new KitchenEquipmentState(KitchenEquipmentStateID, desiredEquipment.ID);
 
         states = states.TransferAsset(
             ctx.Signer,
@@ -83,7 +83,7 @@ public class BuyCookingEquipmentAction : SVRAction
             desiredEquipment.PriceToFungibleAssetValue(),
             allowNegativeBalance: false
         );
-        rootState.SetInventoryState(inventoryState.AddCookingEquipmentItem(cookingEquipmentState));
+        rootState.SetInventoryState(inventoryState.AddKitchenEquipmentItem(kitchenEquipmentState));
 
         return states.SetState(ctx.Signer, rootState.Serialize());
     }

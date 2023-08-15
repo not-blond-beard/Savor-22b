@@ -50,7 +50,7 @@ public class BuyRandomSeedItemActionTests : ActionTests
 
         Assert.Equal(0, inventoryState.SeedStateList.Count);
         Assert.Equal(0, inventoryState.RefrigeratorStateList.Count);
-        Assert.Equal(0, inventoryState.CookingEquipmentStateList.Count);
+        Assert.Equal(0, inventoryState.KitchenEquipmentStateList.Count);
         Assert.Equal(1, inventoryState.ItemStateList.Count);
         Assert.Equal(desiredRandomSeedItemID, inventoryState.ItemStateList[0].ItemID);
         Assert.Equal(

@@ -21,7 +21,7 @@ public class RemovePlantedSeedActionTests : ActionTests
             new InventoryState(),
             new VillageState(
                 new HouseState(
-                    1, 1, 1, new HouseInnerState()
+                    1, 1, 1, new KitchenState()
                 )
             )
         );
