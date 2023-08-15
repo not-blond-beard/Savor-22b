@@ -4,6 +4,8 @@ using System;
 using System.Collections.Immutable;
 using Libplanet.State;
 using Savor22b.Action;
+using Savor22b.Action.Exceptions;
+using Savor22b.Model;
 using Savor22b.States;
 using Xunit;
 
@@ -23,10 +25,10 @@ public class InstallKitchenEquipmentActionTests : ActionTests
 
         RootState beforeRootState = new RootState(
             new InventoryState(
-                null,
-                null,
+                ImmutableList<SeedState>.Empty,
+                ImmutableList<RefrigeratorState>.Empty,
                 ImmutableList<KitchenEquipmentState>.Empty.Add(new KitchenEquipmentState(Guid.NewGuid(), 1)),
-                null
+                ImmutableList<ItemState>.Empty
             ),
             new VillageState(
                 new HouseState(
@@ -83,5 +85,79 @@ public class InstallKitchenEquipmentActionTests : ActionTests
         {
             throw new Exception("Not handled space number");
         }
+    }
+
+    [Fact]
+    public void Execute_Failure_NotHaveKitchenEquipment()
+    {
+        IAccountStateDelta beforeState = new DummyState();
+
+        RootState beforeRootState = new RootState(
+            new InventoryState(
+                ImmutableList<SeedState>.Empty,
+                ImmutableList<RefrigeratorState>.Empty,
+                ImmutableList<KitchenEquipmentState>.Empty,
+                ImmutableList<ItemState>.Empty
+            ),
+            new VillageState(
+                new HouseState(
+                    1, 1, 1, new KitchenState()
+                )
+            )
+        );
+
+        beforeState = beforeState.SetState(
+            SignerAddress(),
+            beforeRootState.Serialize()
+        );
+
+        var action = new InstallKitchenEquipmentAction(Guid.NewGuid(), 1);
+
+        Assert.Throws<NotEnoughRawMaterialsException>(() =>
+        {
+            action.Execute(new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            });
+        });
+    }
+
+    [Fact]
+    public void Execute_Failure_NotPlacedHouse()
+    {
+        IAccountStateDelta beforeState = new DummyState();
+
+        RootState beforeRootState = new RootState(
+            new InventoryState(
+                ImmutableList<SeedState>.Empty,
+                ImmutableList<RefrigeratorState>.Empty,
+                ImmutableList<KitchenEquipmentState>.Empty,
+                ImmutableList<ItemState>.Empty
+            ),
+            null
+        );
+
+        beforeState = beforeState.SetState(
+            SignerAddress(),
+            beforeRootState.Serialize()
+        );
+
+        var action = new InstallKitchenEquipmentAction(Guid.NewGuid(), 1);
+
+        Assert.Throws<InvalidVillageStateException>(() =>
+        {
+            action.Execute(new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            });
+        });
     }
 }

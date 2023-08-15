@@ -7,6 +7,7 @@ using Libplanet.Action;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Action.Util;
+using Savor22b.Action.Exceptions;
 using Savor22b.States;
 
 [ActionType(nameof(InstallKitchenEquipmentAction))]
@@ -45,7 +46,7 @@ public class InstallKitchenEquipmentAction : SVRAction
 
         if (kitchenEquipmentState is null)
         {
-            throw new Exception();
+            throw new NotEnoughRawMaterialsException($"You don't have `{kitchenEquipmentStateIDToUse}` kitchen equipment state");
         }
 
         return kitchenEquipmentState;
