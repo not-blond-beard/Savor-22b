@@ -145,4 +145,9 @@ public class InventoryState : State
     {
         return SeedStateList.Find(seedState => seedState.StateID == stateID);
     }
+
+    public KitchenEquipmentState? GetKitchenEquipmentState(Guid stateID)
+    {
+        return KitchenEquipmentStateList.Find(k => k.StateID == stateID);
+    }
 }

@@ -116,9 +116,9 @@ public class HouseStateType : ObjectGraphType<HouseState>
             resolve: context => context.Source.PositionY
         );
         Field<NonNullGraphType<KitchenStateType>>(
-            name: "innerState",
-            description: "The inner state of the house.",
-            resolve: context => context.Source.InnerState
+            name: "kitchenState",
+            description: "The kitchen state of the house.",
+            resolve: context => context.Source.KitchenState
         );
     }
 }
