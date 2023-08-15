@@ -66,4 +66,22 @@ public class KitchenState : State
         };
         return new Dictionary(pairs);
     }
+
+    public void InstallKitchenEquipment(KitchenEquipmentState kitchenEquipmentState, int spaceNumber)
+    {
+        switch (spaceNumber)
+        {
+            case 1:
+                FirstApplianceSpace = kitchenEquipmentState.StateID;
+                break;
+            case 2:
+                SecondApplianceSpace = kitchenEquipmentState.StateID;
+                break;
+            case 3:
+                ThirdApplianceSpace = kitchenEquipmentState.StateID;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException("KitchenState have only three appliance space");
+        }
+    }
 }
