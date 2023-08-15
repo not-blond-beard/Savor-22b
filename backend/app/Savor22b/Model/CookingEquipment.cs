@@ -1,10 +1,10 @@
 namespace Savor22b.Model;
 using Libplanet.Assets;
 
-public class CookingEquipment
+public class KitchenEquipment
 {
     public int ID { get; set; }
-    public int CookingEquipmentCategoryID { get; set; }
+    public int KitchenEquipmentCategoryID { get; set; }
     public string Name { get; set; }
     public double BlockTimeReductionPercent { get; set; }
     public string Price { get; set; }

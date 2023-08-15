@@ -173,8 +173,8 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
-            "createAction_BuyCookingEquipment",
-            description: "Buy cooking equipment",
+            "createAction_BuyKitchenEquipment",
+            description: "Buy kitchen equipment",
             arguments: new QueryArguments(
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
@@ -191,7 +191,7 @@ public class Query : ObjectGraphType
             {
                 var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
 
-                var action = new BuyCookingEquipmentAction(
+                var action = new BuyKitchenEquipmentAction(
                     Guid.NewGuid(),
                     context.GetArgument<int>("desiredEquipmentID")
                 );

@@ -13,7 +13,7 @@ public static class CsvDataHelper
     private static ImmutableList<Food> foodList;
     private static ImmutableList<Recipe> recipeList;
     private static ImmutableList<Stat> statList;
-    private static ImmutableList<CookingEquipment> cookingEquipmentList;
+    private static ImmutableList<KitchenEquipment> kitchenEquipmentList;
     private static ImmutableList<Item> itemList;
     private static ImmutableList<Village> villageList;
 
@@ -180,33 +180,33 @@ public static class CsvDataHelper
 
     #endregion stat
 
-    #region cookingEquipment
+    #region kitchenEquipment
 
-    private static void initCookingEquipmentCSVData()
+    private static void initKitchenEquipmentCSVData()
     {
-        if (cookingEquipmentList == null)
+        if (kitchenEquipmentList == null)
         {
-            CsvParser<CookingEquipment> csvParser = new CsvParser<CookingEquipment>();
-            var csvPath = GetCSVDataPath(CsvDataFileNames.CookingEquipment);
-            cookingEquipmentList = csvParser.ParseCsv(csvPath).ToImmutableList();
+            CsvParser<KitchenEquipment> csvParser = new CsvParser<KitchenEquipment>();
+            var csvPath = GetCSVDataPath(CsvDataFileNames.KitchenEquipment);
+            kitchenEquipmentList = csvParser.ParseCsv(csvPath).ToImmutableList();
         }
     }
 
-    public static ImmutableList<CookingEquipment> GetCookingEquipmentCSVData()
+    public static ImmutableList<KitchenEquipment> GetKitchenEquipmentCSVData()
     {
-        initCookingEquipmentCSVData();
+        initKitchenEquipmentCSVData();
 
-        return cookingEquipmentList;
+        return kitchenEquipmentList;
     }
 
-    public static CookingEquipment? GetCookingEquipmentByID(int id)
+    public static KitchenEquipment? GetKitchenEquipmentByID(int id)
     {
-        initCookingEquipmentCSVData();
+        initKitchenEquipmentCSVData();
 
-        return cookingEquipmentList.Find(equipment => equipment.ID == id);
+        return kitchenEquipmentList.Find(equipment => equipment.ID == id);
     }
 
-    #endregion cookingEquipment
+    #endregion kitchenEquipment
 
     #region item
 

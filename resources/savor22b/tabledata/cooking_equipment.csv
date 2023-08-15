@@ -1,4 +1,4 @@
-ID,CookingEquipmentCategoryID,Name,BlockTimeReductionPercent,Price
+ID,KitchenEquipmentCategoryID,Name,BlockTimeReductionPercent,Price
 1,1,코팅팬,0,2
 2,1,고급 코팅팬,10,300
 3,2,칼,0,2

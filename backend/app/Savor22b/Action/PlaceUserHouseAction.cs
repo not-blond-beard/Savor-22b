@@ -113,7 +113,7 @@ public class PlaceUserHouseAction : SVRAction
                 VillageID,
                 TargetX,
                 TargetY,
-                new HouseInnerState()
+                new KitchenState()
             )));
         }
         else
@@ -122,7 +122,7 @@ public class PlaceUserHouseAction : SVRAction
                 VillageID,
                 TargetX,
                 TargetY,
-                new HouseInnerState()
+                new KitchenState()
             ));
         }
 

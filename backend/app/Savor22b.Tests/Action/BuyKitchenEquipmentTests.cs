@@ -10,16 +10,16 @@ using Savor22b.Constants;
 using Savor22b.States;
 using Xunit;
 
-public class BuyCookingEquipmentTests
+public class BuyKitchenEquipmentTests
 {
     private PrivateKey _signer = new PrivateKey();
 
-    public BuyCookingEquipmentTests()
+    public BuyKitchenEquipmentTests()
     {
     }
 
     [Fact]
-    public void BuyCookingEquipmentExecute_AddsCookingEquipmentToKitchenStateList()
+    public void BuyKitchenEquipmentExecute_AddsKitchenEquipmentToKitchenStateList()
     {
         IAccountStateDelta state = new DummyState();
         state = state.MintAsset(
@@ -32,7 +32,7 @@ public class BuyCookingEquipmentTests
         var random = new DummyRandom(1);
         var desiredEquipmentID = 1;
 
-        var action = new BuyCookingEquipmentAction(Guid.NewGuid(), desiredEquipmentID);
+        var action = new BuyKitchenEquipmentAction(Guid.NewGuid(), desiredEquipmentID);
 
         state = action.Execute(new DummyActionContext
         {
@@ -51,8 +51,8 @@ public class BuyCookingEquipmentTests
 
         Assert.Equal(0, inventoryState.SeedStateList.Count);
         Assert.Equal(0, inventoryState.RefrigeratorStateList.Count);
-        Assert.Equal(1, inventoryState.CookingEquipmentStateList.Count);
-        Assert.Equal(desiredEquipmentID, inventoryState.CookingEquipmentStateList[0].CookingEquipmentID);
+        Assert.Equal(1, inventoryState.KitchenEquipmentStateList.Count);
+        Assert.Equal(desiredEquipmentID, inventoryState.KitchenEquipmentStateList[0].KitchenEquipmentID);
         Assert.Equal(
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,

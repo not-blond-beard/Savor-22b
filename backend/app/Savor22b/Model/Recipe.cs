@@ -6,6 +6,6 @@ public class Recipe
     public string Name { get; set; }
     public List<int> IngredientIDList { get; set; }
     public List<int> FoodIDList { get; set; }
-    public List<int> RequiredCookingEquipmentCategoryList { get; set; }
+    public List<int> RequiredKitchenEquipmentCategoryList { get; set; }
     public int ResultFoodID { get; set; }
 }

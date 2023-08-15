@@ -74,24 +74,24 @@ public class VillageStateType: ObjectGraphType<VillageState>
     }
 }
 
-public class HouseInnerStateType: ObjectGraphType<HouseInnerState>
+public class KitchenStateType: ObjectGraphType<KitchenState>
 {
-    public HouseInnerStateType()
+    public KitchenStateType()
     {
         Field<GuidGraphType>(
-            name: "FirstBurnerEquipmentID",
+            name: "FirstApplianceSpace",
             description: "The ID of the first burner equipment.",
-            resolve: context => context.Source.FirstBurnerEquipmentID
+            resolve: context => context.Source.FirstApplianceSpace
         );
         Field<GuidGraphType>(
-            name: "SecondBurnerEquipmentID",
+            name: "SecondApplianceSpace",
             description: "The ID of the second burner equipment.",
-            resolve: context => context.Source.SecondBurnerEquipmentID
+            resolve: context => context.Source.SecondApplianceSpace
         );
         Field<GuidGraphType>(
-            name: "ThirdBurnerEquipmentID",
+            name: "ThirdApplianceSpace",
             description: "The ID of the third burner equipment.",
-            resolve: context => context.Source.ThirdBurnerEquipmentID
+            resolve: context => context.Source.ThirdApplianceSpace
         );
     }
 }
@@ -115,7 +115,7 @@ public class HouseStateType : ObjectGraphType<HouseState>
             description: "The Y position of the house.",
             resolve: context => context.Source.PositionY
         );
-        Field<NonNullGraphType<HouseInnerStateType>>(
+        Field<NonNullGraphType<KitchenStateType>>(
             name: "innerState",
             description: "The inner state of the house.",
             resolve: context => context.Source.InnerState

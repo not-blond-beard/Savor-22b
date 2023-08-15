@@ -9,9 +9,9 @@ public class HouseState : State
     public int VillageID { get; private set; }
     public int PositionX { get; private set; }
     public int PositionY { get; private set; }
-    public HouseInnerState InnerState { get; private set; }
+    public KitchenState InnerState { get; private set; }
 
-    public HouseState(int villageID, int positionX, int positionY, HouseInnerState innerState)
+    public HouseState(int villageID, int positionX, int positionY, KitchenState innerState)
     {
         VillageID = villageID;
         PositionX = positionX;
@@ -24,7 +24,7 @@ public class HouseState : State
         VillageID = encoded[nameof(VillageID)].ToInteger();
         PositionX = encoded[nameof(PositionX)].ToInteger();
         PositionY = encoded[nameof(PositionY)].ToInteger();
-        InnerState = new HouseInnerState((Bencodex.Types.Dictionary)encoded[nameof(InnerState)]);
+        InnerState = new KitchenState((Bencodex.Types.Dictionary)encoded[nameof(InnerState)]);
     }
 
     public IValue Serialize()
