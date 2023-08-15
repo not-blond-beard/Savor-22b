@@ -7,16 +7,16 @@
         {
             "name": "Backend APP",
             "path": "../backend/app",
-            "extensions": {
-                "recommendations": [
-                    "editorconfig.editorconfig",
-                    "ms-dotnettools.csharp",
-                    "ms-dotnettools.csdevkit"
-                ]
-            },
-            "settings": {
-                "dotnet.defaultSolution": "Backend APP/Savor22b.sln"
-            }
         }
     ],
+    "extensions": {
+        "recommendations": [
+            "editorconfig.editorconfig",
+            "ms-dotnettools.csharp",
+            "ms-dotnettools.csdevkit"
+        ]
+    },
+    "settings": {
+        "dotnet.defaultSolution": "Backend APP/Savor22b.sln"
+    }
 }
