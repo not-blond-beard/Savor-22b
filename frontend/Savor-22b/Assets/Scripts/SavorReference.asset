@@ -349,21 +349,7 @@ MonoBehaviour:
   - name: CreateNewFood
     type: 1
     query: 
-    queryString: mintAsset
-    returnType: 
-    queryOptions:
-    - stage
-    - transferAsset
-    - mintAsset
-    - generateSeed
-    - generateIngredient
-    - generateFood
-    fields: []
-    isComplete: 0
-  - name: 
-    type: 1
-    query: 
-    queryString: mintAsset
+    queryString: stage
     returnType: 
     queryOptions:
     - stage
@@ -469,6 +455,248 @@ MonoBehaviour:
       name: ingredientId
       type: Int
       parentIndexes: 00000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    isComplete: 1
+  - name: GetInventoryState
+    type: 2
+    query: "subscription GetInventoryState{\n    inventory(  address :\"0x53103C2D7875D2f5f02AeC3075155e268a6e3A94\"
+      ){\n        seedStateList{\n            stateId\n            seedId\n       
+      }\n        refrigeratorStateList{\n            stateId\n            ingredientId\n           
+      recipeId\n            grade\n            hp\n            attack\n           
+      defense\n            speed\n        }\n    }\n}"
+    queryString: inventory
+    returnType: InventoryStateType
+    queryOptions:
+    - inventory
+    - transactionApplied
+    fields:
+    - index: 0
+      name: seedStateList
+      type: SeedStateType
+      parentIndexes: 
+      hasSubField: 1
+      possibleFields:
+      - name: seedStateList
+        type: SeedStateType
+      - name: refrigeratorStateList
+        type: RefrigeratorStateType
+      hasChanged: 0
+    - index: 0
+      name: stateId
+      type: Guid
+      parentIndexes: 00000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: seedId
+        type: Int
+      hasChanged: 0
+    - index: 1
+      name: seedId
+      type: Int
+      parentIndexes: 00000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: seedId
+        type: Int
+      hasChanged: 0
+    - index: 1
+      name: refrigeratorStateList
+      type: RefrigeratorStateType
+      parentIndexes: 
+      hasSubField: 1
+      possibleFields:
+      - name: seedStateList
+        type: SeedStateType
+      - name: refrigeratorStateList
+        type: RefrigeratorStateType
+      hasChanged: 0
+    - index: 0
+      name: stateId
+      type: Guid
+      parentIndexes: 03000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 1
+      name: ingredientId
+      type: Int
+      parentIndexes: 03000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 2
+      name: recipeId
+      type: Int
+      parentIndexes: 03000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 3
+      name: grade
+      type: String
+      parentIndexes: 03000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 4
+      name: hp
+      type: Int
+      parentIndexes: 03000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 5
+      name: attack
+      type: Int
+      parentIndexes: 03000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 6
+      name: defense
+      type: Int
+      parentIndexes: 03000000
+      hasSubField: 0
+      possibleFields:
+      - name: stateId
+        type: Guid
+      - name: ingredientId
+        type: Int
+      - name: recipeId
+        type: Int
+      - name: grade
+        type: String
+      - name: hp
+        type: Int
+      - name: attack
+        type: Int
+      - name: defense
+        type: Int
+      - name: speed
+        type: Int
+      hasChanged: 0
+    - index: 7
+      name: speed
+      type: Int
+      parentIndexes: 01000000
       hasSubField: 0
       possibleFields:
       - name: stateId
