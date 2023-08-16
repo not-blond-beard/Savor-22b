@@ -37,7 +37,7 @@ public class ItemInventory : MonoBehaviour
         OnSubscriptionDataReceived.UnregisterListener(DisplayData);
     }
 
-    private void initUI(){
+    private void resetUIElements(){
         foreach (Transform child in seedContent){
             Destroy(child.gameObject);
         }
@@ -74,9 +74,10 @@ public class ItemInventory : MonoBehaviour
     }
 
     public void DisplayData(OnSubscriptionDataReceived subscriptionDataReceived){
+
         Inventory inventory = Inventory.CreateFromJSON(subscriptionDataReceived.data);
 
-        initUI();
+        resetUIElements();
 
         DrawSeedList(inventory.seedStateList);
         // DrawIngredientList(Do stuff);
