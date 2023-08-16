@@ -1,25 +1,31 @@
+using System;
 using Newtonsoft.Json.Linq;
 
 public static class ResponseParser{
-    static public JToken Parse(string response){
-        string responseText = response;
-        JObject json = JObject.Parse(responseText);
+    public static JToken Parse(string jsonString){
+        JObject json = JObject.Parse(jsonString);
 
-        if (
-            json.GetValue("payload") is null 
-            || json["payload"]?["data"] is null
-        ){
-            throw new System.Exception("Invalid response");
+        if (json["payload"] is not JObject payload)
+        {
+            throw new Exception("Payload not found in JSON.");
         }
-        JToken data = json["payload"]["data"];
 
-        return data;
+        if (payload["data"] is not JToken dataToken)
+        {
+            throw new Exception("Data not found in JSON.");
+        }
+
+        return dataToken;
     }
 
-    static public T Parse<T>(string response, string dataKey){
-        JToken token = Parse(response);
-        T data = token.SelectToken(dataKey).ToObject<T>();
+    public static T Parse<T>(string jsonString, string targetPath){
+        JToken token = Parse(jsonString);
 
-        return data;
+        if (token[targetPath] is not JObject target)
+        {
+            throw new Exception("Target not found in JSON.");
+        }
+
+        return target.ToObject<T>();
     }
 }

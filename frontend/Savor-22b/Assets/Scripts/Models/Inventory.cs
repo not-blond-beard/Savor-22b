@@ -1,6 +1,6 @@
-using UnityEngine;
+using System;
 
-[System.Serializable]
+[Serializable]
 public class Inventory
 {
     public Seed[] seedStateList;
@@ -8,6 +8,8 @@ public class Inventory
 
     public static Inventory CreateFromJSON(string jsonString)
     {
-        return ResponseParser.Parse<Inventory>(jsonString, "inventory");
+       Inventory inventory = ResponseParser.Parse<Inventory>(jsonString, "inventory");
+
+         return inventory;
     }
 }
