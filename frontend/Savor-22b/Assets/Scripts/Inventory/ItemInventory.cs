@@ -1,12 +1,13 @@
 using System.Net.WebSockets;
 using GraphQlClient.Core;
 using GraphQlClient.EventCallbacks;
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 
 
 public class ItemInventory : MonoBehaviour
 {
+    public static string SocketId = nameof(ItemInventory);
+
     public GameObject Loading;
 
     [Header("API")]
@@ -24,9 +25,11 @@ public class ItemInventory : MonoBehaviour
     public RectTransform foodContent;
 
     private ClientWebSocket clientWebSocket;
+    private Event<OnSubscriptionDataReceived>.EventListener socketListener;
 
     private void OnEnable(){
-        OnSubscriptionDataReceived.RegisterListener(DisplayData);
+        socketListener = SocketDataReceiver.Receiver(SocketId, DisplayData);
+        OnSubscriptionDataReceived.RegisterListener(socketListener);
     }
 
     private void Start(){
@@ -34,7 +37,7 @@ public class ItemInventory : MonoBehaviour
     }
 
     private void OnDisable(){
-        OnSubscriptionDataReceived.UnregisterListener(DisplayData);
+        OnSubscriptionDataReceived.UnregisterListener(socketListener);
     }
 
     private void resetUIElements(){
@@ -74,7 +77,6 @@ public class ItemInventory : MonoBehaviour
     }
 
     public void DisplayData(OnSubscriptionDataReceived subscriptionDataReceived){
-
         Inventory inventory = Inventory.CreateFromJSON(subscriptionDataReceived.data);
 
         resetUIElements();
@@ -91,7 +93,7 @@ public class ItemInventory : MonoBehaviour
             GraphApi.Query query = svrReference.GetQueryByName("GetInventoryState", GraphApi.Query.Type.Subscription);
             query.SetArgs(new { address });
 
-            clientWebSocket = await svrReference.Subscribe(query);
+            clientWebSocket = await svrReference.Subscribe(query, SocketId);
         }
         catch (System.Exception e){
             Debug.Log(e);
