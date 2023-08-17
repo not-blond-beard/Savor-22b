@@ -28,17 +28,17 @@ public class RefrigeratorUI : MonoBehaviour
         ingredientId.text = refrigerator.ingredientId.ToString();
         recipeId.text = refrigerator.recipeId.ToString();
 
-        //SetFoodCreateButton(refrigerator.stateId);
+        SetFoodCreateButton(refrigerator.stateId);
     }
 
-    // public void CreateFood(Guid stateId)
-    // {
-    //     Debug.Log("Create food");
-    // }
+    public void CreateFood(Guid stateId)
+    {
+        Debug.Log("Create food");
+    }
 
-    // public void SetFoodCreateButton(Guid stateId)
-    // {
-    //     FoodCreateButton.onClick.AddListener(() => CreateFood(stateId));
-    // }
+    public void SetFoodCreateButton(Guid stateId)
+    {
+        FoodCreateButton.onClick.AddListener(() => CreateFood(stateId));
+    }
 
 }
