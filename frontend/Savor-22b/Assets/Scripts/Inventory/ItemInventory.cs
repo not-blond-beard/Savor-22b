@@ -91,7 +91,13 @@ public class ItemInventory : MonoBehaviour
 
     private void DrawFoodList(Refrigerator[] foodStateList)
     {
+        foreach (Refrigerator refrigerator in foodStateList)
+        {
+            GameObject foodUI = Instantiate(foodPrefab, foodContent);
+            RefrigeratorUI foodUIScript = foodUI.GetComponent<RefrigeratorUI>();
 
+            foodUIScript.SetRefrigeratorData(refrigerator);
+        }
     }
 
     public void DisplayData(OnSubscriptionDataReceived subscriptionDataReceived)
@@ -102,7 +108,7 @@ public class ItemInventory : MonoBehaviour
 
         DrawSeedList(inventory.seedStateList);
         DrawIngredientList(inventory.refrigeratorStateList);
-        // DrawFoodList(Do stuff);
+        DrawFoodList(inventory.refrigeratorStateList);
     }
 
     public async void Subscribe()
