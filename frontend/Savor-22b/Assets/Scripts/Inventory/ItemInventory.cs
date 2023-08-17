@@ -82,10 +82,13 @@ public class ItemInventory : MonoBehaviour
     {
         foreach (Refrigerator refrigerator in refrigeratorStateList)
         {
-            GameObject ingredientUI = Instantiate(ingredientPrefab, ingredientContent);
-            RefrigeratorUI ingredientUIScript = ingredientUI.GetComponent<RefrigeratorUI>();
+            if (refrigerator.ingredientId.HasValue)
+            {
+                GameObject ingredientUI = Instantiate(ingredientPrefab, ingredientContent);
+                RefrigeratorUI ingredientUIScript = ingredientUI.GetComponent<RefrigeratorUI>();
 
-            ingredientUIScript.SetRefrigeratorData(refrigerator);
+                ingredientUIScript.SetRefrigeratorData(refrigerator);
+            }
         }
     }
 
@@ -93,10 +96,13 @@ public class ItemInventory : MonoBehaviour
     {
         foreach (Refrigerator refrigerator in foodStateList)
         {
-            GameObject foodUI = Instantiate(foodPrefab, foodContent);
-            RefrigeratorUI foodUIScript = foodUI.GetComponent<RefrigeratorUI>();
+            if (refrigerator.recipeId.HasValue)
+            {
+                GameObject foodUI = Instantiate(foodPrefab, foodContent);
+                RefrigeratorUI foodUIScript = foodUI.GetComponent<RefrigeratorUI>();
 
-            foodUIScript.SetRefrigeratorData(refrigerator);
+                foodUIScript.SetRefrigeratorData(refrigerator);
+            }
         }
     }
 
@@ -135,3 +141,4 @@ public class ItemInventory : MonoBehaviour
         svrReference.CancelSubscription(clientWebSocket);
     }
 }
+
