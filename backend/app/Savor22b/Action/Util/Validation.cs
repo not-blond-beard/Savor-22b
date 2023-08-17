@@ -5,7 +5,7 @@ using Savor22b.Action.Exceptions;
 
 public static class Validation
 {
-    public static void CheckPlacedHouse(RootState rootState)
+    public static void EnsureVillageStateExists(RootState rootState)
     {
         if (rootState.VillageState is null)
         {

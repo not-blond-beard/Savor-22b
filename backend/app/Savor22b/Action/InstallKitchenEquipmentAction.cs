@@ -65,7 +65,7 @@ public class InstallKitchenEquipmentAction : SVRAction
             ? new RootState(rootStateEncoded)
             : new RootState();
 
-        Validation.CheckPlacedHouse(rootState);
+        Validation.EnsureVillageStateExists(rootState);
 
         var kitchenEquipmentState = GetKitchenEquipmentState(rootState, KitchenEquipmentStateIDToUse);
         rootState.VillageState?.HouseState.KitchenState.InstallKitchenEquipment(kitchenEquipmentState, SpaceNumber);
