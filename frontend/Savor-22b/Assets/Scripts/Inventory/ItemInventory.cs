@@ -2,7 +2,7 @@ using System.Net.WebSockets;
 using GraphQlClient.Core;
 using GraphQlClient.EventCallbacks;
 using UnityEngine;
-using UnityEngine.Networking;
+
 
 public class ItemInventory : MonoBehaviour
 {
@@ -13,19 +13,16 @@ public class ItemInventory : MonoBehaviour
     [Header("API")]
     public GraphApi svrReference;
     public string address;
-    public string privateKeyHex;
 
     [Header("UI Prefabs")]
     public GameObject seedPrefab;
     public GameObject ingredientPrefab;
     public GameObject foodPrefab;
 
-
     [Header("UI Containers")]
     public RectTransform seedContent;
     public RectTransform ingredientContent;
     public RectTransform foodContent;
-
 
     private ClientWebSocket clientWebSocket;
     private Event<OnSubscriptionDataReceived>.EventListener socketListener;
@@ -85,28 +82,16 @@ public class ItemInventory : MonoBehaviour
     {
         foreach (Refrigerator refrigerator in refrigeratorStateList)
         {
-            if (refrigerator.ingredientId.HasValue)
-            {
-                GameObject ingredientUI = Instantiate(ingredientPrefab, ingredientContent);
-                RefrigeratorUI ingredientUIScript = ingredientUI.GetComponent<RefrigeratorUI>();
+            GameObject ingredientUI = Instantiate(ingredientPrefab, ingredientContent);
+            RefrigeratorUI ingredientUIScript = ingredientUI.GetComponent<RefrigeratorUI>();
 
-                ingredientUIScript.SetRefrigeratorData(refrigerator);
-            }
+            ingredientUIScript.SetRefrigeratorData(refrigerator);
         }
     }
 
     private void DrawFoodList(Refrigerator[] foodStateList)
     {
-        foreach (Refrigerator refrigerator in foodStateList)
-        {
-            if (refrigerator.recipeId.HasValue)
-            {
-                GameObject foodUI = Instantiate(foodPrefab, foodContent);
-                RefrigeratorUI foodUIScript = foodUI.GetComponent<RefrigeratorUI>();
 
-                foodUIScript.SetRefrigeratorData(refrigerator);
-            }
-        }
     }
 
     public void DisplayData(OnSubscriptionDataReceived subscriptionDataReceived)
@@ -117,7 +102,7 @@ public class ItemInventory : MonoBehaviour
 
         DrawSeedList(inventory.seedStateList);
         DrawIngredientList(inventory.refrigeratorStateList);
-        DrawFoodList(inventory.refrigeratorStateList);
+        // DrawFoodList(Do stuff);
     }
 
     public async void Subscribe()
@@ -143,16 +128,4 @@ public class ItemInventory : MonoBehaviour
     {
         svrReference.CancelSubscription(clientWebSocket);
     }
-
-    // Create New Seed
-    public async void CreateNewSeed()
-    {
-        GraphApi.Query query = svrReference.GetQueryByName("CreateNewSeed", GraphApi.Query.Type.Mutation);
-        query.SetArgs(new { address });
-        query.SetArgs(new { privateKeyHex });
-        UnityWebRequest request = await svrReference.Post(query);
-    }
-
-
 }
-
