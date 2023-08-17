@@ -230,6 +230,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7118656563252395424, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 582.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 7118656563252395424, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 214.52
+      objectReference: {fileID: 0}
+    - target: {fileID: 7118656563252395424, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -0.80749
+      objectReference: {fileID: 0}
+    - target: {fileID: 7118656563252395424, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -29.198
+      objectReference: {fileID: 0}
     - target: {fileID: 7118656563474239585, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -238,9 +254,17 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7118656563474239585, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7118656564159821345, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7118656564159821345, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0.000031471252
       objectReference: {fileID: 0}
     - target: {fileID: 7118656564911172296, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}
       propertyPath: m_text
@@ -1061,7 +1085,6 @@ GameObject:
   - component: {fileID: 2011812301}
   - component: {fileID: 2011812300}
   - component: {fileID: 2011812303}
-  - component: {fileID: 2011812304}
   m_Layer: 5
   m_Name: InventoryStatePanel
   m_TagString: Untagged
@@ -1089,7 +1112,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -500.00012, y: -48}
+  m_AnchoredPosition: {x: -500.0001, y: -48}
   m_SizeDelta: {x: -1220.1, y: -144.31}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2011812300
@@ -1177,20 +1200,6 @@ MonoBehaviour:
   seedContent: {fileID: 527247175}
   ingredientContent: {fileID: 1752225784}
   foodContent: {fileID: 1949131118}
---- !u!114 &2011812304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2011812298}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48b20560f51f84537a1bd6c43cd3017f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  svrReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
-  address: 0x53103C2D7875D2f5f02AeC3075155e268a6e3A94
 --- !u!1001 &7118656564412715366
 PrefabInstance:
   m_ObjectHideFlags: 0
