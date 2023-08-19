@@ -56,7 +56,7 @@ public class PlaceUserHouseActionTests : ActionTests
         );
     }
 
-    private IAccountStateDelta createStateForReplaceHouse()
+    private IAccountStateDelta createStateForRelocationHouse()
     {
         IAccountStateDelta state = new DummyState();
 
@@ -81,13 +81,13 @@ public class PlaceUserHouseActionTests : ActionTests
     }
 
     [Fact]
-    public void Execute_Success_ReplaceHouse()
+    public void Execute_Success_RelocationHouse()
     {
         int villageId = 2;
         int targetX = 0;
         int targetY = 0;
 
-        IAccountStateDelta state = createStateForReplaceHouse();
+        IAccountStateDelta state = createStateForRelocationHouse();
 
         var action = new PlaceUserHouseAction(villageId, targetX, targetY);
 
