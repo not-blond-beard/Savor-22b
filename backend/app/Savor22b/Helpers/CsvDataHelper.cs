@@ -14,6 +14,7 @@ public static class CsvDataHelper
     private static ImmutableList<Recipe> recipeList;
     private static ImmutableList<Stat> statList;
     private static ImmutableList<KitchenEquipment> kitchenEquipmentList;
+    private static ImmutableList<KitchenEquipmentCategory> kitchenEquipmentCategoryList;
     private static ImmutableList<Item> itemList;
     private static ImmutableList<Village> villageList;
 
@@ -206,7 +207,42 @@ public static class CsvDataHelper
         return kitchenEquipmentList.Find(equipment => equipment.ID == id);
     }
 
+    public static ImmutableList<KitchenEquipment> GetAllKitchenEquipmentByCategoryId(int categoryId)
+    {
+        initKitchenEquipmentCSVData();
+
+        return kitchenEquipmentList.FindAll(equipment => equipment.KitchenEquipmentCategoryID == categoryId);
+    }
+
     #endregion kitchenEquipment
+
+    #region kitchenEquipmentCategory
+
+    private static void initKitchenEquipmentCategoryCSVData()
+    {
+        if (kitchenEquipmentCategoryList == null)
+        {
+            CsvParser<KitchenEquipmentCategory> csvParser = new CsvParser<KitchenEquipmentCategory>();
+            var csvPath = GetCSVDataPath(CsvDataFileNames.KitchenEquipmentCategory);
+            kitchenEquipmentCategoryList = csvParser.ParseCsv(csvPath).ToImmutableList();
+        }
+    }
+
+    public static ImmutableList<KitchenEquipmentCategory> GetKitchenEquipmentCategoryCSVData()
+    {
+        initKitchenEquipmentCategoryCSVData();
+
+        return kitchenEquipmentCategoryList;
+    }
+
+    public static KitchenEquipmentCategory? GetKitchenEquipmentCategoryByID(int id)
+    {
+        initKitchenEquipmentCategoryCSVData();
+
+        return kitchenEquipmentCategoryList.Find(category => category.ID == id);
+    }
+
+    #endregion kitchenEquipmentCategory
 
     #region item
 
