@@ -2,7 +2,7 @@ using System.Net.WebSockets;
 using GraphQlClient.Core;
 using GraphQlClient.EventCallbacks;
 using UnityEngine;
-
+using UnityEngine.Networking;
 
 public class ItemInventory : MonoBehaviour
 {
@@ -13,16 +13,19 @@ public class ItemInventory : MonoBehaviour
     [Header("API")]
     public GraphApi svrReference;
     public string address;
+    public string privateKeyHex;
 
     [Header("UI Prefabs")]
     public GameObject seedPrefab;
     public GameObject ingredientPrefab;
     public GameObject foodPrefab;
 
+
     [Header("UI Containers")]
     public RectTransform seedContent;
     public RectTransform ingredientContent;
     public RectTransform foodContent;
+
 
     private ClientWebSocket clientWebSocket;
     private Event<OnSubscriptionDataReceived>.EventListener socketListener;
@@ -140,5 +143,16 @@ public class ItemInventory : MonoBehaviour
     {
         svrReference.CancelSubscription(clientWebSocket);
     }
+
+    // Create New Seed
+    public async void CreateNewSeed()
+    {
+        GraphApi.Query query = svrReference.GetQueryByName("CreateNewSeed", GraphApi.Query.Type.Mutation);
+        query.SetArgs(new { address });
+        query.SetArgs(new { privateKeyHex });
+        UnityWebRequest request = await svrReference.Post(query);
+    }
+
+
 }
 
