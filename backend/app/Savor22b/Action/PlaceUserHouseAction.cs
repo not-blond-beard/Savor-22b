@@ -46,7 +46,7 @@ public class PlaceUserHouseAction : SVRAction
         return village;
     }
 
-    private static void ValidateReplaceUserHouse(
+    private static void ValidateRelocationUserHouse(
         long currentBlock,
         RelocationState? relocationState
     )
@@ -57,7 +57,7 @@ public class PlaceUserHouseAction : SVRAction
         }
     }
 
-    private void ValidateValidateHouseTarget()
+    private void ValidateHousePosition()
     {
         Village village = GetVillage(VillageID);
 
@@ -67,7 +67,7 @@ public class PlaceUserHouseAction : SVRAction
         }
     }
 
-    private void ValidateCheckPlacedHouse(GlobalUserHouseState globalUserHouseState)
+    private void ValidateHouseExists(GlobalUserHouseState globalUserHouseState)
     {
         string userHouseKey = globalUserHouseState.CreateKey(VillageID, TargetX, TargetY);
 
@@ -77,10 +77,10 @@ public class PlaceUserHouseAction : SVRAction
         }
     }
 
-    private void ValidatePlaceHouse(GlobalUserHouseState globalUserHouseState)
+    private void ValidateForPlaceHouse(GlobalUserHouseState globalUserHouseState)
     {
-        ValidateValidateHouseTarget();
-        ValidateCheckPlacedHouse(globalUserHouseState);
+        ValidateHousePosition();
+        ValidateHouseExists(globalUserHouseState);
     }
 
     private void PlaceInitialUserHouse(RootState rootState)
@@ -142,7 +142,7 @@ public class PlaceUserHouseAction : SVRAction
 
         bool isInitialPlaceHouse = rootState.VillageState is null;
 
-        ValidatePlaceHouse(globalUserHouseState);
+        ValidateForPlaceHouse(globalUserHouseState);
 
         if (isInitialPlaceHouse)
         {
@@ -153,7 +153,7 @@ public class PlaceUserHouseAction : SVRAction
             Village originVillage = GetVillage(rootState.VillageState!.HouseState.VillageID);
             Village targetVillage = GetVillage(VillageID);
 
-            ValidateReplaceUserHouse(ctx.BlockIndex, rootState.RelocationState);
+            ValidateRelocationUserHouse(ctx.BlockIndex, rootState.RelocationState);
             ReplaceUserHouse(rootState, globalUserHouseState, ctx.BlockIndex);
 
             if (originVillage.Id != targetVillage.Id)
