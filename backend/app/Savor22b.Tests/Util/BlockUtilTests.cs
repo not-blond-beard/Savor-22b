@@ -5,9 +5,10 @@ using Savor22b.Util;
 public class BlockUtilTests
 {
     [Theory]
-    [InlineData(20, 4, 10)]
+    [InlineData(12, 4, 10)]
     [InlineData(1, 4, 10)]
-    [InlineData(10, 5, 5)]
+    [InlineData(9, 5, 5)]
+    [InlineData(8, 5, 5)]
     [InlineData(10, 4, 10)]
     [InlineData(1001, 4, 1000)]
     public void CalculateIsInProgress_InProgress(long currentBlockIndex, long startedBlockIndex, long durationBlock)
@@ -17,7 +18,8 @@ public class BlockUtilTests
     }
 
     [Theory]
-    [InlineData(1, 4, 1)]
+    [InlineData(7, 4, 1)]
+    [InlineData(10, 5, 5)]
     [InlineData(11, 5, 5)]
     [InlineData(10, 4, 3)]
     [InlineData(401, 201, 200)]
