@@ -5,12 +5,10 @@ using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
 using Libplanet.Action;
-using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Action.Exceptions;
 using Savor22b.Constants;
-using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
 
@@ -45,7 +43,7 @@ public class BuyKitchenEquipmentAction : SVRAction
         DesiredEquipmentID = plainValue[nameof(DesiredEquipmentID)].ToInteger();
     }
 
-    private KitchenEquipment FindKitchenEquipment()
+    private KitchenEquipment GetKitchenEquipment()
     {
         var kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(DesiredEquipmentID);
 
@@ -58,6 +56,19 @@ public class BuyKitchenEquipmentAction : SVRAction
         return kitchenEquipment;
     }
 
+    private KitchenEquipmentCategory GetKitchenEquipmentCategory(int kitchenEquipmentCategoryID)
+    {
+        var kitchenEquipmentCategory = CsvDataHelper.GetKitchenEquipmentCategoryByID(kitchenEquipmentCategoryID);
+
+        if (kitchenEquipmentCategory is null)
+        {
+            throw new NotFoundTableDataException(
+                $"Invalid {nameof(DesiredEquipmentID)}: {DesiredEquipmentID}");
+        }
+
+        return kitchenEquipmentCategory;
+    }
+
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         if (ctx.Rehearsal)
@@ -68,14 +79,15 @@ public class BuyKitchenEquipmentAction : SVRAction
         IAccountStateDelta states = ctx.PreviousStates;
         Address Recipient = Addresses.ShopVaultAddress;
 
-        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
 
         InventoryState inventoryState = rootState.InventoryState;
 
-        var desiredEquipment = FindKitchenEquipment();
-        var kitchenEquipmentState = new KitchenEquipmentState(KitchenEquipmentStateID, desiredEquipment.ID);
+        var desiredEquipment = GetKitchenEquipment();
+        var kitchenEquipmentCategory = GetKitchenEquipmentCategory(desiredEquipment.KitchenEquipmentCategoryID);
+        var kitchenEquipmentState = new KitchenEquipmentState(KitchenEquipmentStateID, desiredEquipment.ID, kitchenEquipmentCategory.ID);
 
         states = states.TransferAsset(
             ctx.Signer,

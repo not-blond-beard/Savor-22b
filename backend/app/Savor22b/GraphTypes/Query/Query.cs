@@ -128,8 +128,18 @@ public class Query : ObjectGraphType
                 },
                 new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
                 {
-                    Name = "refrigeratorStateIDs",
+                    Name = "refrigeratorStateIdsToUse",
                     Description = "refrigerator state ID list",
+                },
+                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
+                {
+                    Name = "kitchenEquipmentStateIdsToUse",
+                    Description = "kitchen equipment state ID list",
+                },
+                new QueryArgument<NonNullGraphType<ListGraphType<IntGraphType>>>
+                {
+                    Name = "applianceSpaceNumbersToUse",
+                    Description = "appliance space number list",
                 }
             ),
             resolve: context =>
@@ -138,10 +148,12 @@ public class Query : ObjectGraphType
                     ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
 
-                var action = new GenerateFoodAction(
+                var action = new CreateFoodAction(
                     context.GetArgument<int>("recipeID"),
                     Guid.NewGuid(),
-                    context.GetArgument<List<Guid>>("refrigeratorStateIDs")
+                    context.GetArgument<List<Guid>>("refrigeratorStateIDs"),
+                    context.GetArgument<List<Guid>>("kitchenEquipmentStateIdsToUse"),
+                    context.GetArgument<List<int>>("applianceSpaceNumbersToUse")
                 );
 
                 return getUnsignedTransactionHex(action, publicKey);
