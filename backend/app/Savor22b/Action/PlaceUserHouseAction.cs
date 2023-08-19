@@ -156,19 +156,22 @@ public class PlaceUserHouseAction : SVRAction
             ValidateReplaceUserHouse(ctx.BlockIndex, rootState.RelocationState);
             ReplaceUserHouse(rootState, globalUserHouseState, ctx.BlockIndex);
 
-            FungibleAssetValue price = CalculatePrice.CalculateReplaceUserHousePrice(
-                originVillage.WorldX,
-                originVillage.WorldY,
-                targetVillage.WorldX,
-                targetVillage.WorldY
-            );
+            if (originVillage.Id != targetVillage.Id)
+            {
+                FungibleAssetValue price = CalculatePrice.CalculateReplaceUserHousePrice(
+                    originVillage.WorldX,
+                    originVillage.WorldY,
+                    targetVillage.WorldX,
+                    targetVillage.WorldY
+                );
 
-            states = states.TransferAsset(
-                ctx.Signer,
-                Addresses.ShopVaultAddress,
-                price,
-                allowNegativeBalance: false
-            );
+                states = states.TransferAsset(
+                    ctx.Signer,
+                    Addresses.ShopVaultAddress,
+                    price,
+                    allowNegativeBalance: false
+                );
+            }
         }
 
         globalUserHouseState.SetUserHouse(
