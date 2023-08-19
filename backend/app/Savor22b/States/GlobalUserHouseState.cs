@@ -18,7 +18,6 @@ public class GlobalUserHouseState : State
         UserHouse = userHouse;
     }
 
-
     public GlobalUserHouseState(Bencodex.Types.Dictionary encoded)
     {
         if (encoded.TryGetValue((Text)nameof(UserHouse), out var userHouse))
@@ -38,8 +37,13 @@ public class GlobalUserHouseState : State
     {
         var pairs = new[]
         {
-            new KeyValuePair<IKey, IValue>((Text)nameof(UserHouse),
-                new Dictionary(UserHouse.Select(e => new KeyValuePair<IKey, IValue>((Text)e.Key, e.Value.ToBencodex())))
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(UserHouse),
+                new Dictionary(
+                    UserHouse.Select(
+                        e => new KeyValuePair<IKey, IValue>((Text)e.Key, e.Value.ToBencodex())
+                    )
+                )
             ),
         };
 
@@ -54,5 +58,16 @@ public class GlobalUserHouseState : State
     public string CreateKey(int villageId, int targetX, int targetY)
     {
         return $"{villageId},{targetX},{targetY}";
+    }
+
+    public bool CheckPlacedHouse(int villageID, int targetX, int targetY)
+    {
+        string key = CreateKey(villageID, targetX, targetY);
+        return UserHouse.ContainsKey(key);
+    }
+
+    public bool CheckPlacedHouse(string key)
+    {
+        return UserHouse.ContainsKey(key);
     }
 }
