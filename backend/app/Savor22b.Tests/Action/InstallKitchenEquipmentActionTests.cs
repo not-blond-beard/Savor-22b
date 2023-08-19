@@ -67,19 +67,19 @@ public class InstallKitchenEquipmentActionTests : ActionTests
         {
             Assert.Equal(
                 beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
-                afterRootState.VillageState?.HouseState.KitchenState.FirstApplianceSpace);
+                afterRootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace.InstalledKitchenEquipmentStateId);
         }
         else if (spaceNumber == 2)
         {
             Assert.Equal(
                 beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
-                afterRootState.VillageState?.HouseState.KitchenState.SecondApplianceSpace);
+                afterRootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace.InstalledKitchenEquipmentStateId);
         }
         else if (spaceNumber == 3)
         {
             Assert.Equal(
                 beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
-                afterRootState.VillageState?.HouseState.KitchenState.ThirdApplianceSpace);
+                afterRootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace.InstalledKitchenEquipmentStateId);
         }
         else
         {
