@@ -2,59 +2,28 @@ namespace Savor22b.States;
 
 
 using Bencodex.Types;
-using Libplanet.Headless.Extensions;
 
 public class KitchenState : State
 {
-    public Guid FirstApplianceSpace { get; private set; }
-
-    public Guid SecondApplianceSpace { get; private set; }
-
-    public Guid ThirdApplianceSpace { get; private set; }
-
     public KitchenState()
     {
-        FirstApplianceSpace = Guid.Empty;
-        SecondApplianceSpace = Guid.Empty;
-        ThirdApplianceSpace = Guid.Empty;
+        FirstApplianceSpace = new ApplianceSpaceState(1);
+        SecondApplianceSpace = new ApplianceSpaceState(2);
+        ThirdApplianceSpace = new ApplianceSpaceState(3);
     }
 
-    public KitchenState(Guid? firstApplianceSpace, Guid? secondApplianceSpace, Guid? thirdApplianceSpace)
+    public KitchenState(Dictionary encoded)
     {
-        FirstApplianceSpace = firstApplianceSpace ?? Guid.Empty;
-        SecondApplianceSpace = secondApplianceSpace ?? Guid.Empty;
-        ThirdApplianceSpace = thirdApplianceSpace ?? Guid.Empty;
+        FirstApplianceSpace = new ApplianceSpaceState((Dictionary)encoded[nameof(FirstApplianceSpace)]);
+        SecondApplianceSpace = new ApplianceSpaceState((Dictionary)encoded[nameof(SecondApplianceSpace)]);
+        ThirdApplianceSpace = new ApplianceSpaceState((Dictionary)encoded[nameof(ThirdApplianceSpace)]);
     }
 
-    public KitchenState(Bencodex.Types.Dictionary encoded)
-    {
-        if (encoded.TryGetValue((Text)nameof(FirstApplianceSpace), out var firstApplianceSpace))
-        {
-            FirstApplianceSpace = firstApplianceSpace.ToGuid();
-        }
-        else
-        {
-            FirstApplianceSpace = Guid.Empty;
-        }
+    public ApplianceSpaceState FirstApplianceSpace { get; private set; }
 
-        if (encoded.TryGetValue((Text)nameof(SecondApplianceSpace), out var secondApplianceSpace))
-        {
-            SecondApplianceSpace = secondApplianceSpace.ToGuid();
-        }
-        else
-        {
-            SecondApplianceSpace = Guid.Empty;
-        }
+    public ApplianceSpaceState SecondApplianceSpace { get; private set; }
 
-        if (encoded.TryGetValue((Text)nameof(ThirdApplianceSpace), out var thirdApplianceSpace))
-        {
-            ThirdApplianceSpace = thirdApplianceSpace.ToGuid();
-        }
-        else
-        {
-            ThirdApplianceSpace = Guid.Empty;
-        }
-    }
+    public ApplianceSpaceState ThirdApplianceSpace { get; private set; }
 
     public IValue Serialize()
     {
@@ -72,13 +41,13 @@ public class KitchenState : State
         switch (spaceNumber)
         {
             case 1:
-                FirstApplianceSpace = kitchenEquipmentState.StateID;
+                FirstApplianceSpace = FirstApplianceSpace.InstallKitchenEquipment(kitchenEquipmentState.StateID);
                 break;
             case 2:
-                SecondApplianceSpace = kitchenEquipmentState.StateID;
+                SecondApplianceSpace = SecondApplianceSpace.InstallKitchenEquipment(kitchenEquipmentState.StateID);
                 break;
             case 3:
-                ThirdApplianceSpace = kitchenEquipmentState.StateID;
+                ThirdApplianceSpace = ThirdApplianceSpace.InstallKitchenEquipment(kitchenEquipmentState.StateID);
                 break;
             default:
                 throw new ArgumentOutOfRangeException("KitchenState have only three appliance space");
