@@ -7,6 +7,7 @@ using Libplanet.State;
 using Libplanet.Headless.Extensions;
 using Savor22b.States;
 using Savor22b.Action.Exceptions;
+using Savor22b.Action.Util;
 
 [ActionType(nameof(RemoveWeedAction))]
 public class RemoveWeedAction : SVRAction
@@ -42,6 +43,8 @@ public class RemoveWeedAction : SVRAction
         RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
+
+        Validation.EnsureReplaceInProgress(rootState, ctx.BlockIndex);
 
         VillageState? villageState = rootState.VillageState;
 

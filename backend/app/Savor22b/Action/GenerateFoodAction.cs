@@ -10,7 +10,7 @@ using Savor22b.Action.Exceptions;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
-
+using Savor22b.Action.Util;
 
 [ActionType(nameof(GenerateFoodAction))]
 public class GenerateFoodAction : SVRAction
@@ -19,9 +19,7 @@ public class GenerateFoodAction : SVRAction
     public Guid FoodStateID;
     public List<Guid> RefrigeratorStateIDs;
 
-    public GenerateFoodAction()
-    {
-    }
+    public GenerateFoodAction() { }
 
     public GenerateFoodAction(int recipeID, Guid foodStateID, List<Guid> refrigeratorStateIDs)
     {
@@ -35,20 +33,25 @@ public class GenerateFoodAction : SVRAction
         {
             [nameof(RecipeID)] = RecipeID.Serialize(),
             [nameof(FoodStateID)] = FoodStateID.Serialize(),
-            [nameof(RefrigeratorStateIDs)] = new List(RefrigeratorStateIDs.Select(e => e.Serialize())),
+            [nameof(RefrigeratorStateIDs)] = new List(
+                RefrigeratorStateIDs.Select(e => e.Serialize())
+            ),
         }.ToImmutableDictionary();
 
-    protected override void LoadPlainValueInternal(
-        IImmutableDictionary<string, IValue> plainValue)
+    protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         RecipeID = plainValue[nameof(RecipeID)].ToInteger();
         FoodStateID = plainValue[nameof(FoodStateID)].ToGuid();
-        RefrigeratorStateIDs = ((List)plainValue[nameof(RefrigeratorStateIDs)]).Select(e => e.ToGuid()).ToList();
+        RefrigeratorStateIDs = ((List)plainValue[nameof(RefrigeratorStateIDs)])
+            .Select(e => e.ToGuid())
+            .ToList();
     }
 
     private RefrigeratorState FindIngredientInState(InventoryState state, int ingredientID)
     {
-        var ingredient = state.RefrigeratorStateList.Find(state => state.IngredientID == ingredientID);
+        var ingredient = state.RefrigeratorStateList.Find(
+            state => state.IngredientID == ingredientID
+        );
 
         if (ingredient is null)
         {
@@ -119,8 +122,7 @@ public class GenerateFoodAction : SVRAction
 
         if (Food is null)
         {
-            throw new NotFoundTableDataException(
-                $"Invalid {nameof(RecipeID)}: {RecipeID}");
+            throw new NotFoundTableDataException($"Invalid {nameof(RecipeID)}: {RecipeID}");
         }
 
         return Food;
@@ -133,7 +135,8 @@ public class GenerateFoodAction : SVRAction
         if (stat == null)
         {
             throw new NotFoundTableDataException(
-                $"Invalid {nameof(grade)}, {nameof(foodID)}: {grade}, {foodID}");
+                $"Invalid {nameof(grade)}, {nameof(foodID)}: {grade}, {foodID}"
+            );
         }
 
         return stat;
@@ -141,7 +144,6 @@ public class GenerateFoodAction : SVRAction
 
     private (int HP, int ATK, int DEF, int SPD) GenerateStat(IRandom random, Stat stat)
     {
-
         var hp = random.Next(stat.MinHP, stat.MaxHP + 1);
         var attack = random.Next(stat.MinAtk, stat.MaxAtk + 1);
         var defense = random.Next(stat.MinDef, stat.MaxDef + 1);
@@ -157,7 +159,8 @@ public class GenerateFoodAction : SVRAction
         var foodCsvData = FindFoodInCSV(recipe.ResultFoodID);
 
         var grade = GradeExtractor.GetGrade(
-            gradeExtractor.ExtractGrade(foodCsvData.MinGrade, foodCsvData.MaxGrade));
+            gradeExtractor.ExtractGrade(foodCsvData.MinGrade, foodCsvData.MaxGrade)
+        );
 
         var stat = FindStatInCSV(foodCsvData.ID, grade);
 
@@ -185,9 +188,12 @@ public class GenerateFoodAction : SVRAction
 
         IAccountStateDelta states = ctx.PreviousStates;
 
-        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer)
+            is Bencodex.Types.Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
+
+        Validation.EnsureReplaceInProgress(rootState, ctx.BlockIndex);
 
         InventoryState inventoryState = rootState.InventoryState;
 
@@ -195,8 +201,7 @@ public class GenerateFoodAction : SVRAction
 
         if (recipe is null)
         {
-            throw new NotFoundTableDataException(
-                $"Invalid {nameof(RecipeID)}: {RecipeID}");
+            throw new NotFoundTableDataException($"Invalid {nameof(RecipeID)}: {RecipeID}");
         }
 
         inventoryState = CheckAndRemoveForRecipe(recipe, inventoryState);

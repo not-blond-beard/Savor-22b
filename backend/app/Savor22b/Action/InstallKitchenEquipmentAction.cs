@@ -16,9 +16,7 @@ public class InstallKitchenEquipmentAction : SVRAction
     public Guid KitchenEquipmentStateIDToUse;
     public int SpaceNumber;
 
-    public InstallKitchenEquipmentAction()
-    {
-    }
+    public InstallKitchenEquipmentAction() { }
 
     public InstallKitchenEquipmentAction(Guid kitchenEquipmentStateID, int spaceNumber)
     {
@@ -33,20 +31,26 @@ public class InstallKitchenEquipmentAction : SVRAction
             [nameof(SpaceNumber)] = SpaceNumber.Serialize(),
         }.ToImmutableDictionary();
 
-    protected override void LoadPlainValueInternal(
-        IImmutableDictionary<string, IValue> plainValue)
+    protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         KitchenEquipmentStateIDToUse = plainValue[nameof(KitchenEquipmentStateIDToUse)].ToGuid();
         SpaceNumber = plainValue[nameof(SpaceNumber)].ToInteger();
     }
 
-    private KitchenEquipmentState GetKitchenEquipmentState(RootState rootState, Guid kitchenEquipmentStateIDToUse)
+    private KitchenEquipmentState GetKitchenEquipmentState(
+        RootState rootState,
+        Guid kitchenEquipmentStateIDToUse
+    )
     {
-        var kitchenEquipmentState = rootState.InventoryState.GetKitchenEquipmentState(kitchenEquipmentStateIDToUse);
+        var kitchenEquipmentState = rootState.InventoryState.GetKitchenEquipmentState(
+            kitchenEquipmentStateIDToUse
+        );
 
         if (kitchenEquipmentState is null)
         {
-            throw new NotEnoughRawMaterialsException($"You don't have `{kitchenEquipmentStateIDToUse}` kitchen equipment state");
+            throw new NotEnoughRawMaterialsException(
+                $"You don't have `{kitchenEquipmentStateIDToUse}` kitchen equipment state"
+            );
         }
 
         return kitchenEquipmentState;
@@ -65,10 +69,17 @@ public class InstallKitchenEquipmentAction : SVRAction
             ? new RootState(rootStateEncoded)
             : new RootState();
 
+        Validation.EnsureReplaceInProgress(rootState, ctx.BlockIndex);
         Validation.EnsureVillageStateExists(rootState);
 
-        var kitchenEquipmentState = GetKitchenEquipmentState(rootState, KitchenEquipmentStateIDToUse);
-        rootState.VillageState?.HouseState.KitchenState.InstallKitchenEquipment(kitchenEquipmentState, SpaceNumber);
+        var kitchenEquipmentState = GetKitchenEquipmentState(
+            rootState,
+            KitchenEquipmentStateIDToUse
+        );
+        rootState.VillageState?.HouseState.KitchenState.InstallKitchenEquipment(
+            kitchenEquipmentState,
+            SpaceNumber
+        );
 
         return states.SetState(ctx.Signer, rootState.Serialize());
     }

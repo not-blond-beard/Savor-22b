@@ -8,6 +8,7 @@ using Savor22b.Helpers;
 using Savor22b.States;
 using Libplanet.Headless.Extensions;
 using Savor22b.Action.Exceptions;
+using Savor22b.Action.Util;
 
 [ActionType(nameof(HarvestingSeedAction))]
 public class HarvestingSeedAction : SVRAction
@@ -15,10 +16,7 @@ public class HarvestingSeedAction : SVRAction
     public int HarvestedFieldIndex;
     public Guid RefrigeratorStateID;
 
-    public HarvestingSeedAction()
-    {
-
-    }
+    public HarvestingSeedAction() { }
 
     public HarvestingSeedAction(int harvestedFieldIndex, Guid refrigeratorStateID)
     {
@@ -33,8 +31,7 @@ public class HarvestingSeedAction : SVRAction
             [nameof(RefrigeratorStateID)] = RefrigeratorStateID.Serialize(),
         }.ToImmutableDictionary();
 
-    protected override void LoadPlainValueInternal(
-        IImmutableDictionary<string, IValue> plainValue)
+    protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         HarvestedFieldIndex = plainValue[nameof(HarvestedFieldIndex)].ToInteger();
         RefrigeratorStateID = plainValue[nameof(RefrigeratorStateID)].ToGuid();
@@ -52,7 +49,9 @@ public class HarvestingSeedAction : SVRAction
 
     private HouseFieldState getHouseFieldState(VillageState villageState, int index)
     {
-        HouseFieldState houseFieldState = villageState.HouseFieldStates[index] ?? throw new InvalidFieldIndexException("FieldIndex is invalid");
+        HouseFieldState houseFieldState =
+            villageState.HouseFieldStates[index]
+            ?? throw new InvalidFieldIndexException("FieldIndex is invalid");
 
         return houseFieldState;
     }
@@ -64,18 +63,22 @@ public class HarvestingSeedAction : SVRAction
 
         if (matchedIngredient == null)
         {
-            throw new ArgumentException(
-                $"Invalid {nameof(seedId)}: {seedId}");
+            throw new ArgumentException($"Invalid {nameof(seedId)}: {seedId}");
         }
 
-        var grade = gradeExtractor.ExtractGrade(matchedIngredient.MinGrade, matchedIngredient.MaxGrade);
+        var grade = gradeExtractor.ExtractGrade(
+            matchedIngredient.MinGrade,
+            matchedIngredient.MaxGrade
+        );
         var gradeString = GradeExtractor.GetGrade(grade);
-        var matchedStat = CsvDataHelper.GetStatByIngredientIDAndGrade(matchedIngredient.ID, gradeString);
+        var matchedStat = CsvDataHelper.GetStatByIngredientIDAndGrade(
+            matchedIngredient.ID,
+            gradeString
+        );
 
         if (matchedStat == null)
         {
-            throw new ArgumentException(
-                $"Invalid {nameof(gradeString)}: {gradeString}");
+            throw new ArgumentException($"Invalid {nameof(gradeString)}: {gradeString}");
         }
 
         var hp = ctx.Random.Next(matchedStat.MinHP, matchedStat.MaxHP + 1);
@@ -103,6 +106,8 @@ public class HarvestingSeedAction : SVRAction
             ? new RootState(rootStateEncoded)
             : new RootState();
 
+        Validation.EnsureReplaceInProgress(rootState, ctx.BlockIndex);
+
         VillageState villageState = getVillageState(rootState);
         InventoryState inventoryState = rootState.InventoryState;
         HouseFieldState houseFieldState = getHouseFieldState(villageState, HarvestedFieldIndex);
@@ -114,10 +119,7 @@ public class HarvestingSeedAction : SVRAction
 
         villageState.RemoveHouseFieldState(HarvestedFieldIndex);
 
-        RefrigeratorState ingredient = generateIngredient(
-            ctx,
-            houseFieldState.SeedID
-        );
+        RefrigeratorState ingredient = generateIngredient(ctx, houseFieldState.SeedID);
         inventoryState = inventoryState.AddRefrigeratorItem(ingredient);
 
         rootState.SetInventoryState(inventoryState);
@@ -126,5 +128,4 @@ public class HarvestingSeedAction : SVRAction
 
         return states;
     }
-
 }
