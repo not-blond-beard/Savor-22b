@@ -51,7 +51,7 @@ public class PlaceUserHouseAction : SVRAction
         RelocationState? relocationState
     )
     {
-        if (relocationState is not null && !relocationState.IsRelocationInProgress(currentBlock))
+        if (relocationState is not null && relocationState.IsRelocationInProgress(currentBlock))
         {
             throw new RelocationInProgressException("Relocation in progress");
         }
@@ -96,16 +96,19 @@ public class PlaceUserHouseAction : SVRAction
         long currentBlock
     )
     {
+        Village originVillage = GetVillage(rootState.VillageState!.HouseState.VillageID);
+        Village targetVillage = GetVillage(VillageID);
+
         string prevUserHouseKey = globalUserHouseState.CreateKey(
             rootState.VillageState!.HouseState.VillageID,
             rootState.VillageState.HouseState.PositionX,
             rootState.VillageState.HouseState.PositionY
         );
         int durationBlock = VillageUtil.CalculateReplaceUserHouseBlock(
-            rootState.VillageState.HouseState.PositionX,
-            rootState.VillageState.HouseState.PositionY,
-            TargetX,
-            TargetY
+            originVillage.WorldX,
+            originVillage.WorldY,
+            targetVillage.WorldX,
+            targetVillage.WorldY
         );
 
         RelocationState relocationState = new RelocationState(
@@ -119,8 +122,8 @@ public class PlaceUserHouseAction : SVRAction
         globalUserHouseState.UserHouse.Remove(prevUserHouseKey);
 
         rootState.SetRelocationState(relocationState);
-        rootState.VillageState.SetHouseState(
-            new HouseState(VillageID, TargetX, TargetY, new KitchenState())
+        rootState.SetVillageState(
+            new VillageState(new HouseState(VillageID, TargetX, TargetY, new KitchenState()))
         );
     }
 
@@ -147,11 +150,11 @@ public class PlaceUserHouseAction : SVRAction
         }
         else
         {
-            ValidateReplaceUserHouse(ctx.BlockIndex, rootState.RelocationState);
-            ReplaceUserHouse(rootState, globalUserHouseState, ctx.BlockIndex);
-
             Village originVillage = GetVillage(rootState.VillageState!.HouseState.VillageID);
             Village targetVillage = GetVillage(VillageID);
+
+            ValidateReplaceUserHouse(ctx.BlockIndex, rootState.RelocationState);
+            ReplaceUserHouse(rootState, globalUserHouseState, ctx.BlockIndex);
 
             FungibleAssetValue price = CalculatePrice.CalculateReplaceUserHousePrice(
                 originVillage.WorldX,
