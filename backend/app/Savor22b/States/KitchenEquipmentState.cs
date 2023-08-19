@@ -1,43 +1,63 @@
 namespace Savor22b.States;
 
+using Savor22b.Util;
 using Bencodex.Types;
 using Libplanet.Headless.Extensions;
 
 public class KitchenEquipmentState : State
 {
-    public Guid StateID { get; private set; }
-    public int KitchenEquipmentID { get; private set; }
-    public bool IsInUse { get; private set; }
-
-    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID, bool isInUse)
+    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID, int kitchenEquipmentCategoryID, long cookingStartedBlockIndex, long cookingDurationBlock)
     {
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
-        IsInUse = isInUse;
+        KitchenEquipmentCategoryID = kitchenEquipmentCategoryID;
+        CookingStartedBlockIndex = cookingStartedBlockIndex;
+        CookingDurationBlock = cookingDurationBlock;
     }
 
-    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID)
+    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID, int kitchenEquipmentCategoryID)
     {
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
-        IsInUse = false;
+        KitchenEquipmentCategoryID = kitchenEquipmentCategoryID;
+        CookingStartedBlockIndex = null;
+        CookingDurationBlock = null;
     }
 
-    public KitchenEquipmentState(Bencodex.Types.Dictionary encoded)
+    public KitchenEquipmentState(Dictionary encoded)
     {
         StateID = encoded[nameof(StateID)].ToGuid();
-        KitchenEquipmentID = (int)((Integer)encoded[nameof(KitchenEquipmentID)]).Value;
-        IsInUse = (bool)((Boolean)encoded[nameof(IsInUse)]).Value;
+        KitchenEquipmentID = encoded[nameof(KitchenEquipmentID)].ToInteger();
+        KitchenEquipmentCategoryID = encoded[nameof(KitchenEquipmentCategoryID)].ToInteger();
+        CookingStartedBlockIndex = encoded[nameof(CookingStartedBlockIndex)].ToNullableLong();
+        CookingDurationBlock = encoded[nameof(CookingDurationBlock)].ToNullableLong();
     }
+
+    public Guid StateID { get; private set; }
+
+    public int KitchenEquipmentID { get; private set; }
+
+    public int KitchenEquipmentCategoryID { get; private set; }
+
+    public long? CookingStartedBlockIndex { get; private set; }
+
+    public long? CookingDurationBlock { get; private set; }
 
     public IValue Serialize()
     {
         var pairs = new[]
         {
             new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentID), (Integer)this.KitchenEquipmentID),
-            new KeyValuePair<IKey, IValue>((Text)nameof(IsInUse), (Boolean)this.IsInUse),
+            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentID), KitchenEquipmentID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentCategoryID), KitchenEquipmentCategoryID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(CookingStartedBlockIndex), CookingStartedBlockIndex.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(CookingDurationBlock), CookingDurationBlock.Serialize()),
         };
         return new Dictionary(pairs);
+    }
+
+    public bool IsInUse(long currentBlockIndex)
+    {
+        return BlockUtil.CalculateIsInProgress(currentBlockIndex, CookingStartedBlockIndex ?? 0, CookingDurationBlock ?? 0);
     }
 }

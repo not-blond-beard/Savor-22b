@@ -27,7 +27,7 @@ public class InstallKitchenEquipmentActionTests : ActionTests
             new InventoryState(
                 ImmutableList<SeedState>.Empty,
                 ImmutableList<RefrigeratorState>.Empty,
-                ImmutableList<KitchenEquipmentState>.Empty.Add(new KitchenEquipmentState(Guid.NewGuid(), 1)),
+                ImmutableList<KitchenEquipmentState>.Empty.Add(new KitchenEquipmentState(Guid.NewGuid(), 1, 1)),
                 ImmutableList<ItemState>.Empty
             ),
             new VillageState(

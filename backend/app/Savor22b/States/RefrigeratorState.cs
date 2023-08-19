@@ -5,15 +5,6 @@ using Libplanet.Headless.Extensions;
 
 public class RefrigeratorState : State
 {
-    public Guid StateID { get; set; }
-    public int? IngredientID { get; set; }
-    public int? FoodID { get; set; }
-    public string Grade { get; set; }
-    public int HP { get; set; }
-    public int DEF { get; set; }
-    public int ATK { get; set; }
-    public int SPD { get; set; }
-
     public RefrigeratorState(Guid stateID, int? ingredientID, int? foodID, string grade, int hp, int def, int atk, int spd)
     {
         StateID = stateID;
@@ -54,7 +45,7 @@ public class RefrigeratorState : State
         );
     }
 
-    public RefrigeratorState(Bencodex.Types.Dictionary encoded)
+    public RefrigeratorState(Dictionary encoded)
     {
         StateID = encoded[nameof(StateID)].ToGuid();
         Grade = (string)((Text)encoded[(Text)nameof(Grade)]).Value;
@@ -65,25 +56,44 @@ public class RefrigeratorState : State
 
         if (encoded.ContainsKey((Text)nameof(IngredientID)))
         {
-            this.IngredientID = (int)((Integer)encoded[(Text)nameof(IngredientID)]).Value;
+            IngredientID = (int)((Integer)encoded[(Text)nameof(IngredientID)]).Value;
         }
 
         if (encoded.ContainsKey((Text)nameof(FoodID)))
         {
-            this.FoodID = (int)((Integer)encoded[(Text)nameof(FoodID)]).Value;
+            FoodID = (int)((Integer)encoded[(Text)nameof(FoodID)]).Value;
         }
     }
 
+    public Guid StateID { get; set; }
+
+    public int? IngredientID { get; set; }
+
+    public int? FoodID { get; set; }
+
+    public string Grade { get; set; }
+
+    public int HP { get; set; }
+
+    public int DEF { get; set; }
+
+    public int ATK { get; set; }
+
+    public int SPD { get; set; }
+
+    public long? ActivatedBlockIndex { get; set; }
+
     public IValue Serialize()
     {
-        var pairs = new List<KeyValuePair<IKey, IValue>>();
-
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(Grade), (Text)Grade));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(HP), (Integer)HP));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(DEF), (Integer)DEF));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(ATK), (Integer)ATK));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(SPD), (Integer)SPD));
+        var pairs = new List<KeyValuePair<IKey, IValue>>
+        {
+            new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(Grade), (Text)Grade),
+            new KeyValuePair<IKey, IValue>((Text)nameof(HP), (Integer)HP),
+            new KeyValuePair<IKey, IValue>((Text)nameof(DEF), (Integer)DEF),
+            new KeyValuePair<IKey, IValue>((Text)nameof(ATK), (Integer)ATK),
+            new KeyValuePair<IKey, IValue>((Text)nameof(SPD), (Integer)SPD),
+        };
 
         if (IngredientID.HasValue)
         {

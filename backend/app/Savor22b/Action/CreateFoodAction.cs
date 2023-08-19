@@ -12,20 +12,31 @@ using Savor22b.Model;
 using Savor22b.States;
 using Savor22b.Action.Util;
 
-[ActionType(nameof(GenerateFoodAction))]
-public class GenerateFoodAction : SVRAction
+[ActionType(nameof(CreateFoodAction))]
+public class CreateFoodAction : SVRAction
 {
     public int RecipeID;
     public Guid FoodStateID;
-    public List<Guid> RefrigeratorStateIDs;
+    public List<Guid> RefrigeratorStateIdsToUse;
+    public List<Guid> KitchenEquipmentStateIdsToUse;
+    public List<int> ApplianceSpaceNumbersToUse;
 
-    public GenerateFoodAction() { }
+    public CreateFoodAction()
+    {
+    }
 
-    public GenerateFoodAction(int recipeID, Guid foodStateID, List<Guid> refrigeratorStateIDs)
+    public CreateFoodAction(
+        int recipeID,
+        Guid foodStateID,
+        List<Guid> refrigeratorStateIdsToUse,
+        List<Guid> kitchenEquipmentStateIdsToUse,
+        List<int> applianceSpaceNumbersToUse)
     {
         RecipeID = recipeID;
         FoodStateID = foodStateID;
-        RefrigeratorStateIDs = refrigeratorStateIDs;
+        RefrigeratorStateIdsToUse = refrigeratorStateIdsToUse;
+        KitchenEquipmentStateIdsToUse = kitchenEquipmentStateIdsToUse;
+        ApplianceSpaceNumbersToUse = applianceSpaceNumbersToUse;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
@@ -33,18 +44,18 @@ public class GenerateFoodAction : SVRAction
         {
             [nameof(RecipeID)] = RecipeID.Serialize(),
             [nameof(FoodStateID)] = FoodStateID.Serialize(),
-            [nameof(RefrigeratorStateIDs)] = new List(
-                RefrigeratorStateIDs.Select(e => e.Serialize())
-            ),
+            [nameof(RefrigeratorStateIdsToUse)] = new List(RefrigeratorStateIdsToUse.Select(e => e.Serialize())),
+            [nameof(KitchenEquipmentStateIdsToUse)] = new List(KitchenEquipmentStateIdsToUse.Select(e => e.Serialize())),
+            [nameof(ApplianceSpaceNumbersToUse)] = new List(ApplianceSpaceNumbersToUse.Select(e => e.Serialize())),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         RecipeID = plainValue[nameof(RecipeID)].ToInteger();
         FoodStateID = plainValue[nameof(FoodStateID)].ToGuid();
-        RefrigeratorStateIDs = ((List)plainValue[nameof(RefrigeratorStateIDs)])
-            .Select(e => e.ToGuid())
-            .ToList();
+        RefrigeratorStateIdsToUse = ((List)plainValue[nameof(RefrigeratorStateIdsToUse)]).Select(e => e.ToGuid()).ToList();
+        KitchenEquipmentStateIdsToUse = ((List)plainValue[nameof(KitchenEquipmentStateIdsToUse)]).Select(e => e.ToGuid()).ToList();
+        ApplianceSpaceNumbersToUse = ((List)plainValue[nameof(ApplianceSpaceNumbersToUse)]).Select(e => e.ToInteger()).ToList();
     }
 
     private RefrigeratorState FindIngredientInState(InventoryState state, int ingredientID)
