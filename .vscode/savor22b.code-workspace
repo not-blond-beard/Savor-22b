@@ -12,11 +12,12 @@
     "extensions": {
         "recommendations": [
             "editorconfig.editorconfig",
-            "ms-dotnettools.csharp",
-            "ms-dotnettools.csdevkit"
+            "formulahendry.dotnet-test-explorer",
+            "ms-dotnettools.csharp"
         ]
     },
     "settings": {
+        "dotnet-test-explorer.testProjectPath": "**/*Tests.@(csproj|vbproj|fsproj)",
         "dotnet.defaultSolution": "Backend APP/Savor22b.sln"
     }
 }
