@@ -12,4 +12,15 @@ public static class Validation
             throw new InvalidVillageStateException("VillageState is null");
         }
     }
+
+    public static void EnsureReplaceInProgress(RootState rootState, long blockIndex)
+    {
+        if (
+            rootState.RelocationState is not null
+            && rootState.RelocationState.IsRelocationInProgress(blockIndex)
+        )
+        {
+            throw new RelocationInProgressException("Relocation is in progress");
+        }
+    }
 }

@@ -9,6 +9,7 @@ using Savor22b.Model;
 using Savor22b.States;
 using Libplanet.Headless.Extensions;
 using Savor22b.Action.Exceptions;
+using Savor22b.Action.Util;
 
 [ActionType(nameof(PlantingSeedAction))]
 public class PlantingSeedAction : SVRAction
@@ -16,9 +17,7 @@ public class PlantingSeedAction : SVRAction
     public Guid SeedGuid;
     public int FieldIndex;
 
-    public PlantingSeedAction()
-    {
-    }
+    public PlantingSeedAction() { }
 
     public PlantingSeedAction(Guid seedGuid, int fieldIndex)
     {
@@ -33,16 +32,13 @@ public class PlantingSeedAction : SVRAction
             [nameof(FieldIndex)] = FieldIndex.Serialize(),
         }.ToImmutableDictionary();
 
-    protected override void LoadPlainValueInternal(
-        IImmutableDictionary<string, IValue> plainValue)
+    protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         SeedGuid = plainValue[nameof(SeedGuid)].ToGuid();
         FieldIndex = plainValue[nameof(FieldIndex)].ToInteger();
     }
 
-    public void checkAndRaisePlantingAble(
-        RootState rootState
-    )
+    public void checkAndRaisePlantingAble(RootState rootState)
     {
         if (rootState.VillageState is null)
         {
@@ -70,9 +66,12 @@ public class PlantingSeedAction : SVRAction
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         IAccountStateDelta states = ctx.PreviousStates;
-        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer)
+            is Bencodex.Types.Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
+
+        Validation.EnsureReplaceInProgress(rootState, ctx.BlockIndex);
 
         checkAndRaisePlantingAble(rootState);
 
@@ -91,14 +90,10 @@ public class PlantingSeedAction : SVRAction
             seed.RequiredBlock
         );
 
-        rootState.VillageState!.UpdateHouseFieldState(
-            FieldIndex,
-            houseFieldState
-        );
+        rootState.VillageState!.UpdateHouseFieldState(FieldIndex, houseFieldState);
 
         states = states.SetState(ctx.Signer, rootState.Serialize());
 
         return states;
     }
-
 }
