@@ -17,15 +17,12 @@ public class Query : ObjectGraphType
     [SuppressMessage(
         "StyleCop.CSharp.ReadabilityRules",
         "SA1118:ParameterMustNotSpanMultipleLines",
-        Justification = "GraphQL docs require long lines of text.")]
-
-
+        Justification = "GraphQL docs require long lines of text."
+    )]
     private readonly BlockChain _blockChain;
     private readonly Swarm _swarm;
 
-    public Query(
-        BlockChain blockChain,
-        Swarm? swarm = null)
+    public Query(BlockChain blockChain, Swarm? swarm = null)
     {
         _blockChain = blockChain;
         _swarm = swarm;
@@ -57,23 +54,23 @@ public class Query : ObjectGraphType
             "peerString",
             resolve: context =>
                 swarm is null
-                ? throw new InvalidOperationException("Network settings is not set.")
-                : swarm.AsPeer.PeerString);
+                    ? throw new InvalidOperationException("Network settings is not set.")
+                    : swarm.AsPeer.PeerString
+        );
 
         Field<ListGraphType<RecipeGraphType.RecipeResponseType>>(
             "recipe",
             resolve: context =>
-                {
-                    var recipes = combineRecipeData();
+            {
+                var recipes = combineRecipeData();
 
-                    return recipes;
-                }
+                return recipes;
+            }
         );
-
 
         Field<NonNullGraphType<StringGraphType>>(
             "createAction_PlaceUserHouse",
-            description: "Place User House",
+            description: "Moves or installs a user's house to a specific location. If the user already has a house installed, it is considered a relocation, incurring costs and time",
             arguments: new QueryArguments(
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
@@ -98,7 +95,9 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
 
                 var action = new PlaceUserHouseAction(
                     context.GetArgument<int>("villageId"),
@@ -132,7 +131,9 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
 
                 var action = new GenerateFoodAction(
                     context.GetArgument<int>("recipeID"),
@@ -161,7 +162,9 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
 
                 var action = new UseRandomSeedItemAction(
                     Guid.NewGuid(),
@@ -189,7 +192,9 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
 
                 var action = new BuyKitchenEquipmentAction(
                     Guid.NewGuid(),
@@ -222,7 +227,9 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
 
                 var action = new PlantingSeedAction(
                     context.GetArgument<Guid>("seedStateId"),
@@ -232,7 +239,6 @@ public class Query : ObjectGraphType
                 return getUnsignedTransactionHex(action, publicKey);
             }
         );
-
 
         Field<NonNullGraphType<StringGraphType>>(
             "createAction_RemovePlantedSeed",
@@ -251,11 +257,11 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
-
-                var action = new RemovePlantedSeedAction(
-                    context.GetArgument<int>("fieldIndex")
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
+
+                var action = new RemovePlantedSeedAction(context.GetArgument<int>("fieldIndex"));
 
                 return getUnsignedTransactionHex(action, publicKey);
             }
@@ -278,11 +284,11 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
-
-                var action = new RemoveWeedAction(
-                    context.GetArgument<int>("fieldIndex")
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
+
+                var action = new RemoveWeedAction(context.GetArgument<int>("fieldIndex"));
 
                 return getUnsignedTransactionHex(action, publicKey);
             }
@@ -305,7 +311,9 @@ public class Query : ObjectGraphType
             ),
             resolve: context =>
             {
-                var publicKey = new PublicKey(ByteUtil.ParseHex(context.GetArgument<string>("publicKey")));
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
 
                 var action = new HarvestingSeedAction(
                     context.GetArgument<int>("fieldIndex"),
@@ -328,8 +336,10 @@ public class Query : ObjectGraphType
             genesisHash: _blockChain.Genesis.Hash,
             actions: txActionList
         );
-        UnsignedTx unsignedTransaction =
-                new UnsignedTx(invoice, new TxSigningMetadata(publicKey, nonce));
+        UnsignedTx unsignedTransaction = new UnsignedTx(
+            invoice,
+            new TxSigningMetadata(publicKey, nonce)
+        );
 
         byte[] unsignedTransactionString = unsignedTransaction.SerializeUnsignedTx().ToArray();
         string unsignedTransactionHex = ByteUtil.Hex(unsignedTransactionString);
@@ -346,17 +356,23 @@ public class Query : ObjectGraphType
         foreach (var recipe in CsvDataHelper.GetRecipeCSVData())
         {
             var recipeIngredientComponents = recipe.IngredientIDList
-                .Select(ingredientID => new RecipeComponent(ingredientID, ingredientDict[ingredientID].Name))
+                .Select(
+                    ingredientID =>
+                        new RecipeComponent(ingredientID, ingredientDict[ingredientID].Name)
+                )
                 .ToList();
             var recipeFoodComponents = recipe.FoodIDList
                 .Select(foodID => new RecipeComponent(foodID, foodDict[foodID].Name))
                 .ToList();
 
-            recipes.Add(new RecipeResponse(
-                recipe.ID,
-                recipe.Name,
-                recipeIngredientComponents,
-                recipeFoodComponents));
+            recipes.Add(
+                new RecipeResponse(
+                    recipe.ID,
+                    recipe.Name,
+                    recipeIngredientComponents,
+                    recipeFoodComponents
+                )
+            );
         }
 
         return recipes;
