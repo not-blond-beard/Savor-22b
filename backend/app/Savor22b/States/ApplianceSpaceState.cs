@@ -17,14 +17,11 @@ public class ApplianceSpaceState : State
     public ApplianceSpaceState(
         int spaceNumber,
         Guid? installedKitchenEquipmentStateId,
-        int? cookingFoodId,
         long? cookingDurationBlock,
-        long? cookingStartedBlockIndex
-    )
+        long? cookingStartedBlockIndex)
     {
         SpaceNumber = spaceNumber;
         InstalledKitchenEquipmentStateId = installedKitchenEquipmentStateId;
-        CookingFoodId = cookingFoodId;
         CookingDurationBlock = cookingDurationBlock;
         CookingStartedBlockIndex = cookingStartedBlockIndex;
     }
@@ -32,10 +29,7 @@ public class ApplianceSpaceState : State
     public ApplianceSpaceState(Dictionary encoded)
     {
         SpaceNumber = encoded[nameof(SpaceNumber)].ToInteger();
-        InstalledKitchenEquipmentStateId = encoded[
-            nameof(InstalledKitchenEquipmentStateId)
-        ].ToNullableGuid();
-        CookingFoodId = encoded[nameof(CookingFoodId)].ToNullableInteger();
+        InstalledKitchenEquipmentStateId = encoded[nameof(InstalledKitchenEquipmentStateId)].ToNullableGuid();
         CookingDurationBlock = encoded[nameof(CookingDurationBlock)].ToNullableLong();
         CookingStartedBlockIndex = encoded[nameof(CookingStartedBlockIndex)].ToNullableLong();
     }
@@ -43,8 +37,6 @@ public class ApplianceSpaceState : State
     public int SpaceNumber { get; private set; }
 
     public Guid? InstalledKitchenEquipmentStateId { get; private set; }
-
-    public int? CookingFoodId { get; private set; }
 
     public long? CookingDurationBlock { get; private set; }
 
@@ -55,49 +47,28 @@ public class ApplianceSpaceState : State
         var pairs = new[]
         {
             new KeyValuePair<IKey, IValue>((Text)nameof(SpaceNumber), SpaceNumber.Serialize()),
-            new KeyValuePair<IKey, IValue>(
-                (Text)nameof(InstalledKitchenEquipmentStateId),
-                InstalledKitchenEquipmentStateId.Serialize()
-            ),
-            new KeyValuePair<IKey, IValue>((Text)nameof(CookingFoodId), CookingFoodId.Serialize()),
-            new KeyValuePair<IKey, IValue>(
-                (Text)nameof(CookingDurationBlock),
-                CookingDurationBlock.Serialize()
-            ),
-            new KeyValuePair<IKey, IValue>(
-                (Text)nameof(CookingStartedBlockIndex),
-                CookingStartedBlockIndex.Serialize()
-            ),
+            new KeyValuePair<IKey, IValue>((Text)nameof(InstalledKitchenEquipmentStateId), InstalledKitchenEquipmentStateId.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(CookingDurationBlock), CookingDurationBlock.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(CookingStartedBlockIndex), CookingStartedBlockIndex.Serialize()),
         };
         return new Dictionary(pairs);
     }
 
     public ApplianceSpaceState InstallKitchenEquipment(Guid installedKitchenEquipmentStateId)
     {
-        return new ApplianceSpaceState(
-            SpaceNumber,
-            installedKitchenEquipmentStateId,
-            null,
-            null,
-            null
-        );
+        return new ApplianceSpaceState(SpaceNumber, installedKitchenEquipmentStateId, null, null);
     }
 
     public void UnInstallKitchenEquipment()
     {
         InstalledKitchenEquipmentStateId = null;
-        CookingFoodId = null;
         CookingStartedBlockIndex = null;
         CookingDurationBlock = null;
     }
 
     public bool IsInUse(long currentBlockIndex)
     {
-        return BlockUtil.CalculateIsInProgress(
-            currentBlockIndex,
-            CookingStartedBlockIndex ?? 0,
-            CookingDurationBlock ?? 0
-        );
+        return BlockUtil.CalculateIsInProgress(currentBlockIndex, CookingStartedBlockIndex ?? 0, CookingDurationBlock ?? 0);
     }
 
     public bool EquipmentIsPresent()
@@ -105,9 +76,8 @@ public class ApplianceSpaceState : State
         return InstalledKitchenEquipmentStateId is not null;
     }
 
-    public void StartCooking(int foodId, long currentBlockIndex, long cookingDurationBlock)
+    public void StartCooking(long currentBlockIndex, long cookingDurationBlock)
     {
-        CookingFoodId = foodId;
         CookingStartedBlockIndex = currentBlockIndex;
         CookingDurationBlock = cookingDurationBlock;
     }
@@ -125,8 +95,7 @@ public class ApplianceSpaceState : State
         }
 
         ApplianceSpaceState other = (ApplianceSpaceState)obj;
-        return SpaceNumber == other.SpaceNumber
-            && InstalledKitchenEquipmentStateId == other.InstalledKitchenEquipmentStateId;
+        return SpaceNumber == other.SpaceNumber && InstalledKitchenEquipmentStateId == other.InstalledKitchenEquipmentStateId;
     }
 
     public override int GetHashCode()
