@@ -427,6 +427,41 @@ public class Query : ObjectGraphType
             }
         );
 
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_BuyShopItem",
+            description: "Buy Shop Item",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "desiredShopItemID",
+                    Description = "Desired Shop Item ID",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new BuyShopItemAction(
+                    Guid.NewGuid(),
+                    context.GetArgument<int>("desiredShopItemID")
+                );
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
         AddField(new CalculateRelocationCostQuery());
         AddField(new VillagesQuery(blockChain));
         AddField(new ShopQuery());
