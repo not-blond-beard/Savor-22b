@@ -1,9 +1,8 @@
 namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
-using Savor22b.Model;
 
-public class VillageType : ObjectGraphType<Village>
+public class VillageType : ObjectGraphType<VillageDetail>
 {
     public VillageType()
     {
@@ -33,14 +32,20 @@ public class VillageType : ObjectGraphType<Village>
 
         Field<NonNullGraphType<IntGraphType>>(
             "worldX",
-            description: "The world X position of the village.",
+            description: "The world X position of the village. These coordinates are relative to the center of the World (0,0 coordinates), which means that negative values are also included. (For example, if the width of the World is 5, the x coordinate can range from -2 to 2.)",
             resolve: context => context.Source.WorldX
         );
 
         Field<NonNullGraphType<IntGraphType>>(
             "worldY",
-            description: "The world Y position of the village.",
+            description: "The world Y position of the village. These coordinates are relative to the center of the World (0,0 coordinates), which means that negative values are also included. (For example, if the height of the World is 5, the x coordinate can range from -2 to 2.)",
             resolve: context => context.Source.WorldY
+        );
+
+        Field<NonNullGraphType<ListGraphType<HouseType>>>(
+            "houses",
+            description: "This is a list of houses that exist within the village",
+            resolve: context => context.Source.Houses
         );
     }
 }
