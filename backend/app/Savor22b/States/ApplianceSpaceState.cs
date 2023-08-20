@@ -56,7 +56,7 @@ public class ApplianceSpaceState : State
 
     public ApplianceSpaceState InstallKitchenEquipment(Guid installedKitchenEquipmentStateId)
     {
-        return new ApplianceSpaceState(SpaceNumber, installedKitchenEquipmentStateId, CookingDurationBlock, CookingStartedBlockIndex);
+        return new ApplianceSpaceState(SpaceNumber, installedKitchenEquipmentStateId, null, null);
     }
 
     public void UnInstallKitchenEquipment()

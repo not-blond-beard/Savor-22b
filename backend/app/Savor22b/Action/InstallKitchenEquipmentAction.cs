@@ -48,7 +48,7 @@ public class InstallKitchenEquipmentAction : SVRAction
 
         if (kitchenEquipmentState is null)
         {
-            throw new NotEnoughRawMaterialsException(
+            throw new NotHaveRequiredException(
                 $"You don't have `{kitchenEquipmentStateIDToUse}` kitchen equipment state"
             );
         }
