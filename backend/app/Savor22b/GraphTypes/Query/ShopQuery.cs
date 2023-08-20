@@ -6,6 +6,7 @@ using GraphQL;
 using GraphQL.Resolvers;
 using GraphQL.Types;
 using Savor22b.GraphTypes.Types;
+using Savor22b.Model;
 
 public class ShopQuery : FieldType
 {
@@ -36,7 +37,22 @@ public class ShopQuery : FieldType
             .Select(kitchenEquipment => new ShopKitchenEquipment(kitchenEquipment))
             .ToImmutableList();
 
-        Shop shop = new Shop(shopKitchenEquipments);
+        var itemCSVData = CsvDataHelper.GetItemCSVData().ToArray();
+        var shopItems = itemCSVData
+            .Select(item =>
+            {
+                var shopItem = new Item
+                {
+                    ID = item.ID,
+                    Name = item.Name,
+                    Price = item.Price,
+                };
+
+                return item;
+            })
+            .ToImmutableList();
+
+        Shop shop = new Shop(shopKitchenEquipments, shopItems);
 
         return shop;
     }
