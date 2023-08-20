@@ -23,6 +23,43 @@ public class CreateFoodActionTests : ActionTests
         return recipe;
     }
 
+    private Recipe getRandomRecipeWithEquipmentCategory(string category)
+    {
+        var recipeId = 1;
+        Recipe? recipe = null;
+
+        while (recipe is null)
+        {
+            var recipeCandidate = CsvDataHelper.GetRecipeById(recipeId);
+            recipeId++;
+            if (recipeCandidate is null)
+            {
+                throw new Exception($"{recipeId} does not exist");
+            }
+
+            if (recipeCandidate.RequiredKitchenEquipmentCategoryList.Count == 0)
+            {
+                continue;
+            }
+
+            foreach (var equipmentCategoryId in recipeCandidate.RequiredKitchenEquipmentCategoryList)
+            {
+                var kitchenEquipmentCategory = CsvDataHelper.GetKitchenEquipmentCategoryByID(equipmentCategoryId);
+                if (kitchenEquipmentCategory is null)
+                {
+                    throw new Exception($"{equipmentCategoryId}");
+                }
+
+                if (kitchenEquipmentCategory.Category == category)
+                {
+                    recipe = recipeCandidate;
+                }
+            }
+        }
+
+        return recipe!;
+    }
+
     private List<RefrigeratorState> generateMaterials(List<int> IngredientIDList, List<int> FoodIDList)
     {
         var RefrigeratorItemList = new List<RefrigeratorState>();
@@ -223,35 +260,107 @@ public class CreateFoodActionTests : ActionTests
     //     });
     // }
 
-    // [Fact]
-    // public void Execute_Failure_NotHaveRequiredEquipment()
-    // {
-    //     Assert.Throws<NotHaveRequiredEquipmentException>(() =>
-    //     {
-    //         action.Execute(new DummyActionContext
-    //         {
-    //             PreviousStates = beforeState,
-    //             Signer = SignerAddress(),
-    //             Random = random,
-    //             Rehearsal = false,
-    //             BlockIndex = 1,
-    //         });
-    //     });
-    // }
+    [Fact]
+    public void Execute_Failure_NotFoundKitchenEquipmentState()
+    {
+        var blockIndex = 1;
+        Recipe recipe = getRandomRecipeWithEquipmentCategory("sub");
 
-    // [Fact]
-    // public void Execute_Failure_NotEnoughRawMaterials()
-    // {
-    //     Assert.Throws<NotEnoughRawMaterialsException>(() =>
-    //     {
-    //         action.Execute(new DummyActionContext
-    //         {
-    //             PreviousStates = beforeState,
-    //             Signer = SignerAddress(),
-    //             Random = random,
-    //             Rehearsal = false,
-    //             BlockIndex = 1,
-    //         });
-    //     });
-    // }
+        IAccountStateDelta beforeState = new DummyState();
+        var (beforeRootState, kitchenEquipmentStateIdsToUse, spaceNumbersToUse) = createPreset(recipe);
+        var edibleStateIdsToUse = (from stateList in beforeRootState.InventoryState.RefrigeratorStateList
+                                   select stateList.StateID).ToList();
+        beforeRootState.SetInventoryState(beforeRootState.InventoryState.RemoveKitchenEquipmentItem(kitchenEquipmentStateIdsToUse[0]));
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
+
+        var newFoodGuid = Guid.NewGuid();
+        var action = new CreateFoodAction(
+            recipe.ID,
+            newFoodGuid,
+            edibleStateIdsToUse,
+            kitchenEquipmentStateIdsToUse,
+            spaceNumbersToUse);
+
+        Assert.Throws<NotFoundDataException>(() =>
+        {
+            action.Execute(new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = blockIndex,
+            });
+        });
+    }
+
+    [Fact]
+    public void Execute_Failure_NotFoundInstalledKitchenEquipmentState()
+    {
+        var blockIndex = 1;
+        Recipe recipe = getRandomRecipeWithEquipmentCategory("main");
+
+        IAccountStateDelta beforeState = new DummyState();
+        var (beforeRootState, kitchenEquipmentStateIdsToUse, spaceNumbersToUse) = createPreset(recipe);
+        foreach(var spaceNumber in spaceNumbersToUse)
+        {
+            beforeRootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(spaceNumber).UnInstallKitchenEquipment();
+        }
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
+
+        var newFoodGuid = Guid.NewGuid();
+        var action = new CreateFoodAction(
+            recipe.ID,
+            newFoodGuid,
+            (from stateList in beforeRootState.InventoryState.RefrigeratorStateList
+             select stateList.StateID).ToList(),
+            kitchenEquipmentStateIdsToUse,
+            spaceNumbersToUse);
+
+        Assert.Throws<NotFoundDataException>(() =>
+        {
+            action.Execute(new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = blockIndex,
+            });
+        });
+    }
+
+    [Fact]
+    public void Execute_Failure_NotFoundEdibleState()
+    {
+        var blockIndex = 1;
+        Recipe recipe = getRecipeById(1);
+
+        IAccountStateDelta beforeState = new DummyState();
+        var (beforeRootState, kitchenEquipmentStateIdsToUse, spaceNumbersToUse) = createPreset(recipe);
+        var edibleStateIdsToUse = (from stateList in beforeRootState.InventoryState.RefrigeratorStateList
+                                   select stateList.StateID).ToList();
+        beforeRootState.SetInventoryState(beforeRootState.InventoryState.RemoveRefrigeratorItem(beforeRootState.InventoryState.RefrigeratorStateList[0].StateID));
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
+
+        var newFoodGuid = Guid.NewGuid();
+        var action = new CreateFoodAction(
+            recipe.ID,
+            newFoodGuid,
+            edibleStateIdsToUse,
+            kitchenEquipmentStateIdsToUse,
+            spaceNumbersToUse);
+
+        Assert.Throws<NotFoundDataException>(() =>
+        {
+            action.Execute(new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = blockIndex,
+            });
+        });
+    }
 }
