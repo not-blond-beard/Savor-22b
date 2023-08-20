@@ -1,5 +1,6 @@
 namespace Savor22b.GraphTypes;
 
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using GraphQL;
 using GraphQL.Types;
@@ -352,6 +353,23 @@ public class Query : ObjectGraphType
                     );
 
                     return relocationCost;
+                }
+                catch (Exception e)
+                {
+                    throw new ExecutionError(e.Message);
+                }
+            }
+        );
+
+        Field<NonNullGraphType<ListGraphType<VillageType>>>(
+            "villages",
+            description: "Get all villages",
+            resolve: context =>
+            {
+                try
+                {
+                    ImmutableList<Village> villages = CsvDataHelper.GetVillageCSVData();
+                    return villages;
                 }
                 catch (Exception e)
                 {
