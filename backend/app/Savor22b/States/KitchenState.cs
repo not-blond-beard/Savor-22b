@@ -53,4 +53,19 @@ public class KitchenState : State
                 throw new ArgumentOutOfRangeException("KitchenState have only three appliance space");
         }
     }
+
+    public ApplianceSpaceState GetApplianceSpaceStateByNumber(int spaceNumber)
+    {
+        switch (spaceNumber)
+        {
+            case 1:
+                return FirstApplianceSpace;
+            case 2:
+                return SecondApplianceSpace;
+            case 3:
+                return ThirdApplianceSpace;
+            default:
+                throw new ArgumentOutOfRangeException("KitchenState have only three appliance space");
+        }
+    }
 }

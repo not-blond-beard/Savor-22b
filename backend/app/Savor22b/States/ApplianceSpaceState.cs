@@ -63,4 +63,42 @@ public class ApplianceSpaceState : State
     {
         return BlockUtil.CalculateIsInProgress(currentBlockIndex, CookingStartedBlockIndex ?? 0, CookingDurationBlock ?? 0);
     }
+
+    public bool EquipmentIsPresent()
+    {
+        return InstalledKitchenEquipmentStateId is not null;
+    }
+
+    public void StartCooking(long currentBlockIndex, long cookingDurationBlock)
+    {
+        CookingStartedBlockIndex = currentBlockIndex;
+        CookingDurationBlock = cookingDurationBlock;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        ApplianceSpaceState other = (ApplianceSpaceState)obj;
+        return SpaceNumber == other.SpaceNumber && InstalledKitchenEquipmentStateId == other.InstalledKitchenEquipmentStateId;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 17;
+            hash = (hash * 23) ^ SpaceNumber.GetHashCode();
+            hash = (hash * 23) ^ (InstalledKitchenEquipmentStateId?.GetHashCode() ?? 0);
+            return hash;
+        }
+    }
 }
