@@ -59,6 +59,13 @@ public class ApplianceSpaceState : State
         return new ApplianceSpaceState(SpaceNumber, installedKitchenEquipmentStateId, CookingDurationBlock, CookingStartedBlockIndex);
     }
 
+    public void UnInstallKitchenEquipment()
+    {
+        InstalledKitchenEquipmentStateId = null;
+        CookingStartedBlockIndex = null;
+        CookingDurationBlock = null;
+    }
+
     public bool IsInUse(long currentBlockIndex)
     {
         return BlockUtil.CalculateIsInProgress(currentBlockIndex, CookingStartedBlockIndex ?? 0, CookingDurationBlock ?? 0);

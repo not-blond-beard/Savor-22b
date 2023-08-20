@@ -162,7 +162,7 @@ public class CreateFoodAction : SVRAction
 
             if (!space.EquipmentIsPresent())
             {
-                throw new NotHaveRequiredEquipmentException(
+                throw new NotFoundDataException(
                     $"{spaceNumber} is not installed anything");
             }
 
