@@ -108,7 +108,12 @@ public class Query : ObjectGraphType
                     context.GetArgument<int>("y")
                 );
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
@@ -144,7 +149,12 @@ public class Query : ObjectGraphType
                     context.GetArgument<List<Guid>>("refrigeratorStateIDs")
                 );
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
@@ -174,7 +184,12 @@ public class Query : ObjectGraphType
                     context.GetArgument<Guid>("itemStateID")
                 );
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
@@ -204,7 +219,12 @@ public class Query : ObjectGraphType
                     context.GetArgument<int>("desiredEquipmentID")
                 );
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
@@ -239,7 +259,12 @@ public class Query : ObjectGraphType
                     context.GetArgument<int>("fieldIndex")
                 );
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
@@ -266,7 +291,12 @@ public class Query : ObjectGraphType
 
                 var action = new RemovePlantedSeedAction(context.GetArgument<int>("fieldIndex"));
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
@@ -293,7 +323,12 @@ public class Query : ObjectGraphType
 
                 var action = new RemoveWeedAction(context.GetArgument<int>("fieldIndex"));
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
@@ -323,34 +358,17 @@ public class Query : ObjectGraphType
                     Guid.NewGuid()
                 );
 
-                return getUnsignedTransactionHex(action, publicKey);
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
             }
         );
 
         AddField(new CalculateRelocationCostQuery());
-        AddField(new VillagesQuery());
-    }
-
-    private string getUnsignedTransactionHex(IAction action, PublicKey publicKey)
-    {
-        Address signer = publicKey.ToAddress();
-        TxActionList txActionList = new(new[] { action });
-
-        long nonce = _blockChain.GetNextTxNonce(signer);
-
-        TxInvoice invoice = new TxInvoice(
-            genesisHash: _blockChain.Genesis.Hash,
-            actions: txActionList
-        );
-        UnsignedTx unsignedTransaction = new UnsignedTx(
-            invoice,
-            new TxSigningMetadata(publicKey, nonce)
-        );
-
-        byte[] unsignedTransactionString = unsignedTransaction.SerializeUnsignedTx().ToArray();
-        string unsignedTransactionHex = ByteUtil.Hex(unsignedTransactionString);
-
-        return unsignedTransactionHex;
+        AddField(new VillagesQuery(blockChain));
     }
 
     private List<RecipeResponse> combineRecipeData()
