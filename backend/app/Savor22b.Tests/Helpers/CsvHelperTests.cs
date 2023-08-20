@@ -1,5 +1,6 @@
 namespace Savor22b.Tests.Helpers;
 
+using System.Collections.Immutable;
 using Savor22b.Helpers;
 
 public class CsvParserTests
@@ -19,8 +20,8 @@ public class CsvParserTests
 
     class SampleCsvContainList {
         public int Test1 {get; set;}
-        public List<int> Test2List {get; set;}
-        public List<string> Test3List {get; set;}
+        public ImmutableList<int> Test2List {get; set;}
+        public ImmutableList<string> Test3List {get; set;}
     }
 
     [Fact]

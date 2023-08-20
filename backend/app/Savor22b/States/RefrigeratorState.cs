@@ -1,20 +1,22 @@
 namespace Savor22b.States;
 
 using Bencodex.Types;
+using Savor22b.Constants;
 using Libplanet.Headless.Extensions;
 
 public class RefrigeratorState : State
 {
-    public Guid StateID { get; set; }
-    public int? IngredientID { get; set; }
-    public int? FoodID { get; set; }
-    public string Grade { get; set; }
-    public int HP { get; set; }
-    public int DEF { get; set; }
-    public int ATK { get; set; }
-    public int SPD { get; set; }
-
-    public RefrigeratorState(Guid stateID, int? ingredientID, int? foodID, string grade, int hp, int def, int atk, int spd)
+    public RefrigeratorState(
+        Guid stateID,
+        int? ingredientID,
+        int? foodID,
+        string grade,
+        int hp,
+        int def,
+        int atk,
+        int spd,
+        long? availableBlockIndex
+    )
     {
         StateID = stateID;
         IngredientID = ingredientID;
@@ -24,77 +26,139 @@ public class RefrigeratorState : State
         DEF = def;
         ATK = atk;
         SPD = spd;
+        AvailableBlockIndex = availableBlockIndex;
     }
 
-    public static RefrigeratorState CreateIngredient(Guid stateID, int? ingredientID, string grade, int hp, int def, int atk, int spd)
+    public static RefrigeratorState CreateIngredient(
+        Guid stateID,
+        int ingredientID,
+        string grade,
+        int hp,
+        int def,
+        int atk,
+        int spd
+    )
+    {
+        return new RefrigeratorState(stateID, ingredientID, null, grade, hp, def, atk, spd, null);
+    }
+
+    public static RefrigeratorState CreateFood(
+        Guid stateID,
+        int foodID,
+        string grade,
+        int hp,
+        int def,
+        int atk,
+        int spd,
+        long? availableBlockIndex
+    )
     {
         return new RefrigeratorState(
-            stateID: stateID,
-            ingredientID: ingredientID,
-            foodID: null,
-            grade: grade,
-            hp: hp,
-            def: def,
-            atk: atk,
-            spd: spd
+            stateID,
+            null,
+            foodID,
+            grade,
+            hp,
+            def,
+            atk,
+            spd,
+            availableBlockIndex
         );
     }
 
-    public static RefrigeratorState CreateFood(Guid stateID, int foodID, string grade, int hp, int def, int atk, int spd)
-    {
-        return new RefrigeratorState(
-            stateID: stateID,
-            ingredientID: null,
-            foodID: foodID,
-            grade: grade,
-            hp: hp,
-            def: def,
-            atk: atk,
-            spd: spd
-        );
-    }
-
-    public RefrigeratorState(Bencodex.Types.Dictionary encoded)
+    public RefrigeratorState(Dictionary encoded)
     {
         StateID = encoded[nameof(StateID)].ToGuid();
-        Grade = (string)((Text)encoded[(Text)nameof(Grade)]).Value;
-        HP = (int)((Integer)encoded[(Text)nameof(HP)]).Value;
-        DEF = (int)((Integer)encoded[(Text)nameof(DEF)]).Value;
-        ATK = (int)((Integer)encoded[(Text)nameof(ATK)]).Value;
-        SPD = (int)((Integer)encoded[(Text)nameof(SPD)]).Value;
-
-        if (encoded.ContainsKey((Text)nameof(IngredientID)))
-        {
-            this.IngredientID = (int)((Integer)encoded[(Text)nameof(IngredientID)]).Value;
-        }
-
-        if (encoded.ContainsKey((Text)nameof(FoodID)))
-        {
-            this.FoodID = (int)((Integer)encoded[(Text)nameof(FoodID)]).Value;
-        }
+        Grade = encoded[nameof(Grade)].ToDotnetString();
+        HP = encoded[nameof(HP)].ToInteger();
+        DEF = encoded[nameof(DEF)].ToInteger();
+        ATK = encoded[nameof(ATK)].ToInteger();
+        SPD = encoded[nameof(SPD)].ToInteger();
+        IngredientID = encoded[nameof(IngredientID)].ToNullableInteger();
+        FoodID = encoded[nameof(FoodID)].ToNullableInteger();
+        AvailableBlockIndex = encoded[nameof(AvailableBlockIndex)].ToNullableLong();
     }
+
+    public Guid StateID { get; set; }
+
+    public int? IngredientID { get; set; }
+
+    public int? FoodID { get; set; }
+
+    public string Grade { get; set; }
+
+    public int HP { get; set; }
+
+    public int DEF { get; set; }
+
+    public int ATK { get; set; }
+
+    public int SPD { get; set; }
+
+    public long? AvailableBlockIndex { get; set; }
 
     public IValue Serialize()
     {
-        var pairs = new List<KeyValuePair<IKey, IValue>>();
-
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(Grade), (Text)Grade));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(HP), (Integer)HP));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(DEF), (Integer)DEF));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(ATK), (Integer)ATK));
-        pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(SPD), (Integer)SPD));
-
-        if (IngredientID.HasValue)
+        var pairs = new List<KeyValuePair<IKey, IValue>>
         {
-            pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), (Integer)IngredientID.Value));
-        }
-
-        if (FoodID.HasValue)
-        {
-            pairs.Add(new KeyValuePair<IKey, IValue>((Text)nameof(FoodID), (Integer)FoodID.Value));
-        }
+            new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(Grade), Grade.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(HP), HP.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(DEF), DEF.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(ATK), ATK.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(SPD), SPD.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), IngredientID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(FoodID), FoodID.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(AvailableBlockIndex),
+                AvailableBlockIndex.Serialize()
+            ),
+        };
 
         return new Dictionary(pairs);
+    }
+
+    public bool IsAvailable(long currentBlockIndex)
+    {
+        if (AvailableBlockIndex is null)
+        {
+            return true;
+        }
+
+        return currentBlockIndex > AvailableBlockIndex;
+    }
+
+    public Edible GetEdibleType()
+    {
+        return FoodID is not null ? Edible.FOOD : Edible.INGREDIENT;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is RefrigeratorState other
+            && StateID == other.StateID
+            && IngredientID == other.IngredientID
+            && FoodID == other.FoodID
+            && Grade == other.Grade
+            && HP == other.HP
+            && DEF == other.DEF
+            && ATK == other.ATK
+            && SPD == other.SPD;
+    }
+
+    public override int GetHashCode()
+    {
+        int hash = 17;
+
+        hash = hash * 23 + StateID.GetHashCode();
+        hash = hash * 23 + (IngredientID?.GetHashCode() ?? 0);
+        hash = hash * 23 + (FoodID?.GetHashCode() ?? 0);
+        hash = hash * 23 + (Grade?.GetHashCode() ?? 0);
+        hash = hash * 23 + HP.GetHashCode();
+        hash = hash * 23 + DEF.GetHashCode();
+        hash = hash * 23 + ATK.GetHashCode();
+        hash = hash * 23 + SPD.GetHashCode();
+
+        return hash;
     }
 }
