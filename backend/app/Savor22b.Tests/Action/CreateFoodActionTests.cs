@@ -238,59 +238,29 @@ public class CreateFoodActionTests : ActionTests
         }
         foreach (var spaceNumber in spaceNumbersToUse)
         {
-            switch (spaceNumber)
-            {
-                case 1:
-                    Assert.Equal(
-                        beforeRootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace,
-                        rootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace
-                    );
-                    Assert.True(
-                        rootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace.IsInUse(
-                            blockIndex
-                        )
-                    );
-                    Assert.False(
-                        rootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace.IsInUse(
-                            blockIndex + recipe.RequiredBlock
-                        )
-                    );
-                    break;
-                case 2:
-                    Assert.Equal(
-                        beforeRootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace,
-                        rootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace
-                    );
-                    Assert.True(
-                        rootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace.IsInUse(
-                            blockIndex
-                        )
-                    );
-                    Assert.False(
-                        rootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace.IsInUse(
-                            blockIndex + recipe.RequiredBlock
-                        )
-                    );
-                    break;
-                case 3:
-                    Assert.Equal(
-                        beforeRootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace,
-                        rootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace
-                    );
-                    Assert.True(
-                        rootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace.IsInUse(
-                            blockIndex
-                        )
-                    );
-                    Assert.False(
-                        rootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace.IsInUse(
-                            blockIndex + recipe.RequiredBlock
-                        )
-                    );
-                    break;
-                default:
-                    throw new Exception("");
-            }
+            Assert.NotNull(
+                beforeRootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
+                    spaceNumber
+                )
+            );
+            Assert.Equal(
+                beforeRootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
+                    spaceNumber
+                ),
+                rootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
+                    spaceNumber
+                )
+            );
+            Assert.True(
+                rootState.VillageState!.HouseState.KitchenState
+                    .GetApplianceSpaceStateByNumber(spaceNumber)
+                    .IsInUse(blockIndex)
+            );
+            Assert.False(
+                rootState.VillageState!.HouseState.KitchenState
+                    .GetApplianceSpaceStateByNumber(spaceNumber)
+                    .IsInUse(blockIndex + recipe.RequiredBlock)
+            );
         }
     }
 
