@@ -32,12 +32,12 @@ public class ShopQuery : FieldType
 
     private static Shop GetShop()
     {
-        var kitchenEquipmentCSVData = CsvDataHelper.GetKitchenEquipmentCSVData().ToArray();
+        var kitchenEquipmentCSVData = CsvDataHelper.GetKitchenEquipmentCSVData();
         var shopKitchenEquipments = kitchenEquipmentCSVData
             .Select(kitchenEquipment => new ShopKitchenEquipment(kitchenEquipment))
             .ToImmutableList();
 
-        var itemCSVData = CsvDataHelper.GetItemCSVData().ToArray();
+        var itemCSVData = CsvDataHelper.GetItemCSVData();
         var shopItems = itemCSVData
             .Select(item =>
             {
