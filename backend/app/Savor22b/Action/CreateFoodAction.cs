@@ -296,7 +296,7 @@ public class CreateFoodAction : SVRAction
         return (HP: hp, ATK: attack, DEF: defense, SPD: speed);
     }
 
-    private long calcDuractionBlock(
+    private long calculateDuractionBlock(
         Recipe recipe,
         InventoryState inventoryState,
         KitchenState kitchenState,
@@ -425,7 +425,7 @@ public class CreateFoodAction : SVRAction
         HouseState houseState = rootState.VillageState!.HouseState;
 
         var recipe = FindRecipeInCsv(RecipeID);
-        var durationBlock = calcDuractionBlock(
+        var durationBlock = calculateDuractionBlock(
             recipe,
             inventoryState,
             houseState.KitchenState,
