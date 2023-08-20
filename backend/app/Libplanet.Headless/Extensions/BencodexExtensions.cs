@@ -82,4 +82,13 @@ public static class BencodexExtensions
         Deserialize(ToLong, serialized);
 
     #endregion long
+
+    #region Text
+
+    public static IValue Serialize(this string text) =>
+        (Text)text;
+
+    public static string ToDotnetString(this IValue serialized) => ((Text) serialized).Value;
+
+    #endregion Text
 }

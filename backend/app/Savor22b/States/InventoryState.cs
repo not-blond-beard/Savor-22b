@@ -117,6 +117,11 @@ public class InventoryState : State
         return new InventoryState(SeedStateList, stateList, KitchenEquipmentStateList, ItemStateList);
     }
 
+    public RefrigeratorState GetRefrigeratorItem(Guid stateID)
+    {
+        return RefrigeratorStateList.Find(r => r.StateID == stateID);
+    }
+
     public InventoryState AddKitchenEquipmentItem(KitchenEquipmentState item)
     {
         var kitchenEquipmentStateList = KitchenEquipmentStateList.Add(item);

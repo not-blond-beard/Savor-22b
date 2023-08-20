@@ -49,6 +49,7 @@ public class CreateFoodActionTests : ActionTests
                     1,
                     1,
                     1,
+                    1,
                     1
                 ));
         }
@@ -152,28 +153,47 @@ public class CreateFoodActionTests : ActionTests
 
         Assert.Single(afterInventoryState.RefrigeratorStateList);
         Assert.Equal(recipe.ResultFoodID, afterInventoryState.RefrigeratorStateList[0].FoodID);
+        Assert.Equal(blockIndex + recipe.RequiredBlock, afterInventoryState.RefrigeratorStateList[0].AvailableBlockIndex);
         foreach(var kitchenEquipmentStateId in kitchenEquipmentStateIdsToUse)
         {
+            Assert.Equal(
+                beforeRootState.InventoryState.GetKitchenEquipmentState(kitchenEquipmentStateId),
+                afterInventoryState.GetKitchenEquipmentState(kitchenEquipmentStateId));
             Assert.True(afterInventoryState.GetKitchenEquipmentState(kitchenEquipmentStateId)!.IsInUse(blockIndex));
+            Assert.False(afterInventoryState.GetKitchenEquipmentState(kitchenEquipmentStateId)!.IsInUse(blockIndex + recipe.RequiredBlock));
         }
         foreach(var spaceNumber in spaceNumbersToUse)
         {
             switch (spaceNumber)
             {
                 case 1:
+                    Assert.Equal(
+                        beforeRootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace,
+                        rootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace);
                     Assert.True(rootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace.IsInUse(blockIndex));
+                    Assert.False(rootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace.IsInUse(blockIndex + recipe.RequiredBlock));
                     break;
                 case 2:
+                    Assert.Equal(
+                        beforeRootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace,
+                        rootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace);
                     Assert.True(rootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace.IsInUse(blockIndex));
+                    Assert.False(rootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace.IsInUse(blockIndex + recipe.RequiredBlock));
                     break;
                 case 3:
+                    Assert.Equal(
+                        beforeRootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace,
+                        rootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace);
                     Assert.True(rootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace.IsInUse(blockIndex));
+                    Assert.False(rootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace.IsInUse(blockIndex + recipe.RequiredBlock));
                     break;
                 default:
                     throw new Exception("");
             }
         }
     }
+
+    // 내가 넣은 state id들만 사용된건지 체크하는 테스트 추가 필요
 
     // [Theory]
     // [InlineData(1)]

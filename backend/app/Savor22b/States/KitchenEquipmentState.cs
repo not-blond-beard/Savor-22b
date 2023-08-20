@@ -60,4 +60,38 @@ public class KitchenEquipmentState : State
     {
         return BlockUtil.CalculateIsInProgress(currentBlockIndex, CookingStartedBlockIndex ?? 0, CookingDurationBlock ?? 0);
     }
+
+    public KitchenEquipmentState StartCooking(long currentBlockIndex, long cookingDurationBlock)
+    {
+        return new KitchenEquipmentState(
+            StateID, KitchenEquipmentID, KitchenEquipmentCategoryID, currentBlockIndex, cookingDurationBlock);
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(this, obj))
+        {
+            return true;
+        }
+
+        if (obj == null || GetType() != obj.GetType())
+        {
+            return false;
+        }
+
+        KitchenEquipmentState other = (KitchenEquipmentState)obj;
+        return StateID == other.StateID && KitchenEquipmentID == other.KitchenEquipmentID;
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 17;
+            hash = (hash * 23) ^ StateID.GetHashCode();
+            hash = (hash * 23) ^ KitchenEquipmentID.GetHashCode();
+            return hash;
+        }
+    }
+
 }

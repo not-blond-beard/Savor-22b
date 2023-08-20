@@ -6,11 +6,12 @@ using Bencodex.Types;
 using Libplanet.Action;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
+using Savor22b.Constants;
 using Savor22b.Action.Exceptions;
+using Savor22b.Action.Util;
 using Savor22b.Helpers;
 using Savor22b.Model;
 using Savor22b.States;
-using Savor22b.Action.Util;
 
 [ActionType(nameof(CreateFoodAction))]
 public class CreateFoodAction : SVRAction
@@ -58,76 +59,136 @@ public class CreateFoodAction : SVRAction
         ApplianceSpaceNumbersToUse = ((List)plainValue[nameof(ApplianceSpaceNumbersToUse)]).Select(e => e.ToInteger()).ToList();
     }
 
-    private RefrigeratorState FindIngredientInState(InventoryState state, int ingredientID)
+    private InventoryState CheckAndRemoveEdibles(Recipe recipe, InventoryState state, List<Guid> refrigeratorStateIdsToUse)
     {
-        var ingredient = state.RefrigeratorStateList.Find(
-            state => state.IngredientID == ingredientID
-        );
+        List<int> requiredIngredientIds = recipe.IngredientIDList;
+        List<int> requiredFoodIds = recipe.FoodIDList;
 
-        if (ingredient is null)
+        foreach (var stateId in refrigeratorStateIdsToUse)
         {
-            throw new NotEnoughRawMaterialsException($"You don't have `{ingredientID}` ingredient");
+            var refrigeratorState = state.GetRefrigeratorItem(stateId);
+
+            if (refrigeratorState is null)
+            {
+                throw new NotFoundDataException($"You don't have `{stateId}` ingredient or food");
+            }
+
+            if (refrigeratorState.GetEdibleType() == Edible.FOOD)
+            {
+                if (!requiredFoodIds.Contains(refrigeratorState.FoodID!.Value))
+                {
+                    throw new NotHaveRequiredEquipmentException(
+                        $"You should have foods `{requiredFoodIds}`");
+                }
+
+                requiredFoodIds.Remove(refrigeratorState.FoodID!.Value);
+            }
+            else if (refrigeratorState.GetEdibleType() == Edible.INGREDIENT)
+            {
+                if (!requiredIngredientIds.Contains(refrigeratorState.IngredientID!.Value))
+                {
+                    throw new NotHaveRequiredEquipmentException(
+                        $"You should have foods `{requiredIngredientIds}`");
+                }
+
+                requiredIngredientIds.Remove(refrigeratorState.IngredientID!.Value);
+            }
+
+            state = state.RemoveRefrigeratorItem(stateId);
         }
 
-        return ingredient;
+        if (requiredFoodIds.Count != 0 || requiredIngredientIds.Count != 0)
+        {
+            throw new NotHaveRequiredEquipmentException(
+                $"You should have foods `{requiredFoodIds}` and ingredients `{requiredIngredientIds}`");
+        }
+
+        return state;
     }
 
-    private RefrigeratorState FindFoodInState(InventoryState state, int foodID)
+    private InventoryState CheckAndChangeEquipmentsStatus(
+        Recipe recipe, InventoryState state, List<Guid> kitchenEquipmentStateIdsToUse, long currentBlockIndex)
     {
-        var food = state.RefrigeratorStateList.Find(state => state.FoodID == foodID);
+        List<int> kitchenCategoryIds = recipe.RequiredKitchenEquipmentCategoryList;
+        List<KitchenEquipmentCategory> kitchenCategories = (from categoryId in kitchenCategoryIds
+                                                            select CsvDataHelper.GetKitchenEquipmentCategoryByID(categoryId)).ToList();
+        List<int> requiredKitchenCategoryIds = (from category in kitchenCategories
+                                                where category.Category == "sub"
+                                                select category.ID).ToList();
 
-        if (food is null)
+        foreach (var stateId in kitchenEquipmentStateIdsToUse)
         {
-            throw new NotEnoughRawMaterialsException($"You don't have `{foodID}` food");
+            var kitchenEquipment = state.GetKitchenEquipmentState(stateId);
+            if (kitchenEquipment == null)
+            {
+                throw new NotFoundDataException($"You don't have `{stateId}` kitchen equipment");
+            }
+
+            if (!recipe.RequiredKitchenEquipmentCategoryList.Contains(kitchenEquipment.KitchenEquipmentCategoryID))
+            {
+                throw new NotHaveRequiredEquipmentException(
+                    $"You should have equipment category `{kitchenEquipment.KitchenEquipmentCategoryID}`");
+            }
+
+            var statusChangedEquipment = kitchenEquipment.StartCooking(currentBlockIndex, recipe.RequiredBlock);
+            state = state.RemoveKitchenEquipmentItem(kitchenEquipment.StateID);
+            state = state.AddKitchenEquipmentItem(statusChangedEquipment);
+
+            requiredKitchenCategoryIds.Remove(kitchenEquipment.KitchenEquipmentCategoryID);
         }
 
-        return food;
+        if (requiredKitchenCategoryIds.Count != 0)
+        {
+            throw new NotHaveRequiredEquipmentException(
+                $"You should have kitchenEquipments `{requiredKitchenCategoryIds}`");
+        }
+
+        return state;
     }
 
-    private List<Guid> FindOwnMaterials(Recipe recipe, InventoryState state)
+    private HouseState CheckAndChangeApplianceSpacesStatus(
+        Recipe recipe, HouseState houseState, InventoryState inventoryState, List<int> spaceNumbers, long currentBlockIndex)
     {
-        List<Guid> resultStateIDList = new List<Guid>();
+        List<int> kitchenCategoryIds = recipe.RequiredKitchenEquipmentCategoryList;
+        List<KitchenEquipmentCategory> kitchenCategories = (from categoryId in kitchenCategoryIds
+                                                            select CsvDataHelper.GetKitchenEquipmentCategoryByID(categoryId)).ToList();
+        List<int> requiredKitchenCategoryIds = (from category in kitchenCategories
+                                                where category.Category == "main"
+                                                select category.ID).ToList();
 
-        foreach (var ingredientID in recipe.IngredientIDList)
+        foreach (var spaceNumber in spaceNumbers)
         {
-            var ingredientStateID = FindIngredientInState(state, ingredientID).StateID;
-            resultStateIDList.Add(ingredientStateID);
+            var space = houseState.KitchenState.GetApplianceSpaceStateByNumber(spaceNumber);
+
+            if (!space.EquipmentIsPresent())
+            {
+                throw new NotHaveRequiredEquipmentException(
+                    $"{spaceNumber} is not installed anything");
+            }
+
+            var kitchenEquipment = inventoryState.GetKitchenEquipmentState(space.InstalledKitchenEquipmentStateId!.Value);
+
+            if (!recipe.RequiredKitchenEquipmentCategoryList.Contains(kitchenEquipment.KitchenEquipmentCategoryID))
+            {
+                throw new NotHaveRequiredEquipmentException(
+                    $"You should have equipment category `{kitchenEquipment.KitchenEquipmentCategoryID}`");
+            }
+
+            space.StartCooking(currentBlockIndex, recipe.RequiredBlock);
+
+            requiredKitchenCategoryIds.Remove(kitchenEquipment.KitchenEquipmentCategoryID);
         }
 
-        foreach (var foodID in recipe.FoodIDList)
+        if (requiredKitchenCategoryIds.Count != 0)
         {
-            var foodStateID = FindFoodInState(state, foodID).StateID;
-            resultStateIDList.Add(foodStateID);
+            throw new NotHaveRequiredEquipmentException(
+                $"You should have kitchenEquipments `{requiredKitchenCategoryIds}`");
         }
 
-        if (resultStateIDList.Count == 0)
-        {
-            throw new NotEnoughRawMaterialsException($"You don't have any materials");
-        }
-
-        return resultStateIDList;
+        return houseState;
     }
 
-    private InventoryState RemoveMaterials(InventoryState state, List<Guid> stateIDs)
-    {
-        InventoryState result = state;
-        foreach (var stateID in stateIDs)
-        {
-            result = result.RemoveRefrigeratorItem(stateID);
-        }
-
-        return result;
-    }
-
-    private InventoryState CheckAndRemoveForRecipe(Recipe recipe, InventoryState state)
-    {
-        var materialsForRemoval = FindOwnMaterials(recipe, state);
-        var result = RemoveMaterials(state, materialsForRemoval);
-
-        return result;
-    }
-
-    private Food FindFoodInCSV(int foodID)
+    private Food FindFoodInCsv(int foodID)
     {
         var Food = CsvDataHelper.GetFoodById(foodID);
 
@@ -139,7 +200,7 @@ public class CreateFoodAction : SVRAction
         return Food;
     }
 
-    private Stat FindStatInCSV(int foodID, string grade)
+    private Stat FindStatInCsv(int foodID, string grade)
     {
         var stat = CsvDataHelper.GetStatByFoodIDAndGrade(foodID, grade);
 
@@ -153,6 +214,19 @@ public class CreateFoodAction : SVRAction
         return stat;
     }
 
+    private Recipe FindRecipeInCsv(int recipeID)
+    {
+        var recipe = CsvDataHelper.GetRecipeById(recipeID);
+
+        if (recipe is null)
+        {
+            throw new NotFoundTableDataException(
+                $"Invalid {nameof(recipeID)}: {recipeID}");
+        }
+
+        return recipe;
+    }
+
     private (int HP, int ATK, int DEF, int SPD) GenerateStat(IRandom random, Stat stat)
     {
         var hp = random.Next(stat.MinHP, stat.MaxHP + 1);
@@ -163,17 +237,17 @@ public class CreateFoodAction : SVRAction
         return (HP: hp, ATK: attack, DEF: defense, SPD: speed);
     }
 
-    private RefrigeratorState GenerateFood(Recipe recipe, IRandom random)
+    private RefrigeratorState GenerateFood(Recipe recipe, IRandom random, long currentBlockIndex)
     {
         var gradeExtractor = new GradeExtractor(random, 0.1);
 
-        var foodCsvData = FindFoodInCSV(recipe.ResultFoodID);
+        var foodCsvData = FindFoodInCsv(recipe.ResultFoodID);
 
         var grade = GradeExtractor.GetGrade(
             gradeExtractor.ExtractGrade(foodCsvData.MinGrade, foodCsvData.MaxGrade)
         );
 
-        var stat = FindStatInCSV(foodCsvData.ID, grade);
+        var stat = FindStatInCsv(foodCsvData.ID, grade);
 
         var generatedStat = GenerateStat(random, stat);
 
@@ -184,7 +258,8 @@ public class CreateFoodAction : SVRAction
             generatedStat.HP,
             generatedStat.ATK,
             generatedStat.DEF,
-            generatedStat.SPD
+            generatedStat.SPD,
+            currentBlockIndex + recipe.RequiredBlock
         );
 
         return food;
@@ -199,24 +274,22 @@ public class CreateFoodAction : SVRAction
 
         IAccountStateDelta states = ctx.PreviousStates;
 
-        RootState rootState = states.GetState(ctx.Signer)
-            is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
 
-        Validation.EnsureReplaceInProgress(rootState, ctx.BlockIndex);
+        Validation.EnsureVillageStateExists(rootState);
 
         InventoryState inventoryState = rootState.InventoryState;
+        HouseState houseState = rootState.VillageState!.HouseState;
 
-        var recipe = CsvDataHelper.GetRecipeById(RecipeID);
+        var recipe = FindRecipeInCsv(RecipeID);
 
-        if (recipe is null)
-        {
-            throw new NotFoundTableDataException($"Invalid {nameof(RecipeID)}: {RecipeID}");
-        }
+        inventoryState = CheckAndChangeEquipmentsStatus(recipe, inventoryState, KitchenEquipmentStateIdsToUse, ctx.BlockIndex);
+        houseState = CheckAndChangeApplianceSpacesStatus(recipe, houseState, inventoryState, ApplianceSpaceNumbersToUse, ctx.BlockIndex);
+        inventoryState = CheckAndRemoveEdibles(recipe, inventoryState, RefrigeratorStateIdsToUse);
 
-        inventoryState = CheckAndRemoveForRecipe(recipe, inventoryState);
-        RefrigeratorState food = GenerateFood(recipe, ctx.Random);
+        RefrigeratorState food = GenerateFood(recipe, ctx.Random, ctx.BlockIndex);
         inventoryState = inventoryState.AddRefrigeratorItem(food);
 
         rootState.SetInventoryState(inventoryState);
