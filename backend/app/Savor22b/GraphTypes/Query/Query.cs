@@ -1,4 +1,4 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Query;
 
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -12,8 +12,7 @@ using Libplanet.Crypto;
 using Libplanet.Net;
 using Libplanet.Tx;
 using Savor22b.Action;
-using Savor22b.Action.Util;
-using Savor22b.DataModel;
+using Savor22b.GraphTypes.Types;
 using Savor22b.Model;
 
 public class Query : ObjectGraphType
@@ -328,73 +327,8 @@ public class Query : ObjectGraphType
             }
         );
 
-        Field<NonNullGraphType<RelocationCostType>>(
-            "calculateRelocationCost",
-            description: "Calculating the BBG (Money) and Block Time for Relocation from a Specific Village to Other Villages.",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<IntGraphType>>
-                {
-                    Name = "villageId",
-                    Description = "The ID of the source village for relocation.",
-                },
-                new QueryArgument<NonNullGraphType<IntGraphType>>
-                {
-                    Name = "relocationVillageId",
-                    Description = "The ID of the target village where you want to relocate.",
-                }
-            ),
-            resolve: context =>
-            {
-                try
-                {
-                    RelocationCost relocationCost = CalculateRelocationCost(
-                        context.GetArgument<int>("villageId"),
-                        context.GetArgument<int>("relocationVillageId")
-                    );
-
-                    return relocationCost;
-                }
-                catch (Exception e)
-                {
-                    throw new ExecutionError(e.Message);
-                }
-            }
-        );
-
-        Field<NonNullGraphType<ListGraphType<VillageType>>>(
-            "villages",
-            description: "Get all villages",
-            resolve: context =>
-            {
-                try
-                {
-                    ImmutableList<Village> villages = CsvDataHelper.GetVillageCSVData();
-                    return villages;
-                }
-                catch (Exception e)
-                {
-                    throw new ExecutionError(e.Message);
-                }
-            }
-        );
-    }
-
-    private static RelocationCost CalculateRelocationCost(
-        int villageId,
-        int targetRelocationVillageId
-    )
-    {
-        Village originVillage = Validation.GetVillage(villageId);
-        Village targetVillage = Validation.GetVillage(targetRelocationVillageId);
-
-        RelocationCost relocationCost = VillageUtil.CalculateRelocationCost(
-            originVillage.WorldX,
-            originVillage.WorldY,
-            targetVillage.WorldX,
-            targetVillage.WorldY
-        );
-
-        return relocationCost;
+        AddField(new CalculateRelocationCostQuery());
+        AddField(new VillagesQuery());
     }
 
     private string getUnsignedTransactionHex(IAction action, PublicKey publicKey)

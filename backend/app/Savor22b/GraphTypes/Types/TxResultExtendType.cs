@@ -1,10 +1,8 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
-using System.Collections.Generic;
 using System.Linq;
 using GraphQL.Types;
 using Libplanet;
-using Libplanet.Assets;
 using Libplanet.Explorer.GraphTypes;
 using static Libplanet.Explorer.GraphTypes.TxResultType;
 
@@ -12,7 +10,6 @@ public class TxResultExtendType : ObjectGraphType<TxResult>
 {
     public TxResultExtendType()
     {
-
         Field<NonNullGraphType<TxStatusType>>(
             nameof(TxResult.TxStatus),
             description: "The transaction status.",
@@ -40,32 +37,35 @@ public class TxResultExtendType : ObjectGraphType<TxResult>
         Field<ExceptionMetadataType>(
             nameof(TxResult.ExceptionMetadata),
             description: "The hexadecimal string of the exception metadata. (when only failed)",
-            resolve: context => context.Source.ExceptionMetadata != null ? new ExceptionMetadata(context.Source.ExceptionMetadata) : null
+            resolve: context =>
+                context.Source.ExceptionMetadata != null
+                    ? new ExceptionMetadata(context.Source.ExceptionMetadata)
+                    : null
         );
 
         Field<ListGraphType<NonNullGraphType<UpdatedStateType>>>(
             nameof(TxResult.UpdatedStates),
-            resolve: context => context.Source.UpdatedStates?
-                .Select(pair => new UpdatedState(pair.Key, pair.Value))
+            resolve: context =>
+                context.Source.UpdatedStates?.Select(pair => new UpdatedState(pair.Key, pair.Value))
         );
 
         Field<ListGraphType<NonNullGraphType<FungibleAssetBalancesType>>>(
             nameof(TxResult.UpdatedFungibleAssets),
-            resolve: context => context.Source.UpdatedFungibleAssets?
-                .Select(pair => new FungibleAssetBalances(pair.Key, pair.Value.Values))
+            resolve: context =>
+                context.Source.UpdatedFungibleAssets?.Select(
+                    pair => new FungibleAssetBalances(pair.Key, pair.Value.Values)
+                )
         );
 
         Field<ListGraphType<NonNullGraphType<FungibleAssetBalancesType>>>(
             nameof(TxResult.FungibleAssetsDelta),
-            resolve: context => context.Source.FungibleAssetsDelta?
-                .Select(pair => new FungibleAssetBalances(pair.Key, pair.Value.Values))
+            resolve: context =>
+                context.Source.FungibleAssetsDelta?.Select(
+                    pair => new FungibleAssetBalances(pair.Key, pair.Value.Values)
+                )
         );
 
-        Field<ListGraphType<
-            NonNullGraphType<ListGraphType<
-                NonNullGraphType<StringGraphType>
-            >>
-        >>(
+        Field<ListGraphType<NonNullGraphType<ListGraphType<NonNullGraphType<StringGraphType>>>>>(
             nameof(TxResult.ActionsLogsList),
             resolve: context => context.Source.ActionsLogsList
         );

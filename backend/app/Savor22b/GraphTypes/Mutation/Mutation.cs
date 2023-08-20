@@ -1,4 +1,4 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Mutation;
 
 using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
@@ -18,11 +18,9 @@ public class Mutation : ObjectGraphType
     [SuppressMessage(
         "StyleCop.CSharp.ReadabilityRules",
         "SA1118:ParameterMustNotSpanMultipleLines",
-        Justification = "GraphQL docs require long lines of text.")]
-    public Mutation(
-        BlockChain blockChain,
-        Swarm? swarm = null
-    )
+        Justification = "GraphQL docs require long lines of text."
+    )]
+    public Mutation(BlockChain blockChain, Swarm? swarm = null)
     {
         Field<TransactionType>(
             "stage",
@@ -49,10 +47,10 @@ public class Mutation : ObjectGraphType
         // can work together with this mutation:
         Field<TransactionType>(
             "transferAsset",
-            description: "Transfers the given amount of MNT from the account of the specified " +
-                "privateKeyHex to the specified recipient.  The transaction is signed using " +
-                "the privateKeyHex and added to the stage (and eventually included in one of " +
-                "the next blocks).",
+            description: "Transfers the given amount of MNT from the account of the specified "
+                + "privateKeyHex to the specified recipient.  The transaction is signed using "
+                + "the privateKeyHex and added to the stage (and eventually included in one of "
+                + "the next blocks).",
             arguments: new QueryArguments(
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
@@ -67,8 +65,9 @@ public class Mutation : ObjectGraphType
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
                     Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the sender.  A made " +
-                        "transaction will be signed using this key.",
+                    Description =
+                        "A hex-encoded private key of the sender.  A made "
+                        + "transaction will be signed using this key.",
                 }
             ),
             resolve: context =>
@@ -80,10 +79,7 @@ public class Mutation : ObjectGraphType
                 PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
                 var action = new Transfer(
                     recipient,
-                    FungibleAssetValue.Parse(
-                        Currencies.KeyCurrency,
-                        amount
-                    )
+                    FungibleAssetValue.Parse(Currencies.KeyCurrency, amount)
                 );
                 var actionList = new List<SVRAction>();
                 actionList.Add(action);
@@ -91,9 +87,8 @@ public class Mutation : ObjectGraphType
                 var tx = blockChain.MakeTransaction(
                     privateKey,
                     actionList,
-                    ImmutableHashSet<Address>.Empty
-                        .Add(privateKey.ToAddress())
-                        .Add(recipient));
+                    ImmutableHashSet<Address>.Empty.Add(privateKey.ToAddress()).Add(recipient)
+                );
                 swarm?.BroadcastTxs(new[] { tx });
                 return tx;
             }
@@ -103,9 +98,9 @@ public class Mutation : ObjectGraphType
         // can work together with this mutation:
         Field<TransactionType>(
             "mintAsset",
-            description: "Mints the given amount of MNT to the balance of the specified " +
-                "recipient. The transaction is signed using the privateKeyHex and added to " +
-                "the stage (and eventually included in one of the next blocks).",
+            description: "Mints the given amount of MNT to the balance of the specified "
+                + "recipient. The transaction is signed using the privateKeyHex and added to "
+                + "the stage (and eventually included in one of the next blocks).",
             arguments: new QueryArguments(
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
@@ -120,8 +115,9 @@ public class Mutation : ObjectGraphType
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
                     Name = "privateKeyHex",
-                    Description = "A hex-encoded private key of the minter.  A made " +
-                        "transaction will be signed using this key.",
+                    Description =
+                        "A hex-encoded private key of the minter.  A made "
+                        + "transaction will be signed using this key.",
                 }
             ),
             resolve: context =>
@@ -133,10 +129,7 @@ public class Mutation : ObjectGraphType
                 PrivateKey privateKey = PrivateKey.FromString(privateKeyHex);
                 var action = new Mint(
                     recipient,
-                    FungibleAssetValue.Parse(
-                        Currencies.KeyCurrency,
-                        amount
-                    )
+                    FungibleAssetValue.Parse(Currencies.KeyCurrency, amount)
                 );
                 var actionList = new List<SVRAction>();
                 actionList.Add(action);
@@ -144,17 +137,12 @@ public class Mutation : ObjectGraphType
                 var tx = blockChain.MakeTransaction(
                     privateKey,
                     actionList,
-                    ImmutableHashSet<Address>.Empty
-                        .Add(privateKey.ToAddress())
-                        .Add(recipient));
+                    ImmutableHashSet<Address>.Empty.Add(privateKey.ToAddress()).Add(recipient)
+                );
                 swarm?.BroadcastTxs(new[] { tx });
                 return tx;
             }
         );
-
-
-
-
 
         Field<NonNullGraphType<ByteStringType>>(
             name: "stageTransaction",
@@ -162,23 +150,27 @@ public class Mutation : ObjectGraphType
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
                     Name = "unsignedTransaction",
-                    Description = "The hexadecimal string of unsigned transaction to attach the given signature."
+                    Description =
+                        "The hexadecimal string of unsigned transaction to attach the given signature."
                 },
                 new QueryArgument<NonNullGraphType<StringGraphType>>
                 {
                     Name = "signature",
-                    Description = "The hexadecimal string of signature of the given unsigned transaction."
+                    Description =
+                        "The hexadecimal string of signature of the given unsigned transaction."
                 }
             ),
             resolve: context =>
             {
                 byte[] signature = ByteUtil.ParseHex(context.GetArgument<string>("signature"));
-                IUnsignedTx unsignedTransaction =
-                    TxMarshaler.DeserializeUnsignedTx(
-                        ByteUtil.ParseHex(context.GetArgument<string>("unsignedTransaction")));
+                IUnsignedTx unsignedTransaction = TxMarshaler.DeserializeUnsignedTx(
+                    ByteUtil.ParseHex(context.GetArgument<string>("unsignedTransaction"))
+                );
 
-                Transaction signedTransaction =
-                    new Transaction(unsignedTransaction, signature.ToImmutableArray());
+                Transaction signedTransaction = new Transaction(
+                    unsignedTransaction,
+                    signature.ToImmutableArray()
+                );
 
                 blockChain.StageTransaction(signedTransaction);
                 swarm?.BroadcastTxs(new[] { signedTransaction });
@@ -186,6 +178,5 @@ public class Mutation : ObjectGraphType
                 return signedTransaction.Serialize();
             }
         );
-
     }
 }

@@ -1,4 +1,4 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
 public class RecipeComponent
 {

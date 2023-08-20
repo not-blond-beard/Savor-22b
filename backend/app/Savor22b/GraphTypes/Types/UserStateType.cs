@@ -1,4 +1,4 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
 using Savor22b.States;
@@ -57,7 +57,7 @@ public class HouseFieldStateType : ObjectGraphType<HouseFieldState>
     }
 }
 
-public class VillageStateType: ObjectGraphType<VillageState>
+public class VillageStateType : ObjectGraphType<VillageState>
 {
     public VillageStateType()
     {
@@ -74,7 +74,7 @@ public class VillageStateType: ObjectGraphType<VillageState>
     }
 }
 
-public class KitchenStateType: ObjectGraphType<KitchenState>
+public class KitchenStateType : ObjectGraphType<KitchenState>
 {
     public KitchenStateType()
     {

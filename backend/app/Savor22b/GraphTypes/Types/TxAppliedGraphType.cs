@@ -1,11 +1,11 @@
-
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
 
 public class TxApplied
 {
     public bool TransactionApplied { get; set; }
+
     public TxApplied(bool transactionApplied)
     {
         TransactionApplied = transactionApplied;

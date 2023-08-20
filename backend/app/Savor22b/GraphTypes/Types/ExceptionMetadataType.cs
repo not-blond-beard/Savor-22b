@@ -1,7 +1,6 @@
-using Bencodex.Types;
-using GraphQL.Types;
-using Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
+using GraphQL.Types;
 
 public class ExceptionMetadataType : ObjectGraphType<ExceptionMetadata>
 {

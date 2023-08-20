@@ -1,4 +1,4 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Subscription;
 
 using System;
 using System.Reactive.Linq;
@@ -16,14 +16,15 @@ using Libplanet.Store;
 using System.Reactive.Subjects;
 using Libplanet.Tx;
 using Libplanet.Explorer.GraphTypes;
+using Savor22b.GraphTypes.Types;
 
 public class Subscription : ObjectGraphType
 {
     [SuppressMessage(
         "StyleCop.CSharp.ReadabilityRules",
         "SA1118:ParameterMustNotSpanMultipleLines",
-        Justification = "GraphQL docs require long lines of text.")]
-
+        Justification = "GraphQL docs require long lines of text."
+    )]
     private readonly BlockChain _blockChain;
     private readonly BlockRenderer _blockRenderer;
     private readonly IStore _store;
@@ -34,7 +35,7 @@ public class Subscription : ObjectGraphType
         BlockRenderer blockRenderer,
         IStore store,
         Swarm? swarm = null
-        )
+    )
     {
         _blockChain = blockChain;
         _blockRenderer = blockRenderer;
@@ -59,14 +60,16 @@ public class Subscription : ObjectGraphType
                     var accountAddress = new Address(context.GetArgument<string>("address"));
                     return GetRootState(accountAddress);
                 }),
-                StreamResolver = new SourceStreamResolver<RootState>((context) =>
-                {
-                    var accountAddress = new Address(context.GetArgument<string>("address"));
+                StreamResolver = new SourceStreamResolver<RootState>(
+                    (context) =>
+                    {
+                        var accountAddress = new Address(context.GetArgument<string>("address"));
 
-                    return _subject
-                        .DistinctUntilChanged()
-                        .Select(_ => GetRootState(accountAddress));
-                }),
+                        return _subject
+                            .DistinctUntilChanged()
+                            .Select(_ => GetRootState(accountAddress));
+                    }
+                ),
             }
         );
 
@@ -87,14 +90,12 @@ public class Subscription : ObjectGraphType
                 {
                     if (!(_blockChain is BlockChain blockChain))
                     {
-                        throw new ExecutionError(
-                            "blockChain was not set yet!");
+                        throw new ExecutionError("blockChain was not set yet!");
                     }
 
                     if (!(_store is IStore store))
                     {
-                        throw new ExecutionError(
-                        "store was not set yet!");
+                        throw new ExecutionError("store was not set yet!");
                     }
 
                     var strId = context.GetArgument<string>("txId");
@@ -104,32 +105,87 @@ public class Subscription : ObjectGraphType
                     {
                         if (_blockChain.GetStagedTransactionIds().Contains(txId))
                         {
-                            return new TxResult(TxStatus.STAGING, null, null, null, null, null, null, null, null);
+                            return new TxResult(
+                                TxStatus.STAGING,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            );
                         }
                         else
                         {
-                            return new TxResult(TxStatus.INVALID, null, null, null, null, null, null, null, null);
+                            return new TxResult(
+                                TxStatus.INVALID,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            );
                         }
                     }
 
                     try
                     {
-                        TxExecution execution = blockChain.GetTxExecution(txExecutedBlockHash, txId);
+                        TxExecution execution = blockChain.GetTxExecution(
+                            txExecutedBlockHash,
+                            txId
+                        );
                         Block txExecutedBlock = blockChain[txExecutedBlockHash];
 
                         return execution switch
                         {
-                            TxSuccess txSuccess => new TxResult(TxStatus.SUCCESS, txExecutedBlock.Index,
-                                txExecutedBlock.Hash.ToString(), null, null, txSuccess.UpdatedStates, txSuccess.FungibleAssetsDelta, txSuccess.UpdatedFungibleAssets, txSuccess.ActionsLogsList),
-                            TxFailure txFailure => new TxResult(TxStatus.FAILURE, txExecutedBlock.Index,
-                                txExecutedBlock.Hash.ToString(), txFailure.ExceptionName, txFailure.ExceptionMetadata, null, null, null, null),
-                            _ => throw new NotImplementedException(
-                                $"{nameof(execution)} is not expected concrete class.")
+                            TxSuccess txSuccess
+                                => new TxResult(
+                                    TxStatus.SUCCESS,
+                                    txExecutedBlock.Index,
+                                    txExecutedBlock.Hash.ToString(),
+                                    null,
+                                    null,
+                                    txSuccess.UpdatedStates,
+                                    txSuccess.FungibleAssetsDelta,
+                                    txSuccess.UpdatedFungibleAssets,
+                                    txSuccess.ActionsLogsList
+                                ),
+                            TxFailure txFailure
+                                => new TxResult(
+                                    TxStatus.FAILURE,
+                                    txExecutedBlock.Index,
+                                    txExecutedBlock.Hash.ToString(),
+                                    txFailure.ExceptionName,
+                                    txFailure.ExceptionMetadata,
+                                    null,
+                                    null,
+                                    null,
+                                    null
+                                ),
+                            _
+                                => throw new NotImplementedException(
+                                    $"{nameof(execution)} is not expected concrete class."
+                                )
                         };
                     }
                     catch (Exception)
                     {
-                        return new TxResult(TxStatus.INVALID, null, null, null, null, null, null, null, null);
+                        return new TxResult(
+                            TxStatus.INVALID,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
+                        );
                     }
                 }),
                 StreamResolver = new SourceStreamResolver<Subject<BlockHash>>(
@@ -138,19 +194,16 @@ public class Subscription : ObjectGraphType
             }
         );
 
-        _blockRenderer.BlockSubject
-                .ObserveOn(NewThreadScheduler.Default)
-                .Subscribe(RenderBlock);
+        _blockRenderer.BlockSubject.ObserveOn(NewThreadScheduler.Default).Subscribe(RenderBlock);
     }
 
     private RootState GetRootState(Address address)
     {
         var rootStateEncoded = _blockChain.GetState(address);
 
-        RootState rootState =
-            rootStateEncoded is Bencodex.Types.Dictionary bdict
-                ? new RootState(bdict)
-                : new RootState();
+        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : new RootState();
 
         return rootState;
     }
