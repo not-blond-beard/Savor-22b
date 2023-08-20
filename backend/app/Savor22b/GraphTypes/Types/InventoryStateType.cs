@@ -30,5 +30,14 @@ public class InventoryStateType : ObjectGraphType<InventoryState>
                     )
                     .ToList()
         );
+
+        Field<NonNullGraphType<ListGraphType<ItemStateDetailType>>>(
+            name: "itemStateList",
+            description: "The list of item states in the inventory.",
+            resolve: context =>
+                context.Source.ItemStateList
+                    .Select(itemState => new ItemStateDetail(itemState))
+                    .ToList()
+        );
     }
 }
