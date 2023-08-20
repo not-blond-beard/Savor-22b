@@ -265,6 +265,10 @@ public class CreateFoodActionTests : ActionTests
                 beforeRootState.InventoryState.GetKitchenEquipmentState(kitchenEquipmentStateId),
                 afterInventoryState.GetKitchenEquipmentState(kitchenEquipmentStateId)
             );
+            Assert.Equal(
+                recipe.ResultFoodID,
+                afterInventoryState.GetKitchenEquipmentState(kitchenEquipmentStateId)!.CookingFoodId
+            );
             Assert.True(
                 afterInventoryState
                     .GetKitchenEquipmentState(kitchenEquipmentStateId)!
@@ -290,6 +294,12 @@ public class CreateFoodActionTests : ActionTests
                 rootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
                     spaceNumber
                 )
+            );
+            Assert.Equal(
+                recipe.ResultFoodID,
+                rootState.VillageState!.HouseState.KitchenState
+                    .GetApplianceSpaceStateByNumber(spaceNumber)
+                    .CookingFoodId
             );
             Assert.True(
                 rootState.VillageState!.HouseState.KitchenState

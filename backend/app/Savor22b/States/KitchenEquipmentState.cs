@@ -6,20 +6,33 @@ using Libplanet.Headless.Extensions;
 
 public class KitchenEquipmentState : State
 {
-    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID, int kitchenEquipmentCategoryID, long cookingStartedBlockIndex, long cookingDurationBlock)
+    public KitchenEquipmentState(
+        Guid stateID,
+        int kitchenEquipmentID,
+        int kitchenEquipmentCategoryID,
+        int cookingFoodId,
+        long cookingStartedBlockIndex,
+        long cookingDurationBlock
+    )
     {
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
         KitchenEquipmentCategoryID = kitchenEquipmentCategoryID;
+        CookingFoodId = cookingFoodId;
         CookingStartedBlockIndex = cookingStartedBlockIndex;
         CookingDurationBlock = cookingDurationBlock;
     }
 
-    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID, int kitchenEquipmentCategoryID)
+    public KitchenEquipmentState(
+        Guid stateID,
+        int kitchenEquipmentID,
+        int kitchenEquipmentCategoryID
+    )
     {
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
         KitchenEquipmentCategoryID = kitchenEquipmentCategoryID;
+        CookingFoodId = null;
         CookingStartedBlockIndex = null;
         CookingDurationBlock = null;
     }
@@ -29,6 +42,7 @@ public class KitchenEquipmentState : State
         StateID = encoded[nameof(StateID)].ToGuid();
         KitchenEquipmentID = encoded[nameof(KitchenEquipmentID)].ToInteger();
         KitchenEquipmentCategoryID = encoded[nameof(KitchenEquipmentCategoryID)].ToInteger();
+        CookingFoodId = encoded[nameof(CookingFoodId)].ToNullableInteger();
         CookingStartedBlockIndex = encoded[nameof(CookingStartedBlockIndex)].ToNullableLong();
         CookingDurationBlock = encoded[nameof(CookingDurationBlock)].ToNullableLong();
     }
@@ -39,6 +53,8 @@ public class KitchenEquipmentState : State
 
     public int KitchenEquipmentCategoryID { get; private set; }
 
+    public int? CookingFoodId { get; private set; }
+
     public long? CookingStartedBlockIndex { get; private set; }
 
     public long? CookingDurationBlock { get; private set; }
@@ -48,23 +64,50 @@ public class KitchenEquipmentState : State
         var pairs = new[]
         {
             new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentID), KitchenEquipmentID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentCategoryID), KitchenEquipmentCategoryID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(CookingStartedBlockIndex), CookingStartedBlockIndex.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(CookingDurationBlock), CookingDurationBlock.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(KitchenEquipmentID),
+                KitchenEquipmentID.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(KitchenEquipmentCategoryID),
+                KitchenEquipmentCategoryID.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>((Text)nameof(CookingFoodId), CookingFoodId.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(CookingStartedBlockIndex),
+                CookingStartedBlockIndex.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(CookingDurationBlock),
+                CookingDurationBlock.Serialize()
+            ),
         };
         return new Dictionary(pairs);
     }
 
     public bool IsInUse(long currentBlockIndex)
     {
-        return BlockUtil.CalculateIsInProgress(currentBlockIndex, CookingStartedBlockIndex ?? 0, CookingDurationBlock ?? 0);
+        return BlockUtil.CalculateIsInProgress(
+            currentBlockIndex,
+            CookingStartedBlockIndex ?? 0,
+            CookingDurationBlock ?? 0
+        );
     }
 
-    public KitchenEquipmentState StartCooking(long currentBlockIndex, long cookingDurationBlock)
+    public KitchenEquipmentState StartCooking(
+        int cookingFoodId,
+        long currentBlockIndex,
+        long cookingDurationBlock
+    )
     {
         return new KitchenEquipmentState(
-            StateID, KitchenEquipmentID, KitchenEquipmentCategoryID, currentBlockIndex, cookingDurationBlock);
+            StateID,
+            KitchenEquipmentID,
+            KitchenEquipmentCategoryID,
+            cookingFoodId,
+            currentBlockIndex,
+            cookingDurationBlock
+        );
     }
 
     public override bool Equals(object obj)
@@ -93,5 +136,4 @@ public class KitchenEquipmentState : State
             return hash;
         }
     }
-
 }
