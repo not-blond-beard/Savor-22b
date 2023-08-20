@@ -6,7 +6,17 @@ using Libplanet.Headless.Extensions;
 
 public class RefrigeratorState : State
 {
-    public RefrigeratorState(Guid stateID, int? ingredientID, int? foodID, string grade, int hp, int def, int atk, int spd, long? availableBlockIndex)
+    public RefrigeratorState(
+        Guid stateID,
+        int? ingredientID,
+        int? foodID,
+        string grade,
+        int hp,
+        int def,
+        int atk,
+        int spd,
+        long? availableBlockIndex
+    )
     {
         StateID = stateID;
         IngredientID = ingredientID;
@@ -29,17 +39,7 @@ public class RefrigeratorState : State
         int spd
     )
     {
-        return new RefrigeratorState(
-            stateID,
-            ingredientID,
-            null,
-            grade,
-            hp,
-            def,
-            atk,
-            spd,
-            null
-        );
+        return new RefrigeratorState(stateID, ingredientID, null, grade, hp, def, atk, spd, null);
     }
 
     public static RefrigeratorState CreateFood(
@@ -50,7 +50,8 @@ public class RefrigeratorState : State
         int def,
         int atk,
         int spd,
-        long? availableBlockIndex)
+        long? availableBlockIndex
+    )
     {
         return new RefrigeratorState(
             stateID,
@@ -108,7 +109,10 @@ public class RefrigeratorState : State
             new KeyValuePair<IKey, IValue>((Text)nameof(SPD), SPD.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), IngredientID.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(FoodID), FoodID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(AvailableBlockIndex), AvailableBlockIndex.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(AvailableBlockIndex),
+                AvailableBlockIndex.Serialize()
+            ),
         };
 
         return new Dictionary(pairs);
@@ -127,5 +131,34 @@ public class RefrigeratorState : State
     public Edible GetEdibleType()
     {
         return FoodID is not null ? Edible.FOOD : Edible.INGREDIENT;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return obj is RefrigeratorState other
+            && StateID == other.StateID
+            && IngredientID == other.IngredientID
+            && FoodID == other.FoodID
+            && Grade == other.Grade
+            && HP == other.HP
+            && DEF == other.DEF
+            && ATK == other.ATK
+            && SPD == other.SPD;
+    }
+
+    public override int GetHashCode()
+    {
+        int hash = 17;
+
+        hash = hash * 23 + StateID.GetHashCode();
+        hash = hash * 23 + (IngredientID?.GetHashCode() ?? 0);
+        hash = hash * 23 + (FoodID?.GetHashCode() ?? 0);
+        hash = hash * 23 + (Grade?.GetHashCode() ?? 0);
+        hash = hash * 23 + HP.GetHashCode();
+        hash = hash * 23 + DEF.GetHashCode();
+        hash = hash * 23 + ATK.GetHashCode();
+        hash = hash * 23 + SPD.GetHashCode();
+
+        return hash;
     }
 }
