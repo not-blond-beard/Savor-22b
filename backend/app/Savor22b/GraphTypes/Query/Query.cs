@@ -462,6 +462,41 @@ public class Query : ObjectGraphType
             }
         );
 
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_InstallKitchenEquipmentAction",
+            description: "Install Kitchen Equipment Action",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<IntGraphType>
+                {
+                    Name = "spaceNumber",
+                    Description = "Target space number to install kitchen equipment",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new InstallKitchenEquipmentAction(
+                    Guid.NewGuid(),
+                    context.GetArgument<int>("spaceNumber")
+                );
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
         AddField(new CalculateRelocationCostQuery());
         AddField(new VillagesQuery(blockChain));
         AddField(new ShopQuery());
