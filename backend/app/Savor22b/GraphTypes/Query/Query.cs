@@ -379,6 +379,54 @@ public class Query : ObjectGraphType
             }
         );
 
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_CreateFood",
+            description: "Create Food",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
+                {
+                    Name = "refrigeratorStateIdsToUse",
+                    Description = "refrigerator state ID list for use",
+                },
+                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
+                {
+                    Name = "kitchenEquipmentStateIdsToUse",
+                    Description = "kitchen equipment state ID list for use",
+                },
+                new QueryArgument<NonNullGraphType<ListGraphType<IntGraphType>>>
+                {
+                    Name = "applianceSpaceNumbersToUse",
+                    Description = "appliance space number list for use",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new CreateFoodAction(
+                    context.GetArgument<int>("recipeID"),
+                    Guid.NewGuid(),
+                    context.GetArgument<List<Guid>>("refrigeratorStateIdsToUse"),
+                    context.GetArgument<List<Guid>>("kitchenEquipmentStateIdsToUse"),
+                    context.GetArgument<List<int>>("applianceSpaceNumbersToUse")
+                );
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
         AddField(new CalculateRelocationCostQuery());
         AddField(new VillagesQuery(blockChain));
         AddField(new ShopQuery());
