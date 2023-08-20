@@ -19,6 +19,8 @@ public class PlaceUserHouseAction : SVRAction
     public int TargetX;
     public int TargetY;
 
+    public PlaceUserHouseAction() { }
+
     public PlaceUserHouseAction(int villageID, int targetX, int targetY)
     {
         VillageID = villageID;
@@ -57,7 +59,7 @@ public class PlaceUserHouseAction : SVRAction
 
     private void ValidateHouseExists(GlobalUserHouseState globalUserHouseState)
     {
-        string userHouseKey = globalUserHouseState.CreateKey(VillageID, TargetX, TargetY);
+        string userHouseKey = GlobalUserHouseState.CreateKey(VillageID, TargetX, TargetY);
 
         if (globalUserHouseState.CheckPlacedHouse(userHouseKey))
         {
@@ -87,7 +89,7 @@ public class PlaceUserHouseAction : SVRAction
         Village originVillage = Validation.GetVillage(rootState.VillageState!.HouseState.VillageID);
         Village targetVillage = Validation.GetVillage(VillageID);
 
-        string prevUserHouseKey = globalUserHouseState.CreateKey(
+        string prevUserHouseKey = GlobalUserHouseState.CreateKey(
             rootState.VillageState!.HouseState.VillageID,
             rootState.VillageState.HouseState.PositionX,
             rootState.VillageState.HouseState.PositionY
@@ -165,7 +167,7 @@ public class PlaceUserHouseAction : SVRAction
         }
 
         globalUserHouseState.SetUserHouse(
-            globalUserHouseState.CreateKey(VillageID, TargetX, TargetY),
+            GlobalUserHouseState.CreateKey(VillageID, TargetX, TargetY),
             ctx.Signer
         );
 
