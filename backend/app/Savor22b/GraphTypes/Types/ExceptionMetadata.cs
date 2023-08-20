@@ -1,7 +1,6 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
 using Bencodex.Types;
-using Libplanet.Headless.Extensions;
 
 public class ExceptionMetadata
 {
@@ -21,17 +20,26 @@ public class ExceptionMetadata
         if (encoded is Bencodex.Types.Dictionary dict)
         {
             // Bencodex 데이터에서 필요한 값을 꺼내서 ExceptionMetadata 객체에 매핑합니다.
-            if (dict.TryGetValue((Text)"errorType", out var errorTypeValue) && errorTypeValue is Text errorTypeText)
+            if (
+                dict.TryGetValue((Text)"errorType", out var errorTypeValue)
+                && errorTypeValue is Text errorTypeText
+            )
             {
                 errorType = errorTypeText.Value;
             }
 
-            if (dict.TryGetValue((Text)"errorMessage", out var errorMessageValue) && errorMessageValue is Text errorMessageText)
+            if (
+                dict.TryGetValue((Text)"errorMessage", out var errorMessageValue)
+                && errorMessageValue is Text errorMessageText
+            )
             {
                 errorMessage = errorMessageText.Value;
             }
 
-            if (dict.TryGetValue((Text)"errorCode", out var errorCodeValue) && errorCodeValue is Integer errorCodeInteger)
+            if (
+                dict.TryGetValue((Text)"errorCode", out var errorCodeValue)
+                && errorCodeValue is Integer errorCodeInteger
+            )
             {
                 errorCode = (int)errorCodeInteger;
             }

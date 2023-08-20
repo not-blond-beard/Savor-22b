@@ -1,4 +1,4 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
 public class RecipeResponse
 {
@@ -7,7 +7,12 @@ public class RecipeResponse
     public List<RecipeComponent> IngredientList { get; set; }
     public List<RecipeComponent> FoodList { get; set; }
 
-    public RecipeResponse(int id, string name, List<RecipeComponent> ingredientList, List<RecipeComponent> foodList)
+    public RecipeResponse(
+        int id,
+        string name,
+        List<RecipeComponent> ingredientList,
+        List<RecipeComponent> foodList
+    )
     {
         Id = id;
         Name = name;

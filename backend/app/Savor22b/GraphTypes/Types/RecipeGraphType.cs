@@ -1,10 +1,9 @@
-namespace Savor22b.GraphTypes;
+namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
 
 public class RecipeGraphType
 {
-
     public class RecipeResponseType : ObjectGraphType<RecipeResponse>
     {
         public RecipeResponseType()
@@ -58,5 +57,4 @@ public class RecipeGraphType
             );
         }
     }
-
 }
