@@ -7,6 +7,7 @@ using Libplanet.Action;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Constants;
+using Savor22b.Util;
 using Savor22b.Action.Exceptions;
 using Savor22b.Action.Util;
 using Savor22b.Helpers;
@@ -130,7 +131,8 @@ public class CreateFoodAction : SVRAction
         Recipe recipe,
         InventoryState state,
         List<Guid> kitchenEquipmentStateIdsToUse,
-        long currentBlockIndex
+        long currentBlockIndex,
+        long durationBlock
     )
     {
         ImmutableList<int> kitchenCategoryIds = recipe.RequiredKitchenEquipmentCategoryList;
@@ -165,7 +167,7 @@ public class CreateFoodAction : SVRAction
 
             var statusChangedEquipment = kitchenEquipment.StartCooking(
                 currentBlockIndex,
-                recipe.RequiredBlock
+                durationBlock
             );
             state = state.RemoveKitchenEquipmentItem(kitchenEquipment.StateID);
             state = state.AddKitchenEquipmentItem(statusChangedEquipment);
@@ -190,7 +192,8 @@ public class CreateFoodAction : SVRAction
         HouseState houseState,
         InventoryState inventoryState,
         List<int> spaceNumbers,
-        long currentBlockIndex
+        long currentBlockIndex,
+        long durationBlock
     )
     {
         ImmutableList<int> kitchenCategoryIds = recipe.RequiredKitchenEquipmentCategoryList;
@@ -219,7 +222,7 @@ public class CreateFoodAction : SVRAction
 
             if (
                 !recipe.RequiredKitchenEquipmentCategoryList.Contains(
-                    kitchenEquipment.KitchenEquipmentCategoryID
+                    kitchenEquipment!.KitchenEquipmentCategoryID
                 )
             )
             {
@@ -228,7 +231,7 @@ public class CreateFoodAction : SVRAction
                 );
             }
 
-            space.StartCooking(currentBlockIndex, recipe.RequiredBlock);
+            space.StartCooking(currentBlockIndex, durationBlock);
 
             requiredKitchenCategoryIds = requiredKitchenCategoryIds.Remove(
                 kitchenEquipment.KitchenEquipmentCategoryID
@@ -293,7 +296,89 @@ public class CreateFoodAction : SVRAction
         return (HP: hp, ATK: attack, DEF: defense, SPD: speed);
     }
 
-    private RefrigeratorState GenerateFood(Recipe recipe, IRandom random, long currentBlockIndex)
+    private long calculateDuractionBlock(
+        Recipe recipe,
+        InventoryState inventoryState,
+        KitchenState kitchenState,
+        List<Guid> kitchenEquipmentStateIdsToUse,
+        List<int> applianceSpaceNumbersToUse
+    )
+    {
+        var sumReductionPercent = 0;
+        foreach (var stateId in kitchenEquipmentStateIdsToUse)
+        {
+            var kitchenEquipmentState = inventoryState.GetKitchenEquipmentState(stateId);
+            if (kitchenEquipmentState == null)
+            {
+                throw new NotFoundDataException($"You don't have `{stateId}` kitchen equipment");
+            }
+
+            var kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(
+                kitchenEquipmentState.KitchenEquipmentID
+            );
+            if (kitchenEquipment == null)
+            {
+                throw new NotFoundDataException(
+                    $"NotFound `{kitchenEquipmentState.KitchenEquipmentID}` kitchen equipment in table"
+                );
+            }
+
+            sumReductionPercent = sumReductionPercent + kitchenEquipment!.BlockTimeReductionPercent;
+        }
+
+        foreach (var spaceNumber in applianceSpaceNumbersToUse)
+        {
+            var space = kitchenState.GetApplianceSpaceStateByNumber(spaceNumber);
+            if (!space.EquipmentIsPresent())
+            {
+                throw new NotFoundDataException($"{spaceNumber} is not installed anything");
+            }
+
+            var kitchenEquipmentState = inventoryState.GetKitchenEquipmentState(
+                space.InstalledKitchenEquipmentStateId!.Value
+            );
+            if (kitchenEquipmentState == null)
+            {
+                throw new NotFoundDataException(
+                    $"You don't have {space.InstalledKitchenEquipmentStateId!.Value} kitchen equipment"
+                );
+            }
+
+            var kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(
+                kitchenEquipmentState.KitchenEquipmentID
+            );
+            if (kitchenEquipment == null)
+            {
+                throw new NotFoundDataException(
+                    $"NotFound `{kitchenEquipmentState.KitchenEquipmentID}` kitchen equipment in table"
+                );
+            }
+
+            sumReductionPercent = sumReductionPercent + kitchenEquipment!.BlockTimeReductionPercent;
+        }
+
+        try
+        {
+            var avgReductionPercent =
+                sumReductionPercent / inventoryState.KitchenEquipmentStateList.Count;
+            var durationBlock = MathUtil.ReduceByPercentage(
+                recipe.RequiredBlock,
+                avgReductionPercent
+            );
+            return durationBlock;
+        }
+        catch (DivideByZeroException)
+        {
+            return recipe.RequiredBlock;
+        }
+    }
+
+    private RefrigeratorState GenerateFood(
+        Recipe recipe,
+        IRandom random,
+        long currentBlockIndex,
+        long durationBlock
+    )
     {
         var gradeExtractor = new GradeExtractor(random, 0.1);
 
@@ -315,7 +400,7 @@ public class CreateFoodAction : SVRAction
             generatedStat.ATK,
             generatedStat.DEF,
             generatedStat.SPD,
-            currentBlockIndex + recipe.RequiredBlock
+            currentBlockIndex + durationBlock
         );
 
         return food;
@@ -340,23 +425,32 @@ public class CreateFoodAction : SVRAction
         HouseState houseState = rootState.VillageState!.HouseState;
 
         var recipe = FindRecipeInCsv(RecipeID);
+        var durationBlock = calculateDuractionBlock(
+            recipe,
+            inventoryState,
+            houseState.KitchenState,
+            KitchenEquipmentStateIdsToUse,
+            ApplianceSpaceNumbersToUse
+        );
 
         inventoryState = CheckAndChangeEquipmentsStatus(
             recipe,
             inventoryState,
             KitchenEquipmentStateIdsToUse,
-            ctx.BlockIndex
+            ctx.BlockIndex,
+            durationBlock
         );
         houseState = CheckAndChangeApplianceSpacesStatus(
             recipe,
             houseState,
             inventoryState,
             ApplianceSpaceNumbersToUse,
-            ctx.BlockIndex
+            ctx.BlockIndex,
+            durationBlock
         );
         inventoryState = CheckAndRemoveEdibles(recipe, inventoryState, RefrigeratorStateIdsToUse);
 
-        RefrigeratorState food = GenerateFood(recipe, ctx.Random, ctx.BlockIndex);
+        RefrigeratorState food = GenerateFood(recipe, ctx.Random, ctx.BlockIndex, durationBlock);
         inventoryState = inventoryState.AddRefrigeratorItem(food);
 
         rootState.SetInventoryState(inventoryState);
