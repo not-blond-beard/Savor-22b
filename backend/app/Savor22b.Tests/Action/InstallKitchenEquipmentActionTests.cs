@@ -113,7 +113,7 @@ public class InstallKitchenEquipmentActionTests : ActionTests
 
         var action = new InstallKitchenEquipmentAction(Guid.NewGuid(), 1);
 
-        Assert.Throws<NotEnoughRawMaterialsException>(() =>
+        Assert.Throws<NotHaveRequiredException>(() =>
         {
             action.Execute(new DummyActionContext
             {

@@ -57,7 +57,7 @@ public class UseRandomSeedItemAction : SVRAction
 
         if (item is null)
         {
-            throw new NotEnoughRawMaterialsException($"You don't have `{ItemStateIdToUse}` item");
+            throw new NotHaveRequiredException($"You don't have `{ItemStateIdToUse}` item");
         }
 
         state = state.RemoveItem(ItemStateIdToUse);

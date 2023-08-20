@@ -2,14 +2,13 @@ namespace Savor22b.Helpers;
 
 using Microsoft.VisualBasic.FileIO;
 using System;
-using System.Collections.Generic;
-using System.IO;
+using System.Collections.Immutable;
 
 public class CsvParser<T> where T : class, new()
 {
-    public List<T> ParseCsv(string filePath)
+    public ImmutableList<T> ParseCsv(string filePath)
     {
-        List<T> items = new List<T>();
+        ImmutableList<T> items = ImmutableList<T>.Empty;
 
         using (TextFieldParser parser = new TextFieldParser(filePath))
         {
@@ -25,7 +24,7 @@ public class CsvParser<T> where T : class, new()
                 T item = MapFieldsToObject(fields);
                 if (item != null)
                 {
-                    items.Add(item);
+                    items = items.Add(item);
                 }
             }
         }
@@ -46,17 +45,32 @@ public class CsvParser<T> where T : class, new()
                 Type fieldType = type.GetProperties()[i].PropertyType;
                 Type underlyingType = Nullable.GetUnderlyingType(fieldType) ?? fieldType;
 
-                if (fieldName.Contains("List") && fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(List<>))
+                if (fieldName.Contains("List") && fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(ImmutableList<>))
                 {
                     Type listType = underlyingType.GetGenericArguments()[0];
                     string[] stringValues = fields[i].Split(';');
-                    var list = Activator.CreateInstance(fieldType) as System.Collections.IList;
+
+                    object list;
+
+                    if (fieldType == typeof(ImmutableList<int>))
+                    {
+                        list = ImmutableList<int>.Empty;
+                    }
+                    else if (fieldType == typeof(ImmutableList<string>))
+                    {
+                        list = ImmutableList<string>.Empty;
+                    }
+                    else
+                    {
+                        continue;
+                    }
 
                     foreach (var value in stringValues)
                     {
                         if (!string.IsNullOrEmpty(value))
                         {
-                            list.Add(Convert.ChangeType(value, listType));
+                            object typedValue = Convert.ChangeType(value, listType);
+                            list = list.GetType().GetMethod("Add").Invoke(list, new[] { typedValue });
                         }
                     }
 

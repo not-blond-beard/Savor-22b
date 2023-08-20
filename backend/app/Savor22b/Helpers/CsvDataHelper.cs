@@ -1,9 +1,9 @@
 namespace Savor22b;
 
+using System.Collections.Immutable;
 using Savor22b.Constants;
 using Savor22b.Helpers;
 using Savor22b.Model;
-using System.Collections.Immutable;
 
 public static class CsvDataHelper
 {
