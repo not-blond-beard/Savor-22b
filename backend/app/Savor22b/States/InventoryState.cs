@@ -16,17 +16,21 @@ public class InventoryState : State
         RefrigeratorStateList = ImmutableList<RefrigeratorState>.Empty;
         KitchenEquipmentStateList = ImmutableList<KitchenEquipmentState>.Empty;
         ItemStateList = ImmutableList<ItemState>.Empty;
+
+        ItemStateList = ItemStateList.Add(new ItemState(Guid.Empty, 1));
     }
 
     public InventoryState(
         ImmutableList<SeedState> seedStateList,
         ImmutableList<RefrigeratorState>? refrigeratorStateList,
         ImmutableList<KitchenEquipmentState>? kitchenEquipmentStateList,
-        ImmutableList<ItemState>? itemStateList)
+        ImmutableList<ItemState>? itemStateList
+    )
     {
         SeedStateList = seedStateList;
         RefrigeratorStateList = refrigeratorStateList ?? ImmutableList<RefrigeratorState>.Empty;
-        KitchenEquipmentStateList = kitchenEquipmentStateList ?? ImmutableList<KitchenEquipmentState>.Empty;
+        KitchenEquipmentStateList =
+            kitchenEquipmentStateList ?? ImmutableList<KitchenEquipmentState>.Empty;
         ItemStateList = itemStateList ?? ImmutableList<ItemState>.Empty;
     }
 
@@ -54,7 +58,12 @@ public class InventoryState : State
             RefrigeratorStateList = ImmutableList<RefrigeratorState>.Empty;
         }
 
-        if (encoded.TryGetValue((Text)nameof(KitchenEquipmentStateList), out var kitchenEquipmentStateList))
+        if (
+            encoded.TryGetValue(
+                (Text)nameof(KitchenEquipmentStateList),
+                out var kitchenEquipmentStateList
+            )
+        )
         {
             KitchenEquipmentStateList = ((Bencodex.Types.List)kitchenEquipmentStateList)
                 .Select(element => new KitchenEquipmentState((Bencodex.Types.Dictionary)element))
@@ -81,14 +90,26 @@ public class InventoryState : State
     {
         var pairs = new[]
         {
-            new KeyValuePair<IKey, IValue>((Text)nameof(SeedStateList),
-                new Bencodex.Types.List(SeedStateList.Select(element => element.Serialize()))),
-            new KeyValuePair<IKey, IValue>((Text)nameof(RefrigeratorStateList),
-                new Bencodex.Types.List(RefrigeratorStateList.Select(element => element.Serialize()))),
-            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentStateList),
-                new Bencodex.Types.List(KitchenEquipmentStateList.Select(element => element.Serialize()))),
-            new KeyValuePair<IKey, IValue>((Text)nameof(ItemStateList),
-                new Bencodex.Types.List(ItemStateList.Select(element => element.Serialize()))),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(SeedStateList),
+                new Bencodex.Types.List(SeedStateList.Select(element => element.Serialize()))
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(RefrigeratorStateList),
+                new Bencodex.Types.List(
+                    RefrigeratorStateList.Select(element => element.Serialize())
+                )
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(KitchenEquipmentStateList),
+                new Bencodex.Types.List(
+                    KitchenEquipmentStateList.Select(element => element.Serialize())
+                )
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(ItemStateList),
+                new Bencodex.Types.List(ItemStateList.Select(element => element.Serialize()))
+            ),
         };
         return new Dictionary(pairs);
     }
@@ -96,25 +117,45 @@ public class InventoryState : State
     public InventoryState RemoveSeed(Guid seedStateID)
     {
         var seedStateList = SeedStateList.RemoveAll(seedState => seedState.StateID == seedStateID);
-        return new InventoryState(seedStateList, RefrigeratorStateList, KitchenEquipmentStateList, ItemStateList);
+        return new InventoryState(
+            seedStateList,
+            RefrigeratorStateList,
+            KitchenEquipmentStateList,
+            ItemStateList
+        );
     }
 
     public InventoryState AddSeed(SeedState seedState)
     {
         var seedStateList = SeedStateList.Add(seedState);
-        return new InventoryState(seedStateList, RefrigeratorStateList, KitchenEquipmentStateList, ItemStateList);
+        return new InventoryState(
+            seedStateList,
+            RefrigeratorStateList,
+            KitchenEquipmentStateList,
+            ItemStateList
+        );
     }
 
     public InventoryState AddRefrigeratorItem(RefrigeratorState item)
     {
         var refrigeratorStateList = RefrigeratorStateList.Add(item);
-        return new InventoryState(SeedStateList, refrigeratorStateList, KitchenEquipmentStateList, ItemStateList);
+        return new InventoryState(
+            SeedStateList,
+            refrigeratorStateList,
+            KitchenEquipmentStateList,
+            ItemStateList
+        );
     }
 
     public InventoryState RemoveRefrigeratorItem(Guid stateID)
     {
         var stateList = RefrigeratorStateList.RemoveAll(state => state.StateID == stateID);
-        return new InventoryState(SeedStateList, stateList, KitchenEquipmentStateList, ItemStateList);
+        return new InventoryState(
+            SeedStateList,
+            stateList,
+            KitchenEquipmentStateList,
+            ItemStateList
+        );
     }
 
     public RefrigeratorState GetRefrigeratorItem(Guid stateID)
@@ -125,7 +166,12 @@ public class InventoryState : State
     public InventoryState AddKitchenEquipmentItem(KitchenEquipmentState item)
     {
         var kitchenEquipmentStateList = KitchenEquipmentStateList.Add(item);
-        return new InventoryState(SeedStateList, RefrigeratorStateList, kitchenEquipmentStateList, ItemStateList);
+        return new InventoryState(
+            SeedStateList,
+            RefrigeratorStateList,
+            kitchenEquipmentStateList,
+            ItemStateList
+        );
     }
 
     public InventoryState RemoveKitchenEquipmentItem(Guid stateID)
@@ -137,13 +183,23 @@ public class InventoryState : State
     public InventoryState AddItem(ItemState item)
     {
         var itemStateList = ItemStateList.Add(item);
-        return new InventoryState(SeedStateList, RefrigeratorStateList, KitchenEquipmentStateList, itemStateList);
+        return new InventoryState(
+            SeedStateList,
+            RefrigeratorStateList,
+            KitchenEquipmentStateList,
+            itemStateList
+        );
     }
 
     public InventoryState RemoveItem(Guid stateID)
     {
         var stateList = ItemStateList.RemoveAll(state => state.StateID == stateID);
-        return new InventoryState(SeedStateList, RefrigeratorStateList, KitchenEquipmentStateList, stateList);
+        return new InventoryState(
+            SeedStateList,
+            RefrigeratorStateList,
+            KitchenEquipmentStateList,
+            stateList
+        );
     }
 
     public SeedState? GetSeedState(Guid stateID)
