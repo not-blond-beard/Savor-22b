@@ -16,8 +16,6 @@ public class InventoryState : State
         RefrigeratorStateList = ImmutableList<RefrigeratorState>.Empty;
         KitchenEquipmentStateList = ImmutableList<KitchenEquipmentState>.Empty;
         ItemStateList = ImmutableList<ItemState>.Empty;
-
-        ItemStateList = ItemStateList.Add(new ItemState(Guid.Empty, 1));
     }
 
     public InventoryState(
