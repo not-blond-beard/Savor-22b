@@ -3,6 +3,7 @@ namespace Savor22b.Tests.Action;
 using System;
 using System.Collections.Immutable;
 using Libplanet.State;
+using Savor22b.Util;
 using Savor22b.Action;
 using Savor22b.Action.Exceptions;
 using Savor22b.Model;
@@ -64,6 +65,23 @@ public class CreateFoodActionTests : ActionTests
         return recipe!;
     }
 
+    private KitchenEquipment getRandomNotRequiredKitchenEquipment(Recipe recipe)
+    {
+        foreach (var kitchenEquipment in CsvDataHelper.GetKitchenEquipmentCSVData())
+        {
+            if (
+                !recipe.RequiredKitchenEquipmentCategoryList.Contains(
+                    kitchenEquipment.KitchenEquipmentCategoryID
+                )
+            )
+            {
+                return kitchenEquipment;
+            }
+        }
+
+        throw new Exception("");
+    }
+
     private List<RefrigeratorState> generateMaterials(
         ImmutableList<int> IngredientIDList,
         ImmutableList<int> FoodIDList
@@ -86,7 +104,10 @@ public class CreateFoodActionTests : ActionTests
         return RefrigeratorItemList;
     }
 
-    private (RootState, List<Guid>, List<int>) createPreset(Recipe recipe)
+    private (RootState, List<Guid>, List<int>) createPreset(
+        Recipe recipe,
+        bool hasBlockReduction = false
+    )
     {
         int spaceNumber = 1;
         List<Guid> kitchenEquipmentsToUse = new List<Guid>();
@@ -113,9 +134,28 @@ public class CreateFoodActionTests : ActionTests
             var kitchenEquipments = CsvDataHelper.GetAllKitchenEquipmentByCategoryId(
                 equipmentCategoryId
             );
+            KitchenEquipment targetKitchenEquipment = null;
+
+            if (hasBlockReduction)
+            {
+                var higherKitchenEquipment = kitchenEquipments.Find(
+                    k => k.BlockTimeReductionPercent > 1
+                );
+                if (higherKitchenEquipment == null)
+                {
+                    throw new Exception("");
+                }
+
+                targetKitchenEquipment = higherKitchenEquipment;
+            }
+            else
+            {
+                targetKitchenEquipment = kitchenEquipments[0];
+            }
+
             var kitchenEquipmentState = new KitchenEquipmentState(
                 Guid.NewGuid(),
-                kitchenEquipments[0].ID,
+                targetKitchenEquipment.ID,
                 equipmentCategoryId
             );
             inventoryState = inventoryState.AddKitchenEquipmentItem(kitchenEquipmentState);
@@ -239,7 +279,7 @@ public class CreateFoodActionTests : ActionTests
         foreach (var spaceNumber in spaceNumbersToUse)
         {
             Assert.NotNull(
-                beforeRootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
+                rootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
                     spaceNumber
                 )
             );
@@ -260,6 +300,92 @@ public class CreateFoodActionTests : ActionTests
                 rootState.VillageState!.HouseState.KitchenState
                     .GetApplianceSpaceStateByNumber(spaceNumber)
                     .IsInUse(blockIndex + recipe.RequiredBlock)
+            );
+        }
+    }
+
+    [Fact]
+    public void Execute_Success_WithBlockReduction()
+    {
+        var recipe = getRandomRecipeWithEquipmentCategory("main");
+        var blockIndex = 1;
+
+        IAccountStateDelta beforeState = new DummyState();
+        var (beforeRootState, kitchenEquipmentStateIdsToUse, spaceNumbersToUse) = createPreset(
+            recipe,
+            true
+        );
+        var edibleStateIdsToUse = (
+            from stateList in beforeRootState.InventoryState.RefrigeratorStateList
+            select stateList.StateID
+        ).ToList();
+
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
+
+        var newFoodGuid = Guid.NewGuid();
+        var action = new CreateFoodAction(
+            recipe.ID,
+            newFoodGuid,
+            edibleStateIdsToUse,
+            kitchenEquipmentStateIdsToUse,
+            spaceNumbersToUse
+        );
+
+        var afterState = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = blockIndex,
+            }
+        );
+
+        var afterRootStateEncoded = afterState.GetState(SignerAddress());
+        RootState afterRootState = afterRootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : throw new Exception();
+        InventoryState afterInventoryState = afterRootState.InventoryState;
+
+        var sumReductionPercent = 0;
+        foreach (var kitchenEquipmentState in afterInventoryState.KitchenEquipmentStateList)
+        {
+            var kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(
+                kitchenEquipmentState.KitchenEquipmentID
+            );
+            sumReductionPercent = sumReductionPercent + kitchenEquipment!.BlockTimeReductionPercent;
+        }
+        var avgReductionPercent =
+            sumReductionPercent / afterInventoryState.KitchenEquipmentStateList.Count;
+        var expectedDurationBlock = MathUtil.ReduceByPercentage(
+            recipe.RequiredBlock,
+            avgReductionPercent
+        );
+
+        Assert.Equal(
+            expectedDurationBlock,
+            afterInventoryState.GetRefrigeratorItem(newFoodGuid).AvailableBlockIndex - blockIndex
+        );
+
+        foreach (var spaceNumber in spaceNumbersToUse)
+        {
+            Assert.NotNull(
+                afterRootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
+                    spaceNumber
+                )
+            );
+
+            Assert.True(
+                afterRootState.VillageState!.HouseState.KitchenState
+                    .GetApplianceSpaceStateByNumber(spaceNumber)
+                    .IsInUse(blockIndex)
+            );
+            Assert.Equal(
+                expectedDurationBlock,
+                afterRootState.VillageState!.HouseState.KitchenState
+                    .GetApplianceSpaceStateByNumber(spaceNumber)
+                    .CookingDurationBlock
             );
         }
     }
@@ -404,6 +530,7 @@ public class CreateFoodActionTests : ActionTests
     {
         var blockIndex = 1;
         Recipe recipe = getRandomRecipeWithEquipmentCategory("sub");
+        KitchenEquipment notRequiredKitchenEquipment = getRandomNotRequiredKitchenEquipment(recipe);
 
         IAccountStateDelta beforeState = new DummyState();
         var (beforeRootState, kitchenEquipmentStateIdsToUse, spaceNumbersToUse) = createPreset(
@@ -420,7 +547,11 @@ public class CreateFoodActionTests : ActionTests
         );
         beforeRootState.SetInventoryState(
             beforeRootState.InventoryState.AddKitchenEquipmentItem(
-                new KitchenEquipmentState(kitchenEquipmentStateIdsToUse[0], -1, -1)
+                new KitchenEquipmentState(
+                    kitchenEquipmentStateIdsToUse[0],
+                    notRequiredKitchenEquipment.ID,
+                    notRequiredKitchenEquipment.KitchenEquipmentCategoryID
+                )
             )
         );
         beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
@@ -454,6 +585,7 @@ public class CreateFoodActionTests : ActionTests
     {
         var blockIndex = 1;
         Recipe recipe = getRandomRecipeWithEquipmentCategory("main");
+        KitchenEquipment notRequiredKitchenEquipment = getRandomNotRequiredKitchenEquipment(recipe);
 
         IAccountStateDelta beforeState = new DummyState();
         var (beforeRootState, kitchenEquipmentStateIdsToUse, spaceNumbersToUse) = createPreset(
@@ -461,7 +593,11 @@ public class CreateFoodActionTests : ActionTests
         );
         foreach (var spaceNumber in spaceNumbersToUse)
         {
-            var illusionKitchenEquipment = new KitchenEquipmentState(Guid.NewGuid(), -1, -1);
+            var illusionKitchenEquipment = new KitchenEquipmentState(
+                Guid.NewGuid(),
+                notRequiredKitchenEquipment.ID,
+                notRequiredKitchenEquipment.KitchenEquipmentCategoryID
+            );
             beforeRootState.SetInventoryState(
                 beforeRootState.InventoryState.AddKitchenEquipmentItem(illusionKitchenEquipment)
             );
