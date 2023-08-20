@@ -166,7 +166,6 @@ public class CreateFoodAction : SVRAction
             }
 
             var statusChangedEquipment = kitchenEquipment.StartCooking(
-                recipe.ResultFoodID,
                 currentBlockIndex,
                 durationBlock
             );
@@ -232,7 +231,7 @@ public class CreateFoodAction : SVRAction
                 );
             }
 
-            space.StartCooking(recipe.ResultFoodID, currentBlockIndex, durationBlock);
+            space.StartCooking(currentBlockIndex, durationBlock);
 
             requiredKitchenCategoryIds = requiredKitchenCategoryIds.Remove(
                 kitchenEquipment.KitchenEquipmentCategoryID
