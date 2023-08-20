@@ -17,6 +17,7 @@ using System.Reactive.Subjects;
 using Libplanet.Tx;
 using Libplanet.Explorer.GraphTypes;
 using Savor22b.GraphTypes.Types;
+using Savor22b.GraphTypes.Query;
 
 public class Subscription : ObjectGraphType
 {
@@ -42,36 +43,7 @@ public class Subscription : ObjectGraphType
         _store = store;
         _subject = new Subject<Libplanet.Blocks.BlockHash>();
 
-        AddField(
-            new FieldType()
-            {
-                Name = "UserState",
-                Type = typeof(UserStateType),
-                Description = "User State",
-                Arguments = new QueryArguments(
-                    new QueryArgument<NonNullGraphType<StringGraphType>>
-                    {
-                        Name = "address",
-                        Description = "The account holder's 40-hex address",
-                    }
-                ),
-                Resolver = new FuncFieldResolver<RootState>(context =>
-                {
-                    var accountAddress = new Address(context.GetArgument<string>("address"));
-                    return GetRootState(accountAddress);
-                }),
-                StreamResolver = new SourceStreamResolver<RootState>(
-                    (context) =>
-                    {
-                        var accountAddress = new Address(context.GetArgument<string>("address"));
-
-                        return _subject
-                            .DistinctUntilChanged()
-                            .Select(_ => GetRootState(accountAddress));
-                    }
-                ),
-            }
-        );
+        AddField(new UserStateField(_blockChain, _subject));
 
         AddField(
             new FieldType()
@@ -195,17 +167,6 @@ public class Subscription : ObjectGraphType
         );
 
         _blockRenderer.BlockSubject.ObserveOn(NewThreadScheduler.Default).Subscribe(RenderBlock);
-    }
-
-    private RootState GetRootState(Address address)
-    {
-        var rootStateEncoded = _blockChain.GetState(address);
-
-        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
-            ? new RootState(bdict)
-            : new RootState();
-
-        return rootState;
     }
 
     private void RenderBlock((Block OldTip, Block NewTip) pair)
