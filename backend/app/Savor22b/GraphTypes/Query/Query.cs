@@ -381,6 +381,7 @@ public class Query : ObjectGraphType
 
         AddField(new CalculateRelocationCostQuery());
         AddField(new VillagesQuery(blockChain));
+        AddField(new ShopQuery());
     }
 
     private List<RecipeResponse> combineRecipeData()
