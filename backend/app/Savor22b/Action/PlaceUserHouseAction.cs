@@ -34,18 +34,6 @@ public class PlaceUserHouseAction : SVRAction
             [nameof(TargetY)] = TargetY.Serialize(),
         }.ToImmutableDictionary();
 
-    private static Village GetVillage(int villageID)
-    {
-        var village = CsvDataHelper.GetVillageByID(villageID);
-
-        if (village == null)
-        {
-            throw new InvalidVillageException("Invalid village ID");
-        }
-
-        return village;
-    }
-
     private static void ValidateRelocationUserHouse(
         long currentBlock,
         RelocationState? relocationState
@@ -59,7 +47,7 @@ public class PlaceUserHouseAction : SVRAction
 
     private void ValidateHousePosition()
     {
-        Village village = GetVillage(VillageID);
+        Village village = Validation.GetVillage(VillageID);
 
         if (!village.AbleToPlaceHouse(TargetX, TargetY))
         {
@@ -96,8 +84,8 @@ public class PlaceUserHouseAction : SVRAction
         long currentBlock
     )
     {
-        Village originVillage = GetVillage(rootState.VillageState!.HouseState.VillageID);
-        Village targetVillage = GetVillage(VillageID);
+        Village originVillage = Validation.GetVillage(rootState.VillageState!.HouseState.VillageID);
+        Village targetVillage = Validation.GetVillage(VillageID);
 
         string prevUserHouseKey = globalUserHouseState.CreateKey(
             rootState.VillageState!.HouseState.VillageID,
@@ -150,8 +138,10 @@ public class PlaceUserHouseAction : SVRAction
         }
         else
         {
-            Village originVillage = GetVillage(rootState.VillageState!.HouseState.VillageID);
-            Village targetVillage = GetVillage(VillageID);
+            Village originVillage = Validation.GetVillage(
+                rootState.VillageState!.HouseState.VillageID
+            );
+            Village targetVillage = Validation.GetVillage(VillageID);
 
             ValidateRelocationUserHouse(ctx.BlockIndex, rootState.RelocationState);
             ReplaceUserHouse(rootState, globalUserHouseState, ctx.BlockIndex);
