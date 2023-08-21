@@ -71,7 +71,6 @@ public static class CsvDataHelper
             var csvPath = GetCSVDataPath(CsvDataFileNames.Ingredient);
             ingredientList = csvParser.ParseCsv(csvPath).ToImmutableList();
         }
-
     }
 
     public static ImmutableList<Ingredient> GetIngredientCSVData()
@@ -86,6 +85,13 @@ public static class CsvDataHelper
         initIngredientCSVData();
 
         return ingredientList.Find(ingredient => ingredient.SeedId == seedID);
+    }
+
+    public static Ingredient? GetIngredientByIngredientId(int ingredientID)
+    {
+        initIngredientCSVData();
+
+        return ingredientList.Find(ingredient => ingredient.ID == ingredientID);
     }
 
     #endregion ingredient
@@ -211,7 +217,9 @@ public static class CsvDataHelper
     {
         initKitchenEquipmentCSVData();
 
-        return kitchenEquipmentList.FindAll(equipment => equipment.KitchenEquipmentCategoryID == categoryId);
+        return kitchenEquipmentList.FindAll(
+            equipment => equipment.KitchenEquipmentCategoryID == categoryId
+        );
     }
 
     #endregion kitchenEquipment
@@ -222,7 +230,8 @@ public static class CsvDataHelper
     {
         if (kitchenEquipmentCategoryList == null)
         {
-            CsvParser<KitchenEquipmentCategory> csvParser = new CsvParser<KitchenEquipmentCategory>();
+            CsvParser<KitchenEquipmentCategory> csvParser =
+                new CsvParser<KitchenEquipmentCategory>();
             var csvPath = GetCSVDataPath(CsvDataFileNames.KitchenEquipmentCategory);
             kitchenEquipmentCategoryList = csvParser.ParseCsv(csvPath).ToImmutableList();
         }
