@@ -1,11 +1,12 @@
 namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
+using Libplanet.Blockchain;
 using Savor22b.States;
 
 public class InventoryStateType : ObjectGraphType<InventoryState>
 {
-    public InventoryStateType()
+    public InventoryStateType(BlockChain blockChain)
     {
         Field<NonNullGraphType<ListGraphType<SeedStateType>>>(
             name: "seedStateList",
@@ -26,7 +27,11 @@ public class InventoryStateType : ObjectGraphType<InventoryState>
                 context.Source.KitchenEquipmentStateList
                     .Select(
                         kitchenEquipmentState =>
-                            new KitchenEquipmentStateDetail(kitchenEquipmentState)
+                            new KitchenEquipmentStateDetail(
+                                kitchenEquipmentState,
+                                context.Source,
+                                blockChain.Count
+                            )
                     )
                     .ToList()
         );
