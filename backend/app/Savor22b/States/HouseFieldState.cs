@@ -14,7 +14,6 @@ public class HouseFieldState : State
     public int WeedRemovalCount { get; private set; }
     public long? LastWeedBlock { get; private set; }
 
-
     public HouseFieldState()
     {
         InstalledSeedGuid = Guid.Empty;
@@ -30,7 +29,14 @@ public class HouseFieldState : State
         WeedRemovalCount = 0;
     }
 
-    public HouseFieldState(Guid installedSeedGuid, int seedID, long installedBlock, int totalBlock, long? lastWeedBlock, int? weedRemovalCount)
+    public HouseFieldState(
+        Guid installedSeedGuid,
+        int seedID,
+        long installedBlock,
+        int totalBlock,
+        long? lastWeedBlock,
+        int? weedRemovalCount
+    )
     {
         InstalledSeedGuid = installedSeedGuid;
         SeedID = seedID;
@@ -47,7 +53,9 @@ public class HouseFieldState : State
         InstalledBlock = encoded[nameof(InstalledBlock)].ToLong();
         TotalBlock = encoded[nameof(TotalBlock)].ToInteger();
         WeedRemovalCount = encoded[nameof(WeedRemovalCount)].ToInteger();
-        LastWeedBlock = encoded.TryGetValue((Text)nameof(LastWeedBlock), out var lastWeedBlock) ? lastWeedBlock.ToLong() : null;
+        LastWeedBlock = encoded.TryGetValue((Text)nameof(LastWeedBlock), out var lastWeedBlock)
+            ? lastWeedBlock.ToLong()
+            : null;
     }
 
     public bool RemovalWeed(long blockIndex)
@@ -65,6 +73,11 @@ public class HouseFieldState : State
 
     public bool WeedRemovalAble(long blockIndex)
     {
+        if (IsHarvestable(blockIndex))
+        {
+            return false;
+        }
+
         long targetBlockIndex = LastWeedBlock ?? InstalledBlock;
 
         if (blockIndex >= targetBlockIndex + WeedRemovalBlockUnit())
@@ -89,21 +102,36 @@ public class HouseFieldState : State
         return weedRemovalImpact;
     }
 
-
     public IValue Serialize()
     {
         var pairs = new[]
         {
-            new KeyValuePair<IKey, IValue>((Text)nameof(InstalledSeedGuid), InstalledSeedGuid.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(InstalledSeedGuid),
+                InstalledSeedGuid.Serialize()
+            ),
             new KeyValuePair<IKey, IValue>((Text)nameof(SeedID), SeedID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(InstalledBlock), InstalledBlock.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(InstalledBlock),
+                InstalledBlock.Serialize()
+            ),
             new KeyValuePair<IKey, IValue>((Text)nameof(TotalBlock), TotalBlock.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(WeedRemovalCount), WeedRemovalCount.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(WeedRemovalCount),
+                WeedRemovalCount.Serialize()
+            ),
         };
 
         if (LastWeedBlock is not null)
         {
-            pairs = pairs.Append(new KeyValuePair<IKey, IValue>((Text)nameof(LastWeedBlock), ((long)LastWeedBlock).Serialize())).ToArray();
+            pairs = pairs
+                .Append(
+                    new KeyValuePair<IKey, IValue>(
+                        (Text)nameof(LastWeedBlock),
+                        ((long)LastWeedBlock).Serialize()
+                    )
+                )
+                .ToArray();
         }
 
         return new Dictionary(pairs);
