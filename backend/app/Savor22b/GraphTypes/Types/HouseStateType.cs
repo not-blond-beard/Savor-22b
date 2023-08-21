@@ -1,5 +1,7 @@
 using GraphQL.Types;
+using Savor22b;
 using Savor22b.GraphTypes.Types;
+using Savor22b.Model;
 using Savor22b.States;
 
 public class HouseStateType : ObjectGraphType<HouseState>
@@ -25,6 +27,15 @@ public class HouseStateType : ObjectGraphType<HouseState>
             name: "kitchenState",
             description: "The kitchen state of the house.",
             resolve: context => context.Source.KitchenState
+        );
+        Field<NonNullGraphType<StringGraphType>>(
+            name: "villageName",
+            description: "The name of the village.",
+            resolve: context =>
+            {
+                Village village = CsvDataHelper.GetVillageByID(context.Source.VillageID)!;
+                return village.Name;
+            }
         );
     }
 }
