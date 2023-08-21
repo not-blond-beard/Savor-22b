@@ -5,13 +5,37 @@ using Savor22b.States;
 
 public class KitchenEquipmentStateDetail
 {
-    public KitchenEquipmentStateDetail(KitchenEquipmentState kitchenEquipmentState)
+    public KitchenEquipmentStateDetail(
+        KitchenEquipmentState kitchenEquipmentState,
+        InventoryState inventoryState,
+        long currentBlockIndex
+    )
     {
         StateID = kitchenEquipmentState.StateID;
         KitchenEquipmentID = kitchenEquipmentState.KitchenEquipmentID;
         KitchenEquipmentCategoryID = kitchenEquipmentState.KitchenEquipmentCategoryID;
-        CookingStartedBlockIndex = kitchenEquipmentState.CookingStartedBlockIndex;
-        CookingDurationBlock = kitchenEquipmentState.CookingDurationBlock;
+
+        var isInUse = kitchenEquipmentState.IsInUse(currentBlockIndex);
+        IsCooking = isInUse;
+        if (isInUse)
+        {
+            CookingEndBlockIndex = kitchenEquipmentState.CookingEndBlockIndex();
+            var cookingFood = inventoryState.GetRefrigeratorItem(
+                kitchenEquipmentState.CookingFoodStateID!.Value
+            );
+
+            if (cookingFood == null)
+            {
+                throw new Exception("Not found cooking food state id");
+            }
+
+            CookingFood = cookingFood;
+        }
+        else
+        {
+            CookingEndBlockIndex = null;
+            CookingFood = null;
+        }
 
         KitchenEquipment? kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(
             KitchenEquipmentID
@@ -53,7 +77,9 @@ public class KitchenEquipmentStateDetail
 
     public int KitchenEquipmentCategoryID { get; private set; }
 
-    public long? CookingStartedBlockIndex { get; private set; }
+    public bool IsCooking { get; private set; }
 
-    public long? CookingDurationBlock { get; private set; }
+    public long? CookingEndBlockIndex { get; private set; }
+
+    public RefrigeratorState? CookingFood { get; private set; }
 }

@@ -97,6 +97,11 @@ public class KitchenEquipmentState : State
         );
     }
 
+    public long CookingEndBlockIndex()
+    {
+        return CookingStartedBlockIndex ?? 0 + CookingDurationBlock ?? 0;
+    }
+
     public KitchenEquipmentState StartCooking(
         Guid cookingFoodStateID,
         long currentBlockIndex,

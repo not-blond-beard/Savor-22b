@@ -48,16 +48,22 @@ public class KitchenEquipmentStateDetailType : ObjectGraphType<KitchenEquipmentS
             resolve: context => context.Source.EquipmentCategoryType
         );
 
-        Field<LongGraphType>(
-            name: "cookingStartedBlockIndex",
-            description: "The block index when the cooking started.",
-            resolve: context => context.Source.CookingStartedBlockIndex
+        Field<NonNullGraphType<BooleanGraphType>>(
+            name: "isCooking",
+            description: "This equipment cooking status.",
+            resolve: context => context.Source.IsCooking
         );
 
         Field<LongGraphType>(
-            name: "cookingDurationBlock",
-            description: "The block duration of the cooking.",
-            resolve: context => context.Source.CookingDurationBlock
+            name: "cookingEndBlockIndex",
+            description: "The end block index indicates when this equipment is cooking.",
+            resolve: context => context.Source.CookingEndBlockIndex
+        );
+
+        Field<RefrigeratorStateType>(
+            name: "cookingFood",
+            description: "This equipment's cooking food.",
+            resolve: context => context.Source.CookingFood
         );
     }
 }
