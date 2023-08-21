@@ -373,7 +373,7 @@ public class CreateFoodAction : SVRAction
         }
     }
 
-    private RefrigeratorState GenerateFood(
+    private RefrigeratorState CreateFood(
         Recipe recipe,
         IRandom random,
         long currentBlockIndex,
@@ -463,7 +463,7 @@ public class CreateFoodAction : SVRAction
             );
         }
 
-        RefrigeratorState food = GenerateFood(
+        RefrigeratorState food = CreateFood(
             recipe,
             ctx.Random,
             ctx.BlockIndex,

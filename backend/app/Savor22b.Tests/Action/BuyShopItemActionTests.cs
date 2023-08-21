@@ -37,10 +37,11 @@ public class BuyShopItemActionTests : ActionTests
             }
         );
 
-        var inventoryStateEncoded = state.GetState(SignerAddress());
-        InventoryState inventoryState = inventoryStateEncoded is Bencodex.Types.Dictionary bdict
-            ? new InventoryState(bdict)
+        var rootStateEncoded = state.GetState(SignerAddress());
+        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
             : throw new Exception();
+        InventoryState inventoryState = rootState.InventoryState;
 
         Assert.Equal(0, inventoryState.SeedStateList.Count);
         Assert.Equal(0, inventoryState.RefrigeratorStateList.Count);

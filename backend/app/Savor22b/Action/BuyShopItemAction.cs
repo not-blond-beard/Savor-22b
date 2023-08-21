@@ -65,9 +65,10 @@ public class BuyShopItemAction : SVRAction
         IAccountStateDelta states = ctx.PreviousStates;
         Address Recipient = Addresses.ShopVaultAddress;
 
-        InventoryState inventoryState = states.GetState(ctx.Signer) is Dictionary stateEncoded
-            ? new InventoryState(stateEncoded)
-            : new InventoryState();
+        RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
+            ? new RootState(rootStateEncoded)
+            : new RootState();
+        var inventoryState = rootState.InventoryState;
 
         var desiredEquipment = FindRandomSeedItem();
         var itemState = new ItemState(ItemStateID, desiredEquipment.ID);
@@ -79,7 +80,8 @@ public class BuyShopItemAction : SVRAction
             allowNegativeBalance: false
         );
         inventoryState = inventoryState.AddItem(itemState);
+        rootState.SetInventoryState(inventoryState);
 
-        return states.SetState(ctx.Signer, inventoryState.Serialize());
+        return states.SetState(ctx.Signer, rootState.Serialize());
     }
 }
