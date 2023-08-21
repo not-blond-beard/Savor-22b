@@ -7,10 +7,14 @@ public class VillageStateType : ObjectGraphType<VillageState>
 {
     public VillageStateType()
     {
-        Field<NonNullGraphType<ListGraphType<HouseFieldStateType>>>(
+        Field<ListGraphType<HouseFieldStateType>>(
             name: "houseFieldStates",
             description: "The list of house field states in the village.",
-            resolve: context => context.Source.HouseFieldStates.ToList()
+            resolve: context =>
+            {
+                var states = context.Source.HouseFieldStates.Select(state => state.Value);
+                return states;
+            }
         );
         Field<NonNullGraphType<HouseStateType>>(
             name: "houseState",
