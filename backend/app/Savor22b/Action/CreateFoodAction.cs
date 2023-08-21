@@ -21,7 +21,6 @@ public class CreateFoodAction : SVRAction
     public Guid FoodStateID;
     public List<Guid> RefrigeratorStateIdsToUse;
     public List<Guid> KitchenEquipmentStateIdsToUse;
-    public List<int> ApplianceSpaceNumbersToUse;
 
     public CreateFoodAction() { }
 
@@ -29,15 +28,13 @@ public class CreateFoodAction : SVRAction
         int recipeID,
         Guid foodStateID,
         List<Guid> refrigeratorStateIdsToUse,
-        List<Guid> kitchenEquipmentStateIdsToUse,
-        List<int> applianceSpaceNumbersToUse
+        List<Guid> kitchenEquipmentStateIdsToUse
     )
     {
         RecipeID = recipeID;
         FoodStateID = foodStateID;
         RefrigeratorStateIdsToUse = refrigeratorStateIdsToUse;
         KitchenEquipmentStateIdsToUse = kitchenEquipmentStateIdsToUse;
-        ApplianceSpaceNumbersToUse = applianceSpaceNumbersToUse;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
@@ -51,9 +48,6 @@ public class CreateFoodAction : SVRAction
             [nameof(KitchenEquipmentStateIdsToUse)] = new List(
                 KitchenEquipmentStateIdsToUse.Select(e => e.Serialize())
             ),
-            [nameof(ApplianceSpaceNumbersToUse)] = new List(
-                ApplianceSpaceNumbersToUse.Select(e => e.Serialize())
-            ),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
@@ -65,9 +59,6 @@ public class CreateFoodAction : SVRAction
             .ToList();
         KitchenEquipmentStateIdsToUse = ((List)plainValue[nameof(KitchenEquipmentStateIdsToUse)])
             .Select(e => e.ToGuid())
-            .ToList();
-        ApplianceSpaceNumbersToUse = ((List)plainValue[nameof(ApplianceSpaceNumbersToUse)])
-            .Select(e => e.ToInteger())
             .ToList();
     }
 
@@ -129,123 +120,81 @@ public class CreateFoodAction : SVRAction
 
     private InventoryState CheckAndChangeEquipmentsStatus(
         Recipe recipe,
-        InventoryState state,
+        Guid foodStateId,
+        InventoryState inventoryState,
+        KitchenState kitchenState,
         List<Guid> kitchenEquipmentStateIdsToUse,
         long currentBlockIndex,
         long durationBlock
     )
     {
-        ImmutableList<int> kitchenCategoryIds = recipe.RequiredKitchenEquipmentCategoryList;
-        ImmutableList<KitchenEquipmentCategory> kitchenCategories = (
-            from categoryId in kitchenCategoryIds
-            select CsvDataHelper.GetKitchenEquipmentCategoryByID(categoryId)
-        ).ToImmutableList();
-        ImmutableList<int> requiredKitchenCategoryIds = (
-            from category in kitchenCategories
-            where category.Category == "sub"
-            select category.ID
-        ).ToImmutableList();
+        ImmutableList<int> requiredKitchenCategories = recipe.RequiredKitchenEquipmentCategoryList;
 
-        foreach (var stateId in kitchenEquipmentStateIdsToUse)
+        foreach (var kitchenEquipmentStateId in kitchenEquipmentStateIdsToUse)
         {
-            var kitchenEquipment = state.GetKitchenEquipmentState(stateId);
-            if (kitchenEquipment == null)
+            var kitchenEquipmentState = inventoryState.GetKitchenEquipmentState(
+                kitchenEquipmentStateId
+            );
+            if (kitchenEquipmentState == null)
             {
-                throw new NotFoundDataException($"You don't have `{stateId}` kitchen equipment");
+                throw new NotFoundDataException(
+                    $"You don't have `{kitchenEquipmentStateId}` kitchen equipment"
+                );
             }
 
             if (
                 !recipe.RequiredKitchenEquipmentCategoryList.Contains(
-                    kitchenEquipment.KitchenEquipmentCategoryID
+                    kitchenEquipmentState.KitchenEquipmentCategoryID
                 )
             )
             {
                 throw new NotHaveRequiredException(
-                    $"You should have equipment category `{kitchenEquipment.KitchenEquipmentCategoryID}`"
+                    $"You should have equipment category `{kitchenEquipmentState.KitchenEquipmentCategoryID}`"
                 );
             }
 
-            var statusChangedEquipment = kitchenEquipment.StartCooking(
+            var kitchenEquipmentCategory = CsvDataHelper.GetKitchenEquipmentCategoryByID(
+                kitchenEquipmentState.KitchenEquipmentCategoryID
+            );
+
+            if (kitchenEquipmentCategory == null)
+            {
+                throw new NotFoundTableDataException("Not Found category table");
+            }
+
+            if (kitchenEquipmentCategory.Category == "main")
+            {
+                if (!kitchenState.IsInstalled(kitchenEquipmentState.StateID))
+                {
+                    throw new NotHaveRequiredException(
+                        $"First you have to install kitchen equipment `{kitchenEquipmentState.StateID}`"
+                    );
+                }
+            }
+
+            var statusChangedEquipment = kitchenEquipmentState.StartCooking(
+                foodStateId,
                 currentBlockIndex,
                 durationBlock
             );
-            state = state.RemoveKitchenEquipmentItem(kitchenEquipment.StateID);
-            state = state.AddKitchenEquipmentItem(statusChangedEquipment);
+            inventoryState = inventoryState.RemoveKitchenEquipmentItem(
+                kitchenEquipmentState.StateID
+            );
+            inventoryState = inventoryState.AddKitchenEquipmentItem(statusChangedEquipment);
 
-            requiredKitchenCategoryIds = requiredKitchenCategoryIds.Remove(
-                kitchenEquipment.KitchenEquipmentCategoryID
+            requiredKitchenCategories = requiredKitchenCategories.Remove(
+                kitchenEquipmentState.KitchenEquipmentCategoryID
             );
         }
 
-        if (requiredKitchenCategoryIds.Count != 0)
+        if (requiredKitchenCategories.Count != 0)
         {
             throw new NotHaveRequiredException(
-                $"You should have kitchenEquipments `{requiredKitchenCategoryIds}`"
+                $"You should have kitchenEquipments `{requiredKitchenCategories}`"
             );
         }
 
-        return state;
-    }
-
-    private HouseState CheckAndChangeApplianceSpacesStatus(
-        Recipe recipe,
-        HouseState houseState,
-        InventoryState inventoryState,
-        List<int> spaceNumbers,
-        long currentBlockIndex,
-        long durationBlock
-    )
-    {
-        ImmutableList<int> kitchenCategoryIds = recipe.RequiredKitchenEquipmentCategoryList;
-        ImmutableList<KitchenEquipmentCategory> kitchenCategories = (
-            from categoryId in kitchenCategoryIds
-            select CsvDataHelper.GetKitchenEquipmentCategoryByID(categoryId)
-        ).ToImmutableList();
-        ImmutableList<int> requiredKitchenCategoryIds = (
-            from category in kitchenCategories
-            where category.Category == "main"
-            select category.ID
-        ).ToImmutableList();
-
-        foreach (var spaceNumber in spaceNumbers)
-        {
-            var space = houseState.KitchenState.GetApplianceSpaceStateByNumber(spaceNumber);
-
-            if (!space.EquipmentIsPresent())
-            {
-                throw new NotFoundDataException($"{spaceNumber} is not installed anything");
-            }
-
-            var kitchenEquipment = inventoryState.GetKitchenEquipmentState(
-                space.InstalledKitchenEquipmentStateId!.Value
-            );
-
-            if (
-                !recipe.RequiredKitchenEquipmentCategoryList.Contains(
-                    kitchenEquipment!.KitchenEquipmentCategoryID
-                )
-            )
-            {
-                throw new NotHaveRequiredException(
-                    $"You should have equipment category `{kitchenEquipment.KitchenEquipmentCategoryID}`"
-                );
-            }
-
-            space.StartCooking(currentBlockIndex, durationBlock);
-
-            requiredKitchenCategoryIds = requiredKitchenCategoryIds.Remove(
-                kitchenEquipment.KitchenEquipmentCategoryID
-            );
-        }
-
-        if (requiredKitchenCategoryIds.Count != 0)
-        {
-            throw new NotHaveRequiredException(
-                $"You should have kitchenEquipments `{requiredKitchenCategoryIds}`"
-            );
-        }
-
-        return houseState;
+        return inventoryState;
     }
 
     private Food FindFoodInCsv(int foodID)
@@ -299,9 +248,7 @@ public class CreateFoodAction : SVRAction
     private long calculateDuractionBlock(
         Recipe recipe,
         InventoryState inventoryState,
-        KitchenState kitchenState,
-        List<Guid> kitchenEquipmentStateIdsToUse,
-        List<int> applianceSpaceNumbersToUse
+        List<Guid> kitchenEquipmentStateIdsToUse
     )
     {
         var sumReductionPercent = 0;
@@ -311,37 +258,6 @@ public class CreateFoodAction : SVRAction
             if (kitchenEquipmentState == null)
             {
                 throw new NotFoundDataException($"You don't have `{stateId}` kitchen equipment");
-            }
-
-            var kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(
-                kitchenEquipmentState.KitchenEquipmentID
-            );
-            if (kitchenEquipment == null)
-            {
-                throw new NotFoundDataException(
-                    $"NotFound `{kitchenEquipmentState.KitchenEquipmentID}` kitchen equipment in table"
-                );
-            }
-
-            sumReductionPercent = sumReductionPercent + kitchenEquipment!.BlockTimeReductionPercent;
-        }
-
-        foreach (var spaceNumber in applianceSpaceNumbersToUse)
-        {
-            var space = kitchenState.GetApplianceSpaceStateByNumber(spaceNumber);
-            if (!space.EquipmentIsPresent())
-            {
-                throw new NotFoundDataException($"{spaceNumber} is not installed anything");
-            }
-
-            var kitchenEquipmentState = inventoryState.GetKitchenEquipmentState(
-                space.InstalledKitchenEquipmentStateId!.Value
-            );
-            if (kitchenEquipmentState == null)
-            {
-                throw new NotFoundDataException(
-                    $"You don't have {space.InstalledKitchenEquipmentStateId!.Value} kitchen equipment"
-                );
             }
 
             var kitchenEquipment = CsvDataHelper.GetKitchenEquipmentByID(
@@ -424,44 +340,27 @@ public class CreateFoodAction : SVRAction
         Validation.EnsureVillageStateExists(rootState);
 
         InventoryState inventoryState = rootState.InventoryState;
-        HouseState houseState = rootState.VillageState!.HouseState;
+        KitchenState kitchenState = rootState.VillageState!.HouseState.KitchenState;
 
         var recipe = FindRecipeInCsv(RecipeID);
         var durationBlock = calculateDuractionBlock(
             recipe,
             inventoryState,
-            houseState.KitchenState,
-            KitchenEquipmentStateIdsToUse,
-            ApplianceSpaceNumbersToUse
+            KitchenEquipmentStateIdsToUse
         );
 
         inventoryState = CheckAndChangeEquipmentsStatus(
             recipe,
+            FoodStateID,
             inventoryState,
+            kitchenState,
             KitchenEquipmentStateIdsToUse,
-            ctx.BlockIndex,
-            durationBlock
-        );
-        houseState = CheckAndChangeApplianceSpacesStatus(
-            recipe,
-            houseState,
-            inventoryState,
-            ApplianceSpaceNumbersToUse,
             ctx.BlockIndex,
             durationBlock
         );
         inventoryState = CheckAndRemoveEdibles(recipe, inventoryState, RefrigeratorStateIdsToUse);
 
         var usedKitchenEquipmentStateIds = KitchenEquipmentStateIdsToUse.ToImmutableList();
-
-        foreach (var spaceNumber in ApplianceSpaceNumbersToUse)
-        {
-            var space = houseState.KitchenState.GetApplianceSpaceStateByNumber(spaceNumber);
-
-            usedKitchenEquipmentStateIds = usedKitchenEquipmentStateIds.Add(
-                space.InstalledKitchenEquipmentStateId!.Value
-            );
-        }
 
         RefrigeratorState food = CreateFood(
             recipe,

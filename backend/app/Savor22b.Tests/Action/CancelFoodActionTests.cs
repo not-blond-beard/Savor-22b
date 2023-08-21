@@ -20,9 +20,6 @@ public class CancelFoodActionTests : ActionTests
         var equipmentStateId1 = Guid.NewGuid();
         var equipmentStateId2 = Guid.NewGuid();
 
-        var kitchenEquipmentState1 = new KitchenEquipmentState(equipmentStateId1, 1, 1, 1, 10);
-        var kitchenEquipmentState2 = new KitchenEquipmentState(equipmentStateId2, 2, 2, 1, 10);
-
         var testFood = RefrigeratorState.CreateFood(
             Guid.NewGuid(),
             1,
@@ -35,13 +32,29 @@ public class CancelFoodActionTests : ActionTests
             ImmutableList<Guid>.Empty.Add(equipmentStateId1).Add(equipmentStateId2)
         );
 
+        var kitchenEquipmentState1 = new KitchenEquipmentState(
+            equipmentStateId1,
+            1,
+            1,
+            testFood.StateID,
+            1,
+            10
+        );
+        var kitchenEquipmentState2 = new KitchenEquipmentState(
+            equipmentStateId2,
+            2,
+            2,
+            testFood.StateID,
+            1,
+            10
+        );
+
         InventoryState beforeInventoryState = new InventoryState();
         beforeInventoryState = beforeInventoryState.AddRefrigeratorItem(testFood);
         beforeInventoryState = beforeInventoryState.AddKitchenEquipmentItem(kitchenEquipmentState1);
         beforeInventoryState = beforeInventoryState.AddKitchenEquipmentItem(kitchenEquipmentState2);
 
         KitchenState beforeKitchenState = new KitchenState();
-        beforeKitchenState.InstallKitchenEquipment(kitchenEquipmentState2, 1);
 
         RootState beforeRootState = new RootState(
             beforeInventoryState,
@@ -90,15 +103,12 @@ public class CancelFoodActionTests : ActionTests
                 .GetKitchenEquipmentState(kitchenEquipmentState1.StateID)!
                 .IsInUse(blockIndex)
         );
-
         Assert.NotNull(
-            afterRootState.VillageState!.HouseState.KitchenState
-                .GetApplianceSpaceStateByNumber(1)
-                .InstalledKitchenEquipmentStateId
+            afterRootState.InventoryState.GetKitchenEquipmentState(kitchenEquipmentState2.StateID)
         );
         Assert.False(
-            afterRootState.VillageState!.HouseState.KitchenState
-                .GetApplianceSpaceStateByNumber(1)
+            afterRootState.InventoryState
+                .GetKitchenEquipmentState(kitchenEquipmentState2.StateID)!
                 .IsInUse(blockIndex)
         );
     }

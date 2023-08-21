@@ -2,7 +2,6 @@ namespace Savor22b.States;
 
 using Bencodex.Types;
 using Libplanet.Headless.Extensions;
-using Savor22b.Util;
 
 public class ApplianceSpaceState : State
 {
@@ -10,21 +9,12 @@ public class ApplianceSpaceState : State
     {
         SpaceNumber = spaceNumber;
         InstalledKitchenEquipmentStateId = null;
-        CookingDurationBlock = null;
-        CookingStartedBlockIndex = null;
     }
 
-    public ApplianceSpaceState(
-        int spaceNumber,
-        Guid? installedKitchenEquipmentStateId,
-        long? cookingDurationBlock,
-        long? cookingStartedBlockIndex
-    )
+    public ApplianceSpaceState(int spaceNumber, Guid? installedKitchenEquipmentStateId)
     {
         SpaceNumber = spaceNumber;
         InstalledKitchenEquipmentStateId = installedKitchenEquipmentStateId;
-        CookingDurationBlock = cookingDurationBlock;
-        CookingStartedBlockIndex = cookingStartedBlockIndex;
     }
 
     public ApplianceSpaceState(Dictionary encoded)
@@ -33,17 +23,11 @@ public class ApplianceSpaceState : State
         InstalledKitchenEquipmentStateId = encoded[
             nameof(InstalledKitchenEquipmentStateId)
         ].ToNullableGuid();
-        CookingDurationBlock = encoded[nameof(CookingDurationBlock)].ToNullableLong();
-        CookingStartedBlockIndex = encoded[nameof(CookingStartedBlockIndex)].ToNullableLong();
     }
 
     public int SpaceNumber { get; private set; }
 
     public Guid? InstalledKitchenEquipmentStateId { get; private set; }
-
-    public long? CookingDurationBlock { get; private set; }
-
-    public long? CookingStartedBlockIndex { get; private set; }
 
     public IValue Serialize()
     {
@@ -54,54 +38,23 @@ public class ApplianceSpaceState : State
                 (Text)nameof(InstalledKitchenEquipmentStateId),
                 InstalledKitchenEquipmentStateId.Serialize()
             ),
-            new KeyValuePair<IKey, IValue>(
-                (Text)nameof(CookingDurationBlock),
-                CookingDurationBlock.Serialize()
-            ),
-            new KeyValuePair<IKey, IValue>(
-                (Text)nameof(CookingStartedBlockIndex),
-                CookingStartedBlockIndex.Serialize()
-            ),
         };
         return new Dictionary(pairs);
     }
 
     public ApplianceSpaceState InstallKitchenEquipment(Guid installedKitchenEquipmentStateId)
     {
-        return new ApplianceSpaceState(SpaceNumber, installedKitchenEquipmentStateId, null, null);
+        return new ApplianceSpaceState(SpaceNumber, installedKitchenEquipmentStateId);
     }
 
     public void UnInstallKitchenEquipment()
     {
         InstalledKitchenEquipmentStateId = null;
-        CookingStartedBlockIndex = null;
-        CookingDurationBlock = null;
-    }
-
-    public bool IsInUse(long currentBlockIndex)
-    {
-        return BlockUtil.CalculateIsInProgress(
-            currentBlockIndex,
-            CookingStartedBlockIndex ?? 0,
-            CookingDurationBlock ?? 0
-        );
     }
 
     public bool EquipmentIsPresent()
     {
         return InstalledKitchenEquipmentStateId is not null;
-    }
-
-    public void StartCooking(long currentBlockIndex, long cookingDurationBlock)
-    {
-        CookingStartedBlockIndex = currentBlockIndex;
-        CookingDurationBlock = cookingDurationBlock;
-    }
-
-    public void StopCooking()
-    {
-        CookingStartedBlockIndex = null;
-        CookingDurationBlock = null;
     }
 
     public override bool Equals(object obj)

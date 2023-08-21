@@ -17,15 +17,5 @@ public class ApplianceSpaceStateType : ObjectGraphType<ApplianceSpaceState>
             description: "Installed kitchen equipment state id.",
             resolve: context => context.Source.InstalledKitchenEquipmentStateId
         );
-        Field<LongGraphType>(
-            name: "cookingDurationBlock",
-            description: "Total cooking duration block.",
-            resolve: context => context.Source.CookingDurationBlock
-        );
-        Field<LongGraphType>(
-            name: "cookingStartedBlockIndex",
-            description: "Cooking started block index.",
-            resolve: context => context.Source.CookingStartedBlockIndex
-        );
     }
 }

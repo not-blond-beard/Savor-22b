@@ -49,7 +49,6 @@ public class CancelFoodAction : SVRAction
         Validation.EnsureVillageStateExists(rootState);
 
         InventoryState inventoryState = rootState.InventoryState;
-        KitchenState kitchenState = rootState.VillageState!.HouseState.KitchenState;
 
         var food = inventoryState.GetRefrigeratorItem(FoodStateID);
 
@@ -85,29 +84,13 @@ public class CancelFoodAction : SVRAction
                 throw new NotFoundTableDataException("Not found category table");
             }
 
-            if (kitchenEquipmentCategory!.Category == "main")
-            {
-                for (var i = 1; i < 4; i++)
-                {
-                    if (
-                        kitchenState
-                            .GetApplianceSpaceStateByNumber(i)
-                            .InstalledKitchenEquipmentStateId == kitchenEquipmentStateId
-                    )
-                    {
-                        kitchenState.GetApplianceSpaceStateByNumber(i).StopCooking();
-                    }
-                }
-            }
-            else
-            {
-                kitchenEquipmentState = kitchenEquipmentState.StopCooking();
-                inventoryState = inventoryState.RemoveKitchenEquipmentItem(
-                    kitchenEquipmentState.StateID
-                );
-                inventoryState = inventoryState.AddKitchenEquipmentItem(kitchenEquipmentState);
-            }
+            kitchenEquipmentState = kitchenEquipmentState.StopCooking();
+            inventoryState = inventoryState.RemoveKitchenEquipmentItem(
+                kitchenEquipmentState.StateID
+            );
+            inventoryState = inventoryState.AddKitchenEquipmentItem(kitchenEquipmentState);
         }
+
         inventoryState = inventoryState.RemoveRefrigeratorItem(food.StateID);
         rootState.SetInventoryState(inventoryState);
 
