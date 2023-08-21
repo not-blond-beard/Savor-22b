@@ -10,15 +10,14 @@ using Libplanet;
 
 public class UseRandomSeedItemActionTests : ActionTests
 {
-    public UseRandomSeedItemActionTests()
-    {
-    }
+    public UseRandomSeedItemActionTests() { }
 
     [Fact]
     public void UseRandomSeedItemActionExecute_AddsSeedToSeedStateList()
     {
         var seedStateID = Guid.NewGuid();
         var random = new DummyRandom(1);
+        var villageId = 1;
 
         IAccountStateDelta state = new DummyState();
         RootState beforeRootState = new RootState();
@@ -28,19 +27,24 @@ public class UseRandomSeedItemActionTests : ActionTests
         beforeInventoryState = beforeInventoryState.AddItem(itemState);
 
         beforeRootState.SetInventoryState(beforeInventoryState);
+        beforeRootState.SetVillageState(
+            new VillageState(new HouseState(villageId, 0, 0, new KitchenState()))
+        );
 
         state = state.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var action = new UseRandomSeedItemAction(seedStateID, itemState.StateID);
 
-        state = action.Execute(new DummyActionContext
-        {
-            PreviousStates = state,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 1,
-        });
+        state = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = state,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            }
+        );
 
         var rootStateEncoded = state.GetState(SignerAddress());
         RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
@@ -59,8 +63,12 @@ public class UseRandomSeedItemActionTests : ActionTests
     [InlineData(100)]
     [InlineData(1000)]
     [InlineData(10000)]
-    public void UseRandomSeedItemActionExecute_AddsSeedStateToExistsSeedsList(int existsSeedsListLength)
+    public void UseRandomSeedItemActionExecute_AddsSeedStateToExistsSeedsList(
+        int existsSeedsListLength
+    )
     {
+        int villageId = 1;
+
         IAccountStateDelta state = new DummyState();
         var itemState = new ItemState(Guid.NewGuid(), 1);
         RootState rootState = new RootState();
@@ -74,6 +82,9 @@ public class UseRandomSeedItemActionTests : ActionTests
 
         beforeInventoryState = beforeInventoryState.AddItem(itemState);
         rootState.SetInventoryState(beforeInventoryState);
+        rootState.SetVillageState(
+            new VillageState(new HouseState(villageId, 0, 0, new KitchenState()))
+        );
 
         state = state.SetState(SignerAddress(), rootState.Serialize());
 
@@ -81,14 +92,16 @@ public class UseRandomSeedItemActionTests : ActionTests
 
         var action = new UseRandomSeedItemAction(Guid.NewGuid(), itemState.StateID);
 
-        state = action.Execute(new DummyActionContext
-        {
-            PreviousStates = state,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 1,
-        });
+        state = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = state,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            }
+        );
 
         var afterRootStateEncoded = state.GetState(SignerAddress());
 
