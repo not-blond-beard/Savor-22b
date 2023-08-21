@@ -1,4 +1,5 @@
 using GraphQL.Types;
+using Savor22b.Model;
 using Savor22b.States;
 
 namespace Savor22b.GraphTypes.Types;
@@ -17,6 +18,16 @@ public class SeedStateType : ObjectGraphType<SeedState>
             name: "seedId",
             description: "The ID of the seed.",
             resolve: context => context.Source.SeedID
+        );
+
+        Field<StringGraphType>(
+            name: "name",
+            description: "The name of the seed.",
+            resolve: context =>
+            {
+                Seed seed = CsvDataHelper.GetSeedById(context.Source.SeedID)!;
+                return seed.Name;
+            }
         );
     }
 }

@@ -26,6 +26,12 @@ public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
         );
 
         Field<StringGraphType>(
+            name: "name",
+            description: "The name of the seed.",
+            resolve: context => GetRefrigeratorName(context.Source)
+        );
+
+        Field<StringGraphType>(
             name: "grade",
             description: "The grade of the seed.",
             resolve: context => context.Source.Grade
@@ -54,5 +60,19 @@ public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
             description: "The speed of the seed.",
             resolve: context => context.Source.SPD
         );
+    }
+
+    private string GetRefrigeratorName(RefrigeratorState refrigeratorState)
+    {
+        if (refrigeratorState.IngredientID != null)
+        {
+            return CsvDataHelper
+                .GetIngredientByIngredientId((int)refrigeratorState.IngredientID)!
+                .Name;
+        }
+        else
+        {
+            return CsvDataHelper.GetFoodById((int)refrigeratorState.FoodID)!.Name;
+        }
     }
 }
