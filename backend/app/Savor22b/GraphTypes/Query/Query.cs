@@ -140,11 +140,6 @@ public class Query : ObjectGraphType
                 {
                     Name = "kitchenEquipmentStateIdsToUse",
                     Description = "kitchen equipment state ID list",
-                },
-                new QueryArgument<NonNullGraphType<ListGraphType<IntGraphType>>>
-                {
-                    Name = "applianceSpaceNumbersToUse",
-                    Description = "appliance space number list",
                 }
             ),
             resolve: context =>
@@ -157,8 +152,7 @@ public class Query : ObjectGraphType
                     context.GetArgument<int>("recipeID"),
                     Guid.NewGuid(),
                     context.GetArgument<List<Guid>>("refrigeratorStateIdsToUse"),
-                    context.GetArgument<List<Guid>>("kitchenEquipmentStateIdsToUse"),
-                    context.GetArgument<List<int>>("applianceSpaceNumbersToUse")
+                    context.GetArgument<List<Guid>>("kitchenEquipmentStateIdsToUse")
                 );
 
                 return new GetUnsignedTransactionHex(

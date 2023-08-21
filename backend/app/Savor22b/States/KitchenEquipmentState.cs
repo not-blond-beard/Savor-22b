@@ -10,6 +10,7 @@ public class KitchenEquipmentState : State
         Guid stateID,
         int kitchenEquipmentID,
         int kitchenEquipmentCategoryID,
+        Guid cookingFoodStateID,
         long cookingStartedBlockIndex,
         long cookingDurationBlock
     )
@@ -17,6 +18,7 @@ public class KitchenEquipmentState : State
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
         KitchenEquipmentCategoryID = kitchenEquipmentCategoryID;
+        CookingFoodStateID = cookingFoodStateID;
         CookingStartedBlockIndex = cookingStartedBlockIndex;
         CookingDurationBlock = cookingDurationBlock;
     }
@@ -30,6 +32,7 @@ public class KitchenEquipmentState : State
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
         KitchenEquipmentCategoryID = kitchenEquipmentCategoryID;
+        CookingFoodStateID = null;
         CookingStartedBlockIndex = null;
         CookingDurationBlock = null;
     }
@@ -39,6 +42,7 @@ public class KitchenEquipmentState : State
         StateID = encoded[nameof(StateID)].ToGuid();
         KitchenEquipmentID = encoded[nameof(KitchenEquipmentID)].ToInteger();
         KitchenEquipmentCategoryID = encoded[nameof(KitchenEquipmentCategoryID)].ToInteger();
+        CookingFoodStateID = encoded[nameof(CookingFoodStateID)].ToNullableGuid();
         CookingStartedBlockIndex = encoded[nameof(CookingStartedBlockIndex)].ToNullableLong();
         CookingDurationBlock = encoded[nameof(CookingDurationBlock)].ToNullableLong();
     }
@@ -48,6 +52,8 @@ public class KitchenEquipmentState : State
     public int KitchenEquipmentID { get; private set; }
 
     public int KitchenEquipmentCategoryID { get; private set; }
+
+    public Guid? CookingFoodStateID { get; private set; }
 
     public long? CookingStartedBlockIndex { get; private set; }
 
@@ -65,6 +71,10 @@ public class KitchenEquipmentState : State
             new KeyValuePair<IKey, IValue>(
                 (Text)nameof(KitchenEquipmentCategoryID),
                 KitchenEquipmentCategoryID.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(CookingFoodStateID),
+                CookingFoodStateID.Serialize()
             ),
             new KeyValuePair<IKey, IValue>(
                 (Text)nameof(CookingStartedBlockIndex),
@@ -87,12 +97,17 @@ public class KitchenEquipmentState : State
         );
     }
 
-    public KitchenEquipmentState StartCooking(long currentBlockIndex, long cookingDurationBlock)
+    public KitchenEquipmentState StartCooking(
+        Guid cookingFoodStateID,
+        long currentBlockIndex,
+        long cookingDurationBlock
+    )
     {
         return new KitchenEquipmentState(
             StateID,
             KitchenEquipmentID,
             KitchenEquipmentCategoryID,
+            cookingFoodStateID,
             currentBlockIndex,
             cookingDurationBlock
         );

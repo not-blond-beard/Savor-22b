@@ -1,6 +1,5 @@
 namespace Savor22b.States;
 
-
 using Bencodex.Types;
 
 public class KitchenState : State
@@ -14,9 +13,15 @@ public class KitchenState : State
 
     public KitchenState(Dictionary encoded)
     {
-        FirstApplianceSpace = new ApplianceSpaceState((Dictionary)encoded[nameof(FirstApplianceSpace)]);
-        SecondApplianceSpace = new ApplianceSpaceState((Dictionary)encoded[nameof(SecondApplianceSpace)]);
-        ThirdApplianceSpace = new ApplianceSpaceState((Dictionary)encoded[nameof(ThirdApplianceSpace)]);
+        FirstApplianceSpace = new ApplianceSpaceState(
+            (Dictionary)encoded[nameof(FirstApplianceSpace)]
+        );
+        SecondApplianceSpace = new ApplianceSpaceState(
+            (Dictionary)encoded[nameof(SecondApplianceSpace)]
+        );
+        ThirdApplianceSpace = new ApplianceSpaceState(
+            (Dictionary)encoded[nameof(ThirdApplianceSpace)]
+        );
     }
 
     public ApplianceSpaceState FirstApplianceSpace { get; private set; }
@@ -29,28 +34,48 @@ public class KitchenState : State
     {
         var pairs = new[]
         {
-                new KeyValuePair<IKey, IValue>((Text)nameof(FirstApplianceSpace), FirstApplianceSpace.Serialize()),
-                new KeyValuePair<IKey, IValue>((Text)nameof(SecondApplianceSpace), SecondApplianceSpace.Serialize()),
-                new KeyValuePair<IKey, IValue>((Text)nameof(ThirdApplianceSpace), ThirdApplianceSpace.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(FirstApplianceSpace),
+                FirstApplianceSpace.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(SecondApplianceSpace),
+                SecondApplianceSpace.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(ThirdApplianceSpace),
+                ThirdApplianceSpace.Serialize()
+            ),
         };
         return new Dictionary(pairs);
     }
 
-    public void InstallKitchenEquipment(KitchenEquipmentState kitchenEquipmentState, int spaceNumber)
+    public void InstallKitchenEquipment(
+        KitchenEquipmentState kitchenEquipmentState,
+        int spaceNumber
+    )
     {
         switch (spaceNumber)
         {
             case 1:
-                FirstApplianceSpace = FirstApplianceSpace.InstallKitchenEquipment(kitchenEquipmentState.StateID);
+                FirstApplianceSpace = FirstApplianceSpace.InstallKitchenEquipment(
+                    kitchenEquipmentState.StateID
+                );
                 break;
             case 2:
-                SecondApplianceSpace = SecondApplianceSpace.InstallKitchenEquipment(kitchenEquipmentState.StateID);
+                SecondApplianceSpace = SecondApplianceSpace.InstallKitchenEquipment(
+                    kitchenEquipmentState.StateID
+                );
                 break;
             case 3:
-                ThirdApplianceSpace = ThirdApplianceSpace.InstallKitchenEquipment(kitchenEquipmentState.StateID);
+                ThirdApplianceSpace = ThirdApplianceSpace.InstallKitchenEquipment(
+                    kitchenEquipmentState.StateID
+                );
                 break;
             default:
-                throw new ArgumentOutOfRangeException("KitchenState have only three appliance space");
+                throw new ArgumentOutOfRangeException(
+                    "KitchenState have only three appliance space"
+                );
         }
     }
 
@@ -65,7 +90,29 @@ public class KitchenState : State
             case 3:
                 return ThirdApplianceSpace;
             default:
-                throw new ArgumentOutOfRangeException("KitchenState have only three appliance space");
+                throw new ArgumentOutOfRangeException(
+                    "KitchenState have only three appliance space"
+                );
         }
+    }
+
+    public bool IsInstalled(Guid stateId)
+    {
+        if (FirstApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
+        {
+            return true;
+        }
+
+        if (SecondApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
+        {
+            return true;
+        }
+
+        if (ThirdApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
