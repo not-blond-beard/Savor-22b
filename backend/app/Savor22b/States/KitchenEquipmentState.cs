@@ -6,7 +6,13 @@ using Libplanet.Headless.Extensions;
 
 public class KitchenEquipmentState : State
 {
-    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID, int kitchenEquipmentCategoryID, long cookingStartedBlockIndex, long cookingDurationBlock)
+    public KitchenEquipmentState(
+        Guid stateID,
+        int kitchenEquipmentID,
+        int kitchenEquipmentCategoryID,
+        long cookingStartedBlockIndex,
+        long cookingDurationBlock
+    )
     {
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
@@ -15,7 +21,11 @@ public class KitchenEquipmentState : State
         CookingDurationBlock = cookingDurationBlock;
     }
 
-    public KitchenEquipmentState(Guid stateID, int kitchenEquipmentID, int kitchenEquipmentCategoryID)
+    public KitchenEquipmentState(
+        Guid stateID,
+        int kitchenEquipmentID,
+        int kitchenEquipmentCategoryID
+    )
     {
         StateID = stateID;
         KitchenEquipmentID = kitchenEquipmentID;
@@ -48,23 +58,49 @@ public class KitchenEquipmentState : State
         var pairs = new[]
         {
             new KeyValuePair<IKey, IValue>((Text)nameof(StateID), StateID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentID), KitchenEquipmentID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(KitchenEquipmentCategoryID), KitchenEquipmentCategoryID.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(CookingStartedBlockIndex), CookingStartedBlockIndex.Serialize()),
-            new KeyValuePair<IKey, IValue>((Text)nameof(CookingDurationBlock), CookingDurationBlock.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(KitchenEquipmentID),
+                KitchenEquipmentID.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(KitchenEquipmentCategoryID),
+                KitchenEquipmentCategoryID.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(CookingStartedBlockIndex),
+                CookingStartedBlockIndex.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(CookingDurationBlock),
+                CookingDurationBlock.Serialize()
+            ),
         };
         return new Dictionary(pairs);
     }
 
     public bool IsInUse(long currentBlockIndex)
     {
-        return BlockUtil.CalculateIsInProgress(currentBlockIndex, CookingStartedBlockIndex ?? 0, CookingDurationBlock ?? 0);
+        return BlockUtil.CalculateIsInProgress(
+            currentBlockIndex,
+            CookingStartedBlockIndex ?? 0,
+            CookingDurationBlock ?? 0
+        );
     }
 
     public KitchenEquipmentState StartCooking(long currentBlockIndex, long cookingDurationBlock)
     {
         return new KitchenEquipmentState(
-            StateID, KitchenEquipmentID, KitchenEquipmentCategoryID, currentBlockIndex, cookingDurationBlock);
+            StateID,
+            KitchenEquipmentID,
+            KitchenEquipmentCategoryID,
+            currentBlockIndex,
+            cookingDurationBlock
+        );
+    }
+
+    public KitchenEquipmentState StopCooking()
+    {
+        return new KitchenEquipmentState(StateID, KitchenEquipmentID, KitchenEquipmentCategoryID);
     }
 
     public override bool Equals(object obj)
@@ -93,5 +129,4 @@ public class KitchenEquipmentState : State
             return hash;
         }
     }
-
 }

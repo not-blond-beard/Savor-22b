@@ -3,6 +3,7 @@ namespace Savor22b.States;
 using Bencodex.Types;
 using Savor22b.Constants;
 using Libplanet.Headless.Extensions;
+using System.Collections.Immutable;
 
 public class RefrigeratorState : State
 {
@@ -15,7 +16,8 @@ public class RefrigeratorState : State
         int def,
         int atk,
         int spd,
-        long? availableBlockIndex
+        long? availableBlockIndex,
+        ImmutableList<Guid> usedKitchenEquipmentStateIds
     )
     {
         StateID = stateID;
@@ -27,6 +29,7 @@ public class RefrigeratorState : State
         ATK = atk;
         SPD = spd;
         AvailableBlockIndex = availableBlockIndex;
+        UsedKitchenEquipmentStateIds = usedKitchenEquipmentStateIds;
     }
 
     public static RefrigeratorState CreateIngredient(
@@ -39,7 +42,18 @@ public class RefrigeratorState : State
         int spd
     )
     {
-        return new RefrigeratorState(stateID, ingredientID, null, grade, hp, def, atk, spd, null);
+        return new RefrigeratorState(
+            stateID,
+            ingredientID,
+            null,
+            grade,
+            hp,
+            def,
+            atk,
+            spd,
+            null,
+            ImmutableList<Guid>.Empty
+        );
     }
 
     public static RefrigeratorState CreateFood(
@@ -50,7 +64,8 @@ public class RefrigeratorState : State
         int def,
         int atk,
         int spd,
-        long? availableBlockIndex
+        long availableBlockIndex,
+        ImmutableList<Guid> usedKitchenEquipmentStateIds
     )
     {
         return new RefrigeratorState(
@@ -62,7 +77,8 @@ public class RefrigeratorState : State
             def,
             atk,
             spd,
-            availableBlockIndex
+            availableBlockIndex,
+            usedKitchenEquipmentStateIds
         );
     }
 
@@ -77,6 +93,9 @@ public class RefrigeratorState : State
         IngredientID = encoded[nameof(IngredientID)].ToNullableInteger();
         FoodID = encoded[nameof(FoodID)].ToNullableInteger();
         AvailableBlockIndex = encoded[nameof(AvailableBlockIndex)].ToNullableLong();
+        UsedKitchenEquipmentStateIds = ((List)encoded[nameof(UsedKitchenEquipmentStateIds)])
+            .Select(e => e.ToGuid())
+            .ToImmutableList();
     }
 
     public Guid StateID { get; set; }
@@ -97,6 +116,8 @@ public class RefrigeratorState : State
 
     public long? AvailableBlockIndex { get; set; }
 
+    public ImmutableList<Guid> UsedKitchenEquipmentStateIds { get; set; }
+
     public IValue Serialize()
     {
         var pairs = new List<KeyValuePair<IKey, IValue>>
@@ -109,6 +130,10 @@ public class RefrigeratorState : State
             new KeyValuePair<IKey, IValue>((Text)nameof(SPD), SPD.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), IngredientID.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(FoodID), FoodID.Serialize()),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(UsedKitchenEquipmentStateIds),
+                new List(UsedKitchenEquipmentStateIds.Select(element => element.Serialize()))
+            ),
             new KeyValuePair<IKey, IValue>(
                 (Text)nameof(AvailableBlockIndex),
                 AvailableBlockIndex.Serialize()

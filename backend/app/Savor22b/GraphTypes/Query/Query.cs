@@ -118,7 +118,7 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
-            "createAction_GenerateFood",
+            "createAction_CreateFood",
             description: "Generate Food",
             arguments: new QueryArguments(
                 new QueryArgument<NonNullGraphType<StringGraphType>>
@@ -156,7 +156,7 @@ public class Query : ObjectGraphType
                 var action = new CreateFoodAction(
                     context.GetArgument<int>("recipeID"),
                     Guid.NewGuid(),
-                    context.GetArgument<List<Guid>>("refrigeratorStateIDs"),
+                    context.GetArgument<List<Guid>>("refrigeratorStateIdsToUse"),
                     context.GetArgument<List<Guid>>("kitchenEquipmentStateIdsToUse"),
                     context.GetArgument<List<int>>("applianceSpaceNumbersToUse")
                 );
@@ -380,54 +380,6 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
-            "createAction_CreateFood",
-            description: "Create Food",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "publicKey",
-                    Description = "The base64-encoded public key for Transaction.",
-                },
-                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
-                {
-                    Name = "refrigeratorStateIdsToUse",
-                    Description = "refrigerator state ID list for use",
-                },
-                new QueryArgument<NonNullGraphType<ListGraphType<GuidGraphType>>>
-                {
-                    Name = "kitchenEquipmentStateIdsToUse",
-                    Description = "kitchen equipment state ID list for use",
-                },
-                new QueryArgument<NonNullGraphType<ListGraphType<IntGraphType>>>
-                {
-                    Name = "applianceSpaceNumbersToUse",
-                    Description = "appliance space number list for use",
-                }
-            ),
-            resolve: context =>
-            {
-                var publicKey = new PublicKey(
-                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
-                );
-
-                var action = new CreateFoodAction(
-                    context.GetArgument<int>("recipeID"),
-                    Guid.NewGuid(),
-                    context.GetArgument<List<Guid>>("refrigeratorStateIdsToUse"),
-                    context.GetArgument<List<Guid>>("kitchenEquipmentStateIdsToUse"),
-                    context.GetArgument<List<int>>("applianceSpaceNumbersToUse")
-                );
-
-                return new GetUnsignedTransactionHex(
-                    action,
-                    publicKey,
-                    _blockChain,
-                    _swarm
-                ).UnsignedTransactionHex;
-            }
-        );
-
-        Field<NonNullGraphType<StringGraphType>>(
             "createAction_BuyShopItem",
             description: "Buy Shop Item",
             arguments: new QueryArguments(
@@ -471,6 +423,11 @@ public class Query : ObjectGraphType
                     Name = "publicKey",
                     Description = "The base64-encoded public key for Transaction.",
                 },
+                new QueryArgument<GuidGraphType>
+                {
+                    Name = "kitchenEquipmentStateID",
+                    Description = "Kitchen Equipment State Id for install",
+                },
                 new QueryArgument<IntGraphType>
                 {
                     Name = "spaceNumber",
@@ -484,9 +441,41 @@ public class Query : ObjectGraphType
                 );
 
                 var action = new InstallKitchenEquipmentAction(
-                    Guid.NewGuid(),
+                    context.GetArgument<Guid>("kitchenEquipmentStateID"),
                     context.GetArgument<int>("spaceNumber")
                 );
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_CancelFoodAction",
+            description: "Cancel Food",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "foodStateId",
+                    Description = "Food state Id (Guid)",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new CancelFoodAction(context.GetArgument<Guid>("foodStateId"));
 
                 return new GetUnsignedTransactionHex(
                     action,

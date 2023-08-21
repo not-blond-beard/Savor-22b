@@ -373,11 +373,12 @@ public class CreateFoodAction : SVRAction
         }
     }
 
-    private RefrigeratorState GenerateFood(
+    private RefrigeratorState CreateFood(
         Recipe recipe,
         IRandom random,
         long currentBlockIndex,
-        long durationBlock
+        long durationBlock,
+        ImmutableList<Guid> usedKitchenEquipmentStateIds
     )
     {
         var gradeExtractor = new GradeExtractor(random, 0.1);
@@ -400,7 +401,8 @@ public class CreateFoodAction : SVRAction
             generatedStat.ATK,
             generatedStat.DEF,
             generatedStat.SPD,
-            currentBlockIndex + durationBlock
+            currentBlockIndex + durationBlock,
+            usedKitchenEquipmentStateIds
         );
 
         return food;
@@ -450,7 +452,24 @@ public class CreateFoodAction : SVRAction
         );
         inventoryState = CheckAndRemoveEdibles(recipe, inventoryState, RefrigeratorStateIdsToUse);
 
-        RefrigeratorState food = GenerateFood(recipe, ctx.Random, ctx.BlockIndex, durationBlock);
+        var usedKitchenEquipmentStateIds = KitchenEquipmentStateIdsToUse.ToImmutableList();
+
+        foreach (var spaceNumber in ApplianceSpaceNumbersToUse)
+        {
+            var space = houseState.KitchenState.GetApplianceSpaceStateByNumber(spaceNumber);
+
+            usedKitchenEquipmentStateIds = usedKitchenEquipmentStateIds.Add(
+                space.InstalledKitchenEquipmentStateId!.Value
+            );
+        }
+
+        RefrigeratorState food = CreateFood(
+            recipe,
+            ctx.Random,
+            ctx.BlockIndex,
+            durationBlock,
+            usedKitchenEquipmentStateIds
+        );
         inventoryState = inventoryState.AddRefrigeratorItem(food);
 
         rootState.SetInventoryState(inventoryState);
