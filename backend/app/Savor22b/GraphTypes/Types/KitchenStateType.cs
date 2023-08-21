@@ -7,19 +7,19 @@ public class KitchenStateType : ObjectGraphType<KitchenState>
 {
     public KitchenStateType()
     {
-        Field<GuidGraphType>(
+        Field<ApplianceSpaceStateType>(
             name: "FirstApplianceSpace",
-            description: "The ID of the first burner equipment.",
+            description: "The first appliance space.",
             resolve: context => context.Source.FirstApplianceSpace
         );
-        Field<GuidGraphType>(
+        Field<ApplianceSpaceStateType>(
             name: "SecondApplianceSpace",
-            description: "The ID of the second burner equipment.",
+            description: "The second appliance space.",
             resolve: context => context.Source.SecondApplianceSpace
         );
-        Field<GuidGraphType>(
+        Field<ApplianceSpaceStateType>(
             name: "ThirdApplianceSpace",
-            description: "The ID of the third burner equipment.",
+            description: "The third appliance space.",
             resolve: context => context.Source.ThirdApplianceSpace
         );
     }
