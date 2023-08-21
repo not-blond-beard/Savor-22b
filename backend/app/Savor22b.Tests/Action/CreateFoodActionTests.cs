@@ -97,7 +97,17 @@ public class CreateFoodActionTests : ActionTests
         foreach (var foodID in FoodIDList)
         {
             RefrigeratorItemList.Add(
-                RefrigeratorState.CreateFood(Guid.NewGuid(), foodID, "D", 1, 1, 1, 1, 1)
+                RefrigeratorState.CreateFood(
+                    Guid.NewGuid(),
+                    foodID,
+                    "D",
+                    1,
+                    1,
+                    1,
+                    1,
+                    1,
+                    ImmutableList<Guid>.Empty
+                )
             );
         }
 
@@ -215,7 +225,8 @@ public class CreateFoodActionTests : ActionTests
             sameIdEdibleOrigin.DEF,
             sameIdEdibleOrigin.ATK,
             sameIdEdibleOrigin.SPD,
-            sameIdEdibleOrigin.AvailableBlockIndex
+            sameIdEdibleOrigin.AvailableBlockIndex,
+            sameIdEdibleOrigin.UsedKitchenEquipmentStateIds
         );
         beforeRootState.SetInventoryState(
             beforeRootState.InventoryState.AddRefrigeratorItem(sameIdEdible)
@@ -276,8 +287,17 @@ public class CreateFoodActionTests : ActionTests
                     .IsInUse(blockIndex + recipe.RequiredBlock)
             );
         }
+
+        ImmutableList<Guid> installedKitchenEquipmentStateIdsToUse = ImmutableList<Guid>.Empty;
         foreach (var spaceNumber in spaceNumbersToUse)
         {
+            var installedKitchenEquipmentStateId = rootState.VillageState!.HouseState.KitchenState
+                .GetApplianceSpaceStateByNumber(spaceNumber)
+                .InstalledKitchenEquipmentStateId;
+            installedKitchenEquipmentStateIdsToUse = installedKitchenEquipmentStateIdsToUse.Add(
+                installedKitchenEquipmentStateId!.Value
+            );
+
             Assert.NotNull(
                 rootState.VillageState!.HouseState.KitchenState.GetApplianceSpaceStateByNumber(
                     spaceNumber
@@ -302,6 +322,13 @@ public class CreateFoodActionTests : ActionTests
                     .IsInUse(blockIndex + recipe.RequiredBlock)
             );
         }
+
+        Assert.Equal(
+            kitchenEquipmentStateIdsToUse
+                .ToImmutableList()
+                .Concat(installedKitchenEquipmentStateIdsToUse),
+            afterInventoryState.GetRefrigeratorItem(newFoodGuid)!.UsedKitchenEquipmentStateIds
+        );
     }
 
     [Fact]
@@ -375,7 +402,6 @@ public class CreateFoodActionTests : ActionTests
                     spaceNumber
                 )
             );
-
             Assert.True(
                 afterRootState.VillageState!.HouseState.KitchenState
                     .GetApplianceSpaceStateByNumber(spaceNumber)
