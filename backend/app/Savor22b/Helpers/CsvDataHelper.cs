@@ -17,6 +17,7 @@ public static class CsvDataHelper
     private static ImmutableList<KitchenEquipmentCategory> kitchenEquipmentCategoryList;
     private static ImmutableList<Item> itemList;
     private static ImmutableList<Village> villageList;
+    private static ImmutableList<VillageCharacteristic> villageCharacteristicList;
 
     public static void Initialize(string csvDataPath)
     {
@@ -308,4 +309,35 @@ public static class CsvDataHelper
     }
 
     #endregion village
+
+
+    #region villageCharacteristic
+
+    private static void initVillageCharacteristic()
+    {
+        if (villageCharacteristicList == null)
+        {
+            CsvParser<VillageCharacteristic> csvParser = new CsvParser<VillageCharacteristic>();
+            var csvPath = GetCSVDataPath(CsvDataFileNames.VillageCharacteristics);
+            villageCharacteristicList = csvParser.ParseCsv(csvPath).ToImmutableList();
+        }
+    }
+
+    public static ImmutableList<VillageCharacteristic> GetVillageCharacteristicCSVData()
+    {
+        initVillageCharacteristic();
+
+        return villageCharacteristicList;
+    }
+
+    public static VillageCharacteristic? GetVillageCharacteristicByVillageId(int villageId)
+    {
+        initVillageCharacteristic();
+
+        return villageCharacteristicList.Find(
+            characteristic => characteristic.VillageId == villageId
+        );
+    }
+
+    #endregion villageCharacteristic
 }
