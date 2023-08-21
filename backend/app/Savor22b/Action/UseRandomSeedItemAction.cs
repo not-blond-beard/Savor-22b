@@ -7,7 +7,7 @@ using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Action.Exceptions;
 using Savor22b.States;
-
+using Savor22b.Action.Util;
 
 [ActionType(nameof(UseRandomSeedItemAction))]
 public class UseRandomSeedItemAction : SVRAction
@@ -15,16 +15,13 @@ public class UseRandomSeedItemAction : SVRAction
     public Guid SeedStateID;
     public Guid ItemStateIdToUse;
 
-    public UseRandomSeedItemAction()
-    {
-    }
+    public UseRandomSeedItemAction() { }
 
     public UseRandomSeedItemAction(Guid seedStateID, Guid itemStateIdToUse)
     {
         SeedStateID = seedStateID;
         ItemStateIdToUse = itemStateIdToUse;
     }
-
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
@@ -33,17 +30,22 @@ public class UseRandomSeedItemAction : SVRAction
             [nameof(ItemStateIdToUse)] = ItemStateIdToUse.Serialize()
         }.ToImmutableDictionary();
 
-    protected override void LoadPlainValueInternal(
-        IImmutableDictionary<string, IValue> plainValue)
+    protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         SeedStateID = plainValue[nameof(SeedStateID)].ToGuid();
         ItemStateIdToUse = plainValue[nameof(ItemStateIdToUse)].ToGuid();
     }
 
-    private SeedState generateRandomSeed(IRandom random)
+    private SeedState generateRandomSeed(IRandom random, int villageId)
     {
+        int randomIndex;
         var seeds = CsvDataHelper.GetSeedCSVData();
-        int randomIndex = random.Next(0, seeds.Count);
+        var village = CsvDataHelper.GetVillageCharacteristicByVillageId(villageId)!;
+
+        do
+        {
+            randomIndex = random.Next(0, seeds.Count);
+        } while (!village.AvailableSeedIdList.Contains(seeds[randomIndex].Id));
 
         var randomSeedData = seeds[randomIndex];
         var randomSeed = new SeedState(SeedStateID, randomSeedData.Id);
@@ -69,13 +71,19 @@ public class UseRandomSeedItemAction : SVRAction
     {
         IAccountStateDelta states = ctx.PreviousStates;
 
-        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer)
+            is Bencodex.Types.Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
 
+        Validation.EnsureVillageStateExists(rootState);
+
         InventoryState inventoryState = rootState.InventoryState;
 
-        SeedState seedState = generateRandomSeed(ctx.Random);
+        SeedState seedState = generateRandomSeed(
+            ctx.Random,
+            rootState.VillageState!.HouseState.VillageID
+        );
         inventoryState = FindAndRemoveItem(inventoryState);
         inventoryState = inventoryState.AddSeed(seedState);
 
