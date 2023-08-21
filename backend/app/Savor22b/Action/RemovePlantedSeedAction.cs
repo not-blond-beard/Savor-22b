@@ -9,15 +9,14 @@ using Savor22b.Model;
 using Savor22b.States;
 using Libplanet.Headless.Extensions;
 using Savor22b.Action.Exceptions;
+using Savor22b.Action.Util;
 
 [ActionType(nameof(RemovePlantedSeedAction))]
 public class RemovePlantedSeedAction : SVRAction
 {
     public int RemoveFieldIndex;
 
-    public RemovePlantedSeedAction()
-    {
-    }
+    public RemovePlantedSeedAction() { }
 
     public RemovePlantedSeedAction(int removeFieldIndex)
     {
@@ -30,8 +29,7 @@ public class RemovePlantedSeedAction : SVRAction
             [nameof(RemoveFieldIndex)] = RemoveFieldIndex.Serialize(),
         }.ToImmutableDictionary();
 
-    protected override void LoadPlainValueInternal(
-        IImmutableDictionary<string, IValue> plainValue)
+    protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         RemoveFieldIndex = plainValue[nameof(RemoveFieldIndex)].ToInteger();
     }
@@ -39,17 +37,23 @@ public class RemovePlantedSeedAction : SVRAction
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         IAccountStateDelta states = ctx.PreviousStates;
-        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer)
+            is Bencodex.Types.Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
 
+        Validation.EnsureReplaceInProgress(rootState, ctx.BlockIndex);
+
         VillageState? villageState = rootState.VillageState;
 
-        if (villageState is null) {
+        if (villageState is null)
+        {
             throw new InvalidVillageStateException("VillageState is null");
         }
 
-        HouseFieldState houseFieldState = villageState.HouseFieldStates[RemoveFieldIndex] ?? throw new InvalidFieldIndexException("FieldIndex is invalid");
+        HouseFieldState houseFieldState =
+            villageState.HouseFieldStates[RemoveFieldIndex]
+            ?? throw new InvalidFieldIndexException("FieldIndex is invalid");
 
         if (houseFieldState.IsHarvestable(ctx.BlockIndex))
         {
@@ -63,5 +67,4 @@ public class RemovePlantedSeedAction : SVRAction
 
         return states;
     }
-
 }

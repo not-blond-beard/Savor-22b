@@ -3,14 +3,14 @@ namespace Savor22b.Action;
 using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet.Action;
+using Libplanet.Assets;
+using Libplanet.Headless.Extensions;
 using Libplanet.State;
-using Savor22b.Helpers;
+using Savor22b.Action.Exceptions;
+using Savor22b.Action.Util;
+using Savor22b.Constants;
 using Savor22b.Model;
 using Savor22b.States;
-using Libplanet.Headless.Extensions;
-using Savor22b.Constants;
-using Libplanet;
-using Savor22b.Action.Exceptions;
 
 [ActionType(nameof(PlaceUserHouseAction))]
 public class PlaceUserHouseAction : SVRAction
@@ -19,10 +19,7 @@ public class PlaceUserHouseAction : SVRAction
     public int TargetX;
     public int TargetY;
 
-
-    public PlaceUserHouseAction()
-    {
-    }
+    public PlaceUserHouseAction() { }
 
     public PlaceUserHouseAction(int villageID, int targetX, int targetY)
     {
@@ -39,103 +36,151 @@ public class PlaceUserHouseAction : SVRAction
             [nameof(TargetY)] = TargetY.Serialize(),
         }.ToImmutableDictionary();
 
-    protected override void LoadPlainValueInternal(
-        IImmutableDictionary<string, IValue> plainValue)
+    private static void ValidateRelocationUserHouse(
+        long currentBlock,
+        RelocationState? relocationState
+    )
     {
-        VillageID = plainValue[nameof(VillageID)].ToInteger();
-        TargetX = plainValue[nameof(TargetX)].ToInteger();
-        TargetY = plainValue[nameof(TargetY)].ToInteger();
+        if (relocationState is not null && relocationState.IsRelocationInProgress(currentBlock))
+        {
+            throw new RelocationInProgressException("Relocation in progress");
+        }
     }
 
-    private bool isAbleToPlaceHouse(Village village, int targetX, int targetY)
+    private void ValidateHousePosition()
     {
-        int halfWidth = (village.Width - 1) / 2;
-        int halfHeight = (village.Height - 1) / 2;
+        Village village = Validation.GetVillage(VillageID);
 
-        // halfWidth는 중심점을 기준으로 좌우 몇칸 설치가 가능한 지를 나타냄. 그러니 절댓값 targetX가 halfWidth보다 크면 설치 불가
-
-        if (Math.Abs(targetX) > halfWidth)
+        if (!village.AbleToPlaceHouse(TargetX, TargetY))
         {
-            return false;
+            throw new InvalidVillageException("Invalid target position");
         }
+    }
 
-        if (Math.Abs(targetY) > halfHeight)
+    private void ValidateHouseExists(GlobalUserHouseState globalUserHouseState)
+    {
+        string userHouseKey = GlobalUserHouseState.CreateKey(VillageID, TargetX, TargetY);
+
+        if (globalUserHouseState.CheckPlacedHouse(userHouseKey))
         {
-            return false;
+            throw new HouseAlreadyPlacedException("House already placed");
         }
+    }
 
-        return true;
+    private void ValidateForPlaceHouse(GlobalUserHouseState globalUserHouseState)
+    {
+        ValidateHousePosition();
+        ValidateHouseExists(globalUserHouseState);
+    }
+
+    private void PlaceInitialUserHouse(RootState rootState)
+    {
+        rootState.SetVillageState(
+            new VillageState(new HouseState(VillageID, TargetX, TargetY, new KitchenState()))
+        );
+    }
+
+    private void ReplaceUserHouse(
+        RootState rootState,
+        GlobalUserHouseState globalUserHouseState,
+        long currentBlock
+    )
+    {
+        Village originVillage = Validation.GetVillage(rootState.VillageState!.HouseState.VillageID);
+        Village targetVillage = Validation.GetVillage(VillageID);
+
+        string prevUserHouseKey = GlobalUserHouseState.CreateKey(
+            rootState.VillageState!.HouseState.VillageID,
+            rootState.VillageState.HouseState.PositionX,
+            rootState.VillageState.HouseState.PositionY
+        );
+        int durationBlock = VillageUtil.CalculateReplaceUserHouseBlock(
+            originVillage.WorldX,
+            originVillage.WorldY,
+            targetVillage.WorldX,
+            targetVillage.WorldY
+        );
+
+        RelocationState relocationState = new RelocationState(
+            currentBlock,
+            durationBlock,
+            VillageID,
+            TargetX,
+            TargetY
+        );
+
+        globalUserHouseState.UserHouse.Remove(prevUserHouseKey);
+
+        rootState.SetRelocationState(relocationState);
+        rootState.SetVillageState(
+            new VillageState(new HouseState(VillageID, TargetX, TargetY, new KitchenState()))
+        );
     }
 
     public override IAccountStateDelta Execute(IActionContext ctx)
     {
         IAccountStateDelta states = ctx.PreviousStates;
 
-        var village = CsvDataHelper.GetVillageByID(VillageID);
+        GlobalUserHouseState globalUserHouseState = states.GetState(Addresses.UserHouseDataAddress)
+            is Dictionary stateEncoded
+            ? new GlobalUserHouseState(stateEncoded)
+            : new GlobalUserHouseState();
 
-        if (village == null)
-        {
-            throw new InvalidVillageException("Invalid village ID");
-        }
-
-        if (!isAbleToPlaceHouse(village, TargetX, TargetY))
-        {
-            throw new InvalidVillageException("Invalid target position");
-        }
-
-        GlobalUserHouseState globalUserHouseState =
-            states.GetState(Addresses.UserHouseDataAddress) is Bencodex.Types.Dictionary stateEncoded
-                ? new GlobalUserHouseState(stateEncoded)
-                : new GlobalUserHouseState();
-
-        string userHouseKey = globalUserHouseState.CreateKey(VillageID, TargetX, TargetY);
-
-        if (globalUserHouseState.UserHouse.ContainsKey(userHouseKey))
-        {
-            throw new HouseAlreadyPlacedException("House already placed");
-        }
-
-        RootState rootState = states.GetState(ctx.Signer) is Bencodex.Types.Dictionary rootStateEncoded
+        RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
 
-        string prevUserHouseKey = rootState.VillageState?.HouseState != null
-            ? globalUserHouseState.CreateKey(
-                rootState.VillageState.HouseState.VillageID,
-                rootState.VillageState.HouseState.PositionX,
-                rootState.VillageState.HouseState.PositionY
-            )
-            : string.Empty;
+        bool isInitialPlaceHouse = rootState.VillageState is null;
 
-        if (rootState.VillageState == null)
+        ValidateForPlaceHouse(globalUserHouseState);
+
+        if (isInitialPlaceHouse)
         {
-            rootState.SetVillageState(new VillageState(new HouseState(
-                VillageID,
-                TargetX,
-                TargetY,
-                new HouseInnerState()
-            )));
+            PlaceInitialUserHouse(rootState);
         }
         else
         {
-            rootState.VillageState.SetHouseState(new HouseState(
-                VillageID,
-                TargetX,
-                TargetY,
-                new HouseInnerState()
-            ));
+            Village originVillage = Validation.GetVillage(
+                rootState.VillageState!.HouseState.VillageID
+            );
+            Village targetVillage = Validation.GetVillage(VillageID);
+
+            ValidateRelocationUserHouse(ctx.BlockIndex, rootState.RelocationState);
+            ReplaceUserHouse(rootState, globalUserHouseState, ctx.BlockIndex);
+
+            if (originVillage.Id != targetVillage.Id)
+            {
+                FungibleAssetValue price = CalculatePrice.CalculateReplaceUserHousePrice(
+                    originVillage.WorldX,
+                    originVillage.WorldY,
+                    targetVillage.WorldX,
+                    targetVillage.WorldY
+                );
+
+                states = states.TransferAsset(
+                    ctx.Signer,
+                    Addresses.ShopVaultAddress,
+                    price,
+                    allowNegativeBalance: false
+                );
+            }
         }
 
-        if (prevUserHouseKey != string.Empty)
-        {
-            globalUserHouseState.UserHouse.Remove(prevUserHouseKey);
-        }
-
-        globalUserHouseState.SetUserHouse(userHouseKey, ctx.Signer);
+        globalUserHouseState.SetUserHouse(
+            GlobalUserHouseState.CreateKey(VillageID, TargetX, TargetY),
+            ctx.Signer
+        );
 
         states = states.SetState(Addresses.UserHouseDataAddress, globalUserHouseState.Serialize());
         states = states.SetState(ctx.Signer, rootState.Serialize());
 
         return states;
+    }
+
+    protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
+    {
+        VillageID = plainValue[nameof(VillageID)].ToInteger();
+        TargetX = plainValue[nameof(TargetX)].ToInteger();
+        TargetY = plainValue[nameof(TargetY)].ToInteger();
     }
 }

@@ -30,7 +30,7 @@ public class PlantingSeedActionTests : ActionTests
                 1,
                 1,
                 1,
-                new HouseInnerState()
+                new KitchenState()
             )
         );
         return villageState;
