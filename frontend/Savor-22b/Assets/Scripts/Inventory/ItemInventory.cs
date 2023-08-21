@@ -20,7 +20,6 @@ public class ItemInventory : MonoBehaviour
     public GameObject ingredientPrefab;
     public GameObject foodPrefab;
 
-
     [Header("UI Containers")]
     public RectTransform seedContent;
     public RectTransform ingredientContent;
