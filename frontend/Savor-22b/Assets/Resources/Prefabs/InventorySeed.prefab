@@ -175,6 +175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89e904228d0524eebbff9d8903d0fb1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  svrReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
+  privateKeyHex: eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4
   seedStateId: {fileID: 8778449230615227800}
   seedId: {fileID: 8778449230942835930}
   IngredientCreateButton: {fileID: 8778449231450303529}
