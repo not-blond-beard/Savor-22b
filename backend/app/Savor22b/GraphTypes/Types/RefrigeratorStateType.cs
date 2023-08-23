@@ -1,11 +1,12 @@
 namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
+using Libplanet.Blockchain;
 using Savor22b.States;
 
 public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
 {
-    public RefrigeratorStateType()
+    public RefrigeratorStateType(BlockChain blockChain)
     {
         Field<GuidGraphType>(
             name: "stateId",
@@ -59,6 +60,12 @@ public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
             name: "speed",
             description: "The speed of the seed.",
             resolve: context => context.Source.SPD
+        );
+
+        Field<BooleanGraphType>(
+            name: "isAvailable",
+            description: "Check this food is available.",
+            resolve: context => context.Source.IsAvailable(blockChain.Count)
         );
     }
 
