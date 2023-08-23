@@ -1939,6 +1939,7 @@ MonoBehaviour:
   svrReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
   recipePrefab: {fileID: 4882765270220713835, guid: c7f5baa4302764c91a9f69f5ca88ac32, type: 3}
   recipeContent: {fileID: 1151223263}
+  originalJson: 
 --- !u!114 &1297813464
 MonoBehaviour:
   m_ObjectHideFlags: 0
