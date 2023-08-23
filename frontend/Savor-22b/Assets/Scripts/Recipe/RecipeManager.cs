@@ -3,6 +3,7 @@ using GraphQlClient.Core;
 using GraphQlClient.EventCallbacks;
 using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections.Generic;
 
 public class RecipeManager : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class RecipeManager : MonoBehaviour
 
     public string originalJson;
 
-    private void DrawRecipeList(Recipe[] recipeList)
+    private void DrawRecipeList(List<Recipe> recipeList)
     {
         foreach (Recipe recipe in recipeList)
         {
@@ -38,9 +39,9 @@ public class RecipeManager : MonoBehaviour
 
     public void DisplayData(string data)
     {
-        Recipes recipes = Recipes.CreateFromJSON(data);
+        List<Recipe> recipes = Recipe.CreateFromJSON(data);
 
-        DrawRecipeList(recipes.recipeList);
+        DrawRecipeList(recipes);
     }
 
     void Start()

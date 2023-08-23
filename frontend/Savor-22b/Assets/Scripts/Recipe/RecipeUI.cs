@@ -11,6 +11,8 @@ public class RecipeUI : MonoBehaviour
     public TMP_Text minGrade;
     public TMP_Text maxGrade;
 
+    public IngredientType[] ingredients;
+
     public void SetRecipe(Recipe recipe)
     {
         id.text = recipe.id.ToString();
@@ -18,5 +20,6 @@ public class RecipeUI : MonoBehaviour
         //ingredients.text = recipe.ingredients.ToString();
         minGrade.text = recipe.minGrade;
         maxGrade.text = recipe.maxGrade;
+        ingredients = recipe.ingredients;
     }
 }
