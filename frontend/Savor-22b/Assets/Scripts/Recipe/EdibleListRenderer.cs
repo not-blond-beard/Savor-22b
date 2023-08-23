@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 using System.Collections.Generic;
 
 
-public class IngredientManager : MonoBehaviour
+public class EdibleListRenderer : MonoBehaviour
 {
     [Header("UI Prefabs")]
     public GameObject ingredientPrefab;

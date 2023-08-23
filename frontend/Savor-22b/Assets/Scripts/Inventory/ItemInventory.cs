@@ -111,7 +111,7 @@ public class ItemInventory : MonoBehaviour
     public void DisplayData(OnSubscriptionDataReceived subscriptionDataReceived)
     {
         Inventory inventory = Inventory.CreateFromJSON(subscriptionDataReceived.data);
-        Debug.Log(subscriptionDataReceived.data);
+
         resetUIElements();
 
         DrawSeedList(inventory.seedStateList);
