@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 
-public class RecipeManager : MonoBehaviour
+public class RecipeRenderer : MonoBehaviour
 {
     [Header("API")]
     public GraphApi svrReference;
@@ -15,8 +15,6 @@ public class RecipeManager : MonoBehaviour
 
     [Header("UI Containers")]
     public RectTransform recipeContent;
-
-    public string originalJson;
 
     private void DrawRecipeList(List<Recipe> recipeList)
     {
@@ -30,10 +28,10 @@ public class RecipeManager : MonoBehaviour
 
     public async void GetAllRecipes()
     {
-        GraphApi.Query query = svrReference.GetQueryByName("GetAllRecipe", GraphApi.Query.Type.Query);
+        GraphApi.Query query = svrReference.GetQueryByName(QueryNames.GET_ALL_RECIPE, GraphApi.Query.Type.Query);
         UnityWebRequest request = await svrReference.Post(query);
-        originalJson = request.downloadHandler.text;
-        DisplayData(originalJson);
+
+        DisplayData(request.downloadHandler.text);
 
     }
 
