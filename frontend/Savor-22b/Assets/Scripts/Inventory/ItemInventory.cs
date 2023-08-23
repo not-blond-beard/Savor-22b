@@ -147,7 +147,6 @@ public class ItemInventory : MonoBehaviour
     public async void CreateNewSeed()
     {
         GraphApi.Query query = svrReference.GetQueryByName("CreateNewSeed", GraphApi.Query.Type.Mutation);
-        query.SetArgs(new { address });
         query.SetArgs(new { privateKeyHex });
         UnityWebRequest request = await svrReference.Post(query);
     }

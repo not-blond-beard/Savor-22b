@@ -1,9 +1,16 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using GraphQlClient.Core;
+using GraphQlClient.EventCallbacks;
+using UnityEngine.Networking;
 
 public class SeedUI : MonoBehaviour
 {
+    [Header("API")]
+    public GraphApi svrReference;
+    public string privateKeyHex;
+
     public Text seedStateId;
     public Text seedId;
 
@@ -17,9 +24,11 @@ public class SeedUI : MonoBehaviour
         SetIngredientCreateButton(seed.stateId);
     }
 
-    public void CreateIngredient(Guid seedStateId)
+    public async void CreateIngredient(Guid seedStateId)
     {
-        Debug.Log("Create ingredient");
+        GraphApi.Query query = svrReference.GetQueryByName(QueryNames.CREATE_INGREDIENT, GraphApi.Query.Type.Mutation);
+        query.SetArgs(new { privateKeyHex, seedStateId });
+        UnityWebRequest request = await svrReference.Post(query);
     }
 
     public void SetIngredientCreateButton(Guid seedStateId)
