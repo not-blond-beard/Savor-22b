@@ -16,6 +16,11 @@ public class RefrigeratorUI : MonoBehaviour
 
     public Button FoodCreateButton;
 
+    public Toggle toggleButton;
+
+    private GameObject RecipePanel;
+    private FoodGenerator foodGenerator;
+
     public void SetRefrigeratorData(Refrigerator refrigerator)
     {
         stateId.text = refrigerator.stateId.ToString();
@@ -28,17 +33,40 @@ public class RefrigeratorUI : MonoBehaviour
         ingredientId.text = refrigerator.ingredientId.ToString();
         recipeId.text = refrigerator.recipeId.ToString();
 
-        //SetFoodCreateButton(refrigerator.stateId);
+        toggleButton.onValueChanged.AddListener(delegate { SendStateId(); });
     }
 
-    // public void CreateFood(Guid stateId)
-    // {
-    //     Debug.Log("Create food");
-    // }
+    private void SendStateId()
+    {
+        RecipePanel = GameObject.Find("RecipePanel");
+        foodGenerator = RecipePanel.GetComponent<FoodGenerator>();
 
-    // public void SetFoodCreateButton(Guid stateId)
-    // {
-    //     FoodCreateButton.onClick.AddListener(() => CreateFood(stateId));
-    // }
+        if (foodGenerator.refrigeratorIds[1] != null)
+        {
+            toggleButton.isOn = false;
+        }
 
+        if (toggleButton.isOn)
+        {
+            for (int i = 0; i < foodGenerator.refrigeratorIds.Length; i++)
+            {
+                if (foodGenerator.refrigeratorIds[i] == null)
+                {
+                    foodGenerator.refrigeratorIds[i] = stateId.text;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < foodGenerator.refrigeratorIds.Length; i++)
+            {
+                if (foodGenerator.refrigeratorIds[i] == stateId.text)
+                {
+                    foodGenerator.refrigeratorIds[i] = null;
+                    break;
+                }
+            }
+        }
+    }
 }

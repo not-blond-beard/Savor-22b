@@ -983,6 +983,7 @@ MonoBehaviour:
   ingredientId: {fileID: 2197322282239160254}
   recipeId: {fileID: 2698895897781471610}
   FoodCreateButton: {fileID: 1000976596707463680}
+  toggleButton: {fileID: 7473774829287947052}
 --- !u!1 &2673033039936561429
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,3 +1789,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 385186927898626012, guid: 3a5b15b1a966b4dd8a9fb5e0dac37b99, type: 3}
   m_PrefabInstance: {fileID: 5500332520320899678}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7473774829287947052 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3165245302101188978, guid: 3a5b15b1a966b4dd8a9fb5e0dac37b99, type: 3}
+  m_PrefabInstance: {fileID: 5500332520320899678}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
