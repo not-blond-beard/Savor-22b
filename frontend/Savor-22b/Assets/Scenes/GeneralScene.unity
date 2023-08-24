@@ -1636,7 +1636,7 @@ GameObject:
   - component: {fileID: 1151395577}
   - component: {fileID: 1151395576}
   m_Layer: 5
-  m_Name: ShowRecipe
+  m_Name: RecipeSelect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1939,7 +1939,6 @@ MonoBehaviour:
   svrReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
   recipePrefab: {fileID: 4882765270220713835, guid: c7f5baa4302764c91a9f69f5ca88ac32, type: 3}
   recipeContent: {fileID: 1151223263}
-  originalJson: 
 --- !u!114 &1297813464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2709,6 +2708,8 @@ MonoBehaviour:
   seedContent: {fileID: 527247175}
   ingredientContent: {fileID: 1752225784}
   foodContent: {fileID: 1949131118}
+  recipeButton: {fileID: 1151395576}
+  combineButon: {fileID: 1388113826}
 --- !u!1001 &7118656564412715366
 PrefabInstance:
   m_ObjectHideFlags: 0

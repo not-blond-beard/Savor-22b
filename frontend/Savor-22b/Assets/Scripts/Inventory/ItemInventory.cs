@@ -2,6 +2,7 @@ using System.Net.WebSockets;
 using GraphQlClient.Core;
 using GraphQlClient.EventCallbacks;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 
 public class ItemInventory : MonoBehaviour
@@ -25,6 +26,10 @@ public class ItemInventory : MonoBehaviour
     public RectTransform ingredientContent;
     public RectTransform foodContent;
 
+    //public GameObject edibleSelector;
+    public Button recipeButton;
+    public Button combineButon;
+
 
     private ClientWebSocket clientWebSocket;
     private Event<OnSubscriptionDataReceived>.EventListener socketListener;
@@ -38,6 +43,7 @@ public class ItemInventory : MonoBehaviour
     private void Start()
     {
         Subscribe();
+        SetSelector();
     }
 
     private void OnDisable()
@@ -151,6 +157,26 @@ public class ItemInventory : MonoBehaviour
         UnityWebRequest request = await svrReference.Post(query);
     }
 
+    private void SetSelector()
+    {
+        recipeButton.onClick.AddListener(() => SetRecipeSelector());
+
+    }
+
+    private void SetRecipeSelector()
+    {
+        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
+        foreach (GameObject edibleObject in edibleObjects)
+        {
+            Transform edibleToggleTransform = edibleObject.transform.Find("EdibleSelector");
+            if (edibleToggleTransform != null)
+            {
+                GameObject edibleToggle = edibleToggleTransform.gameObject;
+                edibleToggle.SetActive(true);
+            }
+        }
+
+    }
 
 }
 
