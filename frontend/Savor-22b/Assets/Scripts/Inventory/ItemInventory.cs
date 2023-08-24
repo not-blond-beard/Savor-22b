@@ -30,6 +30,8 @@ public class ItemInventory : MonoBehaviour
     public Button recipeButton;
     public Button combineButon;
 
+    private bool isRecipeSelector = false;
+
 
     private ClientWebSocket clientWebSocket;
     private Event<OnSubscriptionDataReceived>.EventListener socketListener;
@@ -43,7 +45,8 @@ public class ItemInventory : MonoBehaviour
     private void Start()
     {
         Subscribe();
-        SetSelector();
+
+        SetRecipeSelectorButton();
     }
 
     private void OnDisable()
@@ -157,13 +160,30 @@ public class ItemInventory : MonoBehaviour
         UnityWebRequest request = await svrReference.Post(query);
     }
 
-    private void SetSelector()
-    {
-        recipeButton.onClick.AddListener(() => SetRecipeSelector());
 
+    // Recipe edible selector
+    private void SetRecipeSelectorButton()
+    {
+        recipeButton.onClick.AddListener(ToggleRecipeSelector);
     }
 
-    private void SetRecipeSelector()
+    private void ToggleRecipeSelector()
+    {
+        if (!isRecipeSelector)
+        {
+            CancelSubscribe();
+            ActivateRecipeSelector();
+        }
+        else
+        {
+            Subscribe();
+            DeactivateRecipeSelector();
+        }
+    }
+
+
+
+    private void ActivateRecipeSelector()
     {
         GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
         foreach (GameObject edibleObject in edibleObjects)
@@ -175,7 +195,22 @@ public class ItemInventory : MonoBehaviour
                 edibleToggle.SetActive(true);
             }
         }
+        isRecipeSelector = true;
+    }
 
+    private void DeactivateRecipeSelector()
+    {
+        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
+        foreach (GameObject edibleObject in edibleObjects)
+        {
+            Transform edibleToggleTransform = edibleObject.transform.Find("EdibleSelector");
+            if (edibleToggleTransform != null)
+            {
+                GameObject edibleToggle = edibleToggleTransform.gameObject;
+                edibleToggle.SetActive(false);
+            }
+        }
+        isRecipeSelector = false;
     }
 
 }
