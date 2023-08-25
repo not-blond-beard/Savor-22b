@@ -26,9 +26,8 @@ public class ItemInventory : MonoBehaviour
     public RectTransform ingredientContent;
     public RectTransform foodContent;
 
-    //public GameObject edibleSelector;
     public Button recipeButton;
-    public Button combineButon;
+    public Button combineButton;
 
     private bool isRecipeSelector = false;
 
@@ -165,6 +164,7 @@ public class ItemInventory : MonoBehaviour
     private void SetRecipeSelectorButton()
     {
         recipeButton.onClick.AddListener(ToggleRecipeSelector);
+        combineButton.onClick.AddListener(ResetSelectors);
     }
 
     private void ToggleRecipeSelector()
@@ -211,6 +211,22 @@ public class ItemInventory : MonoBehaviour
             }
         }
         isRecipeSelector = false;
+    }
+
+    private void ResetSelectors()
+    {
+        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
+        foreach (GameObject edibleObject in edibleObjects)
+        {
+            Transform edibleToggleTransform = edibleObject.transform.Find("EdibleSelector");
+            if (edibleToggleTransform != null)
+            {
+                GameObject edibleToggle = edibleToggleTransform.gameObject;
+                Toggle toggle = edibleToggle.GetComponent<Toggle>();
+                toggle.isOn = false;
+            }
+        }
+        DeactivateRecipeSelector();
     }
 
 }

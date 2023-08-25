@@ -1940,6 +1940,8 @@ MonoBehaviour:
   svrReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
   recipePrefab: {fileID: 4882765270220713835, guid: c7f5baa4302764c91a9f69f5ca88ac32, type: 3}
   recipeContent: {fileID: 1151223263}
+  recipeButton: {fileID: 1151395576}
+  combineButton: {fileID: 1388113826}
 --- !u!114 &1297813464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1992,9 +1994,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   svrReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
   privateKeyHex: eda6ef63ae945cd15572fcf7d6635a8b3f8d86e85b57a353b482bc82c7fd2ad4
+  recipeId: 0
   refrigeratorIds:
   - 
   - 
+  combineButton: {fileID: 1388113826}
 --- !u!1 &1371177488
 GameObject:
   m_ObjectHideFlags: 0
@@ -2727,7 +2731,7 @@ MonoBehaviour:
   ingredientContent: {fileID: 1752225784}
   foodContent: {fileID: 1949131118}
   recipeButton: {fileID: 1151395576}
-  combineButon: {fileID: 1388113826}
+  combineButton: {fileID: 1388113826}
 --- !u!1001 &7118656564412715366
 PrefabInstance:
   m_ObjectHideFlags: 0

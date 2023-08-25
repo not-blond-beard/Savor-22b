@@ -12,6 +12,13 @@ public class RecipeUI : MonoBehaviour
 
     public IngredientType[] ingredients;
 
+    public Toggle toggleButton;
+
+    private GameObject RecipePanel;
+    private FoodGenerator foodGenerator;
+    public int recipeId;
+
+
     public void SetRecipe(Recipe recipe)
     {
         id.text = recipe.id.ToString();
@@ -19,5 +26,32 @@ public class RecipeUI : MonoBehaviour
         minGrade.text = recipe.minGrade;
         maxGrade.text = recipe.maxGrade;
         ingredients = recipe.ingredients;
+
+        recipeId = recipe.id;
+
+        toggleButton.onValueChanged.AddListener(delegate { SendRecipeId(); });
+    }
+
+    private void SendRecipeId()
+    {
+        RecipePanel = GameObject.Find("RecipePanel");
+        foodGenerator = RecipePanel.GetComponent<FoodGenerator>();
+
+        if (foodGenerator.recipeId != 0)
+        {
+            toggleButton.isOn = false;
+        }
+
+        if (toggleButton.isOn)
+        {
+            foodGenerator.recipeId = recipeId;
+        }
+        else
+        {
+            if (foodGenerator.recipeId == recipeId)
+            {
+                foodGenerator.recipeId = 0;
+            }
+        }
     }
 }

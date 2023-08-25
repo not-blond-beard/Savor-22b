@@ -2,6 +2,7 @@ using System.Net.WebSockets;
 using GraphQlClient.Core;
 using GraphQlClient.EventCallbacks;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections.Generic;
 
@@ -15,6 +16,11 @@ public class RecipeRenderer : MonoBehaviour
 
     [Header("UI Containers")]
     public RectTransform recipeContent;
+
+    public Button recipeButton;
+    public Button combineButton;
+
+    private bool isRecipeSelector = false;
 
     private void DrawRecipeList(List<Recipe> recipeList)
     {
@@ -45,8 +51,71 @@ public class RecipeRenderer : MonoBehaviour
     void Start()
     {
         GetAllRecipes();
+        SetRecipeSelectorButton();
     }
 
+    private void SetRecipeSelectorButton()
+    {
+        recipeButton.onClick.AddListener(ToggleRecipeSelector);
+        combineButton.onClick.AddListener(ResetSelectors);
+    }
 
+    private void ToggleRecipeSelector()
+    {
+        if (!isRecipeSelector)
+        {
+            ActivateRecipeSelector();
+        }
+        else
+        {
+            DeactivateRecipeSelector();
+        }
+    }
+
+    private void ActivateRecipeSelector()
+    {
+        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
+        foreach (GameObject recipeObject in recipeObjects)
+        {
+            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
+            if (recipeToggleTransform != null)
+            {
+                GameObject recipeToggle = recipeToggleTransform.gameObject;
+                recipeToggle.SetActive(true);
+            }
+        }
+        isRecipeSelector = true;
+    }
+
+    private void DeactivateRecipeSelector()
+    {
+        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
+        foreach (GameObject recipeObject in recipeObjects)
+        {
+            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
+            if (recipeToggleTransform != null)
+            {
+                GameObject recipeToggle = recipeToggleTransform.gameObject;
+                recipeToggle.SetActive(false);
+            }
+        }
+        isRecipeSelector = false;
+    }
+
+    private void ResetSelectors()
+    {
+        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
+        foreach (GameObject recipeObject in recipeObjects)
+        {
+            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
+            if (recipeToggleTransform != null)
+            {
+                GameObject recipeToggle = recipeToggleTransform.gameObject;
+                Toggle toggle = recipeToggle.GetComponent<Toggle>();
+                toggle.isOn = false;
+            }
+        }
+        DeactivateRecipeSelector();
+    }
 }
 
