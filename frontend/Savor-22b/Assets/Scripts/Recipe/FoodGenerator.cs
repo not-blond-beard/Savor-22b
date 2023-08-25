@@ -21,12 +21,14 @@ public class FoodGenerator : MonoBehaviour
         // argument must set exact same name in schema
         query.SetArgs(new { privateKeyHex = privateKeyHex, recipeID = recipeId, refrigeratorStateIDs = refrigeratorIds });
         UnityWebRequest request = await svrReference.Post(query);
+
+        ResetSelectors();
     }
 
     private void SetCombineButton()
     {
         combineButton.onClick.AddListener(CreateNewFood);
-        InitalizeVariables();
+        //InitalizeVariables();
     }
 
     private void InitalizeVariables()
@@ -35,6 +37,21 @@ public class FoodGenerator : MonoBehaviour
         refrigeratorIds[0] = null;
         refrigeratorIds[1] = null;
         recipeId = 0;
+    }
+
+    private void ResetSelectors()
+    {
+        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
+        foreach (GameObject recipeObject in recipeObjects)
+        {
+            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
+            if (recipeToggleTransform != null)
+            {
+                GameObject recipeToggle = recipeToggleTransform.gameObject;
+                Toggle toggle = recipeToggle.GetComponent<Toggle>();
+                toggle.isOn = false;
+            }
+        }
     }
 
 
