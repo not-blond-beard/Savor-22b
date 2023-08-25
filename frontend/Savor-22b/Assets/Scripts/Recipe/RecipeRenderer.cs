@@ -57,7 +57,7 @@ public class RecipeRenderer : MonoBehaviour
     private void SetRecipeSelectorButton()
     {
         recipeButton.onClick.AddListener(ToggleRecipeSelector);
-        combineButton.onClick.AddListener(ResetSelectors);
+
     }
 
     private void ToggleRecipeSelector()
@@ -102,20 +102,6 @@ public class RecipeRenderer : MonoBehaviour
         isRecipeSelector = false;
     }
 
-    private void ResetSelectors()
-    {
-        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
-        foreach (GameObject recipeObject in recipeObjects)
-        {
-            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
-            if (recipeToggleTransform != null)
-            {
-                GameObject recipeToggle = recipeToggleTransform.gameObject;
-                Toggle toggle = recipeToggle.GetComponent<Toggle>();
-                toggle.isOn = false;
-            }
-        }
-        DeactivateRecipeSelector();
-    }
+
 }
 

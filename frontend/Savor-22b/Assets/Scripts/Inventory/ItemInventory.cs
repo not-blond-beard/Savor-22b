@@ -97,7 +97,15 @@ public class ItemInventory : MonoBehaviour
                 GameObject ingredientUI = Instantiate(ingredientPrefab, ingredientContent);
                 RefrigeratorUI ingredientUIScript = ingredientUI.GetComponent<RefrigeratorUI>();
 
+
                 ingredientUIScript.SetRefrigeratorData(refrigerator);
+
+                GameObject toggle = ingredientUI.transform.Find("EdibleSelector").gameObject;
+                if (isRecipeSelector)
+                {
+                    toggle.SetActive(true);
+                }
+
             }
         }
     }
@@ -112,6 +120,12 @@ public class ItemInventory : MonoBehaviour
                 RefrigeratorUI foodUIScript = foodUI.GetComponent<RefrigeratorUI>();
 
                 foodUIScript.SetRefrigeratorData(refrigerator);
+
+                GameObject toggle = foodUI.transform.Find("EdibleSelector").gameObject;
+                if (isRecipeSelector)
+                {
+                    toggle.SetActive(true);
+                }
             }
         }
     }
@@ -171,12 +185,12 @@ public class ItemInventory : MonoBehaviour
     {
         if (!isRecipeSelector)
         {
-            CancelSubscribe();
+            //CancelSubscribe();
             ActivateRecipeSelector();
         }
         else
         {
-            Subscribe();
+            //Subscribe();
             DeactivateRecipeSelector();
         }
     }
