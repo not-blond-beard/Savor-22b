@@ -18,6 +18,8 @@ public class RefrigeratorUI : MonoBehaviour
 
     public Toggle toggleButton;
 
+    private string selectedStateId;
+
     private GameObject RecipePanel;
     private FoodGenerator foodGenerator;
 
@@ -33,40 +35,24 @@ public class RefrigeratorUI : MonoBehaviour
         ingredientId.text = refrigerator.ingredientId.ToString();
         recipeId.text = refrigerator.recipeId.ToString();
 
-        toggleButton.onValueChanged.AddListener(delegate { SendStateId(); });
+        toggleButton.onValueChanged.AddListener(delegate { StoreStateId(); });
     }
 
-    private void SendStateId()
+    private void StoreStateId()
     {
-        RecipePanel = GameObject.Find("RecipePanel");
-        foodGenerator = RecipePanel.GetComponent<FoodGenerator>();
-
-        if (foodGenerator.refrigeratorIds[1] != null)
-        {
-            toggleButton.isOn = false;
-        }
-
         if (toggleButton.isOn)
         {
-            for (int i = 0; i < foodGenerator.refrigeratorIds.Length; i++)
-            {
-                if (foodGenerator.refrigeratorIds[i] == null)
-                {
-                    foodGenerator.refrigeratorIds[i] = stateId.text;
-                    break;
-                }
-            }
+            selectedStateId = stateId.text;
         }
         else
         {
-            for (int i = 0; i < foodGenerator.refrigeratorIds.Length; i++)
-            {
-                if (foodGenerator.refrigeratorIds[i] == stateId.text)
-                {
-                    foodGenerator.refrigeratorIds[i] = null;
-                    break;
-                }
-            }
+            selectedStateId = null;
         }
+
+    }
+
+    public string GetStateId()
+    {
+        return selectedStateId;
     }
 }

@@ -1998,7 +1998,6 @@ MonoBehaviour:
   refrigeratorIds:
   - 
   - 
-  combineButton: {fileID: 1388113826}
 --- !u!1 &1371177488
 GameObject:
   m_ObjectHideFlags: 0
@@ -2120,6 +2119,7 @@ GameObject:
   - component: {fileID: 1388113828}
   - component: {fileID: 1388113827}
   - component: {fileID: 1388113826}
+  - component: {fileID: 1388113829}
   m_Layer: 5
   m_Name: Combine
   m_TagString: Untagged
@@ -2192,9 +2192,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: MenuManager, Assembly-CSharp
-        m_MethodName: CombineMenuOpen
+      - m_Target: {fileID: 1388113829}
+        m_TargetAssemblyTypeName: FoodGenerator, Assembly-CSharp
+        m_MethodName: CreateNewFood
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2242,6 +2242,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1388113824}
   m_CullTransparentMesh: 1
+--- !u!114 &1388113829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388113824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c69157c5f5df4463198e1610fd652d1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  svrReference: {fileID: 11400000, guid: 38e7c9c0fffe34996ae8cf5c6c4417ee, type: 2}
+  privateKeyHex: 
+  recipeId: 0
+  refrigeratorIds: []
 --- !u!224 &1417392055 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7118656563000721105, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}

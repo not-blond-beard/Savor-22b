@@ -21,15 +21,12 @@ public class RecipeRenderer : MonoBehaviour
     public Button combineButton;
 
     private bool isRecipeSelector = false;
+    private int selectedRecipeId;
 
-    private void DrawRecipeList(List<Recipe> recipeList)
+    void Start()
     {
-        foreach (Recipe recipe in recipeList)
-        {
-            GameObject recipeUI = Instantiate(recipePrefab, recipeContent);
-            RecipeUI recipeUIComponent = recipeUI.GetComponent<RecipeUI>();
-            recipeUIComponent.SetRecipe(recipe);
-        }
+        GetAllRecipes();
+        SetRecipeSelectorButton();
     }
 
     public async void GetAllRecipes()
@@ -41,6 +38,17 @@ public class RecipeRenderer : MonoBehaviour
 
     }
 
+    private void DrawRecipeList(List<Recipe> recipeList)
+    {
+        foreach (Recipe recipe in recipeList)
+        {
+            GameObject recipeUI = Instantiate(recipePrefab, recipeContent);
+            RecipeUI recipeUIComponent = recipeUI.GetComponent<RecipeUI>();
+            recipeUIComponent.SetRecipe(recipe);
+        }
+    }
+
+
     public void DisplayData(string data)
     {
         List<Recipe> recipes = Recipe.CreateFromJSON(data);
@@ -48,15 +56,10 @@ public class RecipeRenderer : MonoBehaviour
         DrawRecipeList(recipes);
     }
 
-    void Start()
-    {
-        GetAllRecipes();
-        SetRecipeSelectorButton();
-    }
-
     private void SetRecipeSelectorButton()
     {
         recipeButton.onClick.AddListener(ToggleRecipeSelector);
+        combineButton.onClick.AddListener(ToggleRecipeSelector);
 
     }
 
@@ -102,6 +105,19 @@ public class RecipeRenderer : MonoBehaviour
         isRecipeSelector = false;
     }
 
+    public int GetRecipeId()
+    {
+        selectedRecipeId = new int();
+        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
+        foreach (GameObject recipeObject in recipeObjects)
+        {
+            RecipeUI selectedObject = recipeObject.GetComponent<RecipeUI>();
+            if (selectedObject.GetRecipeId() != 0)
+                selectedRecipeId = selectedObject.GetRecipeId();
+            break;
+        }
+        return selectedRecipeId;
+    }
 
 }
 

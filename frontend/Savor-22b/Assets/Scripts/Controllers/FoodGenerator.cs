@@ -10,12 +10,11 @@ public class FoodGenerator : MonoBehaviour
     public GraphApi svrReference;
     public string privateKeyHex;
     public int recipeId;
-    public string[] refrigeratorIds = new string[2];
-
-    public Button combineButton;
+    public string[] refrigeratorIds;
 
     public async void CreateNewFood()
     {
+        GetDatas();
         GraphApi.Query query = svrReference.GetQueryByName(QueryNames.CREATE_FOOD, GraphApi.Query.Type.Mutation);
 
         // argument must set exact same name in schema
@@ -25,19 +24,6 @@ public class FoodGenerator : MonoBehaviour
         ResetSelectors();
     }
 
-    private void SetCombineButton()
-    {
-        combineButton.onClick.AddListener(CreateNewFood);
-        //InitalizeVariables();
-    }
-
-    private void InitalizeVariables()
-    {
-        // Initalize Variables
-        refrigeratorIds[0] = null;
-        refrigeratorIds[1] = null;
-        recipeId = 0;
-    }
 
     private void ResetSelectors()
     {
@@ -54,11 +40,15 @@ public class FoodGenerator : MonoBehaviour
         }
     }
 
-
-    void Start()
+    private void GetDatas()
     {
-        InitalizeVariables();
-        SetCombineButton();
-    }
+        // get private key, refrigerator ids
+        ItemInventory inventory = GameObject.Find("InventoryStatePanel").GetComponent<ItemInventory>();
+        privateKeyHex = inventory.privateKeyHex;
+        refrigeratorIds = inventory.GetStateIds().ToArray();
 
+        //get recipe id
+        RecipeRenderer recipeRenderer = GameObject.Find("RecipePanel").GetComponent<RecipeRenderer>();
+        recipeId = recipeRenderer.GetRecipeId();
+    }
 }

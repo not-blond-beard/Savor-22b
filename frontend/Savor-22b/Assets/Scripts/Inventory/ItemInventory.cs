@@ -1,4 +1,5 @@
 using System.Net.WebSockets;
+using System.Collections.Generic;
 using GraphQlClient.Core;
 using GraphQlClient.EventCallbacks;
 using UnityEngine;
@@ -31,21 +32,22 @@ public class ItemInventory : MonoBehaviour
 
     private bool isRecipeSelector = false;
 
+    List<string> selectedStateIds;
+
 
     private ClientWebSocket clientWebSocket;
     private Event<OnSubscriptionDataReceived>.EventListener socketListener;
-
-    private void OnEnable()
-    {
-        socketListener = SocketDataReceiver.Receiver(SocketId, DisplayData);
-        OnSubscriptionDataReceived.RegisterListener(socketListener);
-    }
 
     private void Start()
     {
         Subscribe();
 
         SetRecipeSelectorButton();
+    }
+    private void OnEnable()
+    {
+        socketListener = SocketDataReceiver.Receiver(SocketId, DisplayData);
+        OnSubscriptionDataReceived.RegisterListener(socketListener);
     }
 
     private void OnDisable()
@@ -241,6 +243,23 @@ public class ItemInventory : MonoBehaviour
             }
         }
         DeactivateRecipeSelector();
+    }
+
+    public List<string> GetStateIds()
+    {
+        selectedStateIds = new List<string>();
+        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
+        foreach (GameObject edibleObject in edibleObjects)
+        {
+            RefrigeratorUI selectedObject = edibleObject.GetComponent<RefrigeratorUI>();
+            if (selectedObject.GetStateId() != null)
+            {
+                selectedStateIds.Add(selectedObject.GetStateId());
+            }
+
+        }
+
+        return selectedStateIds;
     }
 
 }
