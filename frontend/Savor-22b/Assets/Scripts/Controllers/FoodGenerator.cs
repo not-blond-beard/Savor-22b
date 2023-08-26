@@ -21,11 +21,11 @@ public class FoodGenerator : MonoBehaviour
         query.SetArgs(new { privateKeyHex = privateKeyHex, recipeID = recipeId, refrigeratorStateIDs = refrigeratorIds });
         UnityWebRequest request = await svrReference.Post(query);
 
-        ResetSelectors();
+        ResetRecipeSelectors();
     }
 
 
-    private void ResetSelectors()
+    private void ResetRecipeSelectors()
     {
         GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
         foreach (GameObject recipeObject in recipeObjects)

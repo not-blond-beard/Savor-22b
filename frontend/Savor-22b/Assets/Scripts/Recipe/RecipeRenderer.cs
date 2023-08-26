@@ -21,7 +21,8 @@ public class RecipeRenderer : MonoBehaviour
     public Button combineButton;
 
     private bool isRecipeSelector = false;
-    private int selectedRecipeId;
+    public int selectedRecipeId;
+    public ToggleGroup toggleGroup;
 
     void Start()
     {
@@ -54,12 +55,13 @@ public class RecipeRenderer : MonoBehaviour
         List<Recipe> recipes = Recipe.CreateFromJSON(data);
 
         DrawRecipeList(recipes);
+        SetToggleGroup();
     }
 
     private void SetRecipeSelectorButton()
     {
         recipeButton.onClick.AddListener(ToggleRecipeSelector);
-        combineButton.onClick.AddListener(ToggleRecipeSelector);
+        combineButton.onClick.AddListener(DeactivateRecipeSelector);
 
     }
 
@@ -117,6 +119,16 @@ public class RecipeRenderer : MonoBehaviour
             break;
         }
         return selectedRecipeId;
+    }
+
+    public void SetToggleGroup()
+    {
+        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
+        foreach (GameObject recipeObject in recipeObjects)
+        {
+            Toggle toggle = recipeObject.GetComponent<Toggle>();
+            toggleGroup.RegisterToggle(toggle);
+        }
     }
 
 }
