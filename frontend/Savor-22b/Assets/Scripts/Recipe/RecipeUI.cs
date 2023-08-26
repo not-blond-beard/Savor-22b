@@ -17,6 +17,7 @@ public class RecipeUI : MonoBehaviour
     private GameObject RecipePanel;
     private FoodGenerator foodGenerator;
     public int recipeId;
+    private int selectedRecipeId;
 
 
     public void SetRecipe(Recipe recipe)
@@ -29,32 +30,16 @@ public class RecipeUI : MonoBehaviour
 
         recipeId = recipe.id;
 
-        toggleButton.onValueChanged.AddListener(delegate { SendRecipeId(); });
+        toggleButton.onValueChanged.AddListener(delegate { StoreRecipeId(); });
     }
 
-    private void SendRecipeId()
+    private void StoreRecipeId()
     {
-        ResetSelectors();
-        RecipePanel = GameObject.Find("RecipePanel");
-        foodGenerator = RecipePanel.GetComponent<FoodGenerator>();
-
-        foodGenerator.recipeId = recipeId;
+        selectedRecipeId = int.Parse(id.text);
     }
 
-    // allow only one toggle button to be selected
-    private void ResetSelectors()
+    public int GetRecipeId()
     {
-        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
-        foreach (GameObject recipeObject in recipeObjects)
-        {
-            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
-            RecipeUI recipeUI = recipeObject.GetComponent<RecipeUI>();
-            if (recipeToggleTransform != null && recipeUI.recipeId != recipeId)
-            {
-                GameObject recipeToggle = recipeToggleTransform.gameObject;
-                Toggle toggle = recipeToggle.GetComponent<Toggle>();
-                toggle.isOn = false;
-            }
-        }
+        return selectedRecipeId;
     }
 }
