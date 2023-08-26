@@ -136,11 +136,14 @@ public class ItemInventory : MonoBehaviour
     {
         Inventory inventory = Inventory.CreateFromJSON(subscriptionDataReceived.data);
 
-        resetUIElements();
+        if (!isRecipeSelector)
+        {
+            resetUIElements();
 
-        DrawSeedList(inventory.seedStateList);
-        DrawIngredientList(inventory.refrigeratorStateList);
-        DrawFoodList(inventory.refrigeratorStateList);
+            DrawSeedList(inventory.seedStateList);
+            DrawIngredientList(inventory.refrigeratorStateList);
+            DrawFoodList(inventory.refrigeratorStateList);
+        }
     }
 
     public async void Subscribe()
@@ -187,12 +190,10 @@ public class ItemInventory : MonoBehaviour
     {
         if (!isRecipeSelector)
         {
-            //CancelSubscribe();
             ActivateRecipeSelector();
         }
         else
         {
-            //Subscribe();
             DeactivateRecipeSelector();
         }
     }
