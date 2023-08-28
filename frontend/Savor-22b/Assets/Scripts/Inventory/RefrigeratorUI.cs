@@ -14,14 +14,8 @@ public class RefrigeratorUI : MonoBehaviour
     public Text ingredientId;
     public Text recipeId;
 
-    public Button FoodCreateButton;
-
     public Toggle toggleButton;
 
-    private string selectedStateId;
-
-    private GameObject RecipePanel;
-    private FoodGenerator foodGenerator;
 
     public void SetRefrigeratorData(Refrigerator refrigerator)
     {
@@ -34,25 +28,5 @@ public class RefrigeratorUI : MonoBehaviour
 
         ingredientId.text = refrigerator.ingredientId.ToString();
         recipeId.text = refrigerator.recipeId.ToString();
-
-        toggleButton.onValueChanged.AddListener(delegate { StoreStateId(); });
-    }
-
-    private void StoreStateId()
-    {
-        if (toggleButton.isOn)
-        {
-            selectedStateId = stateId.text;
-        }
-        else
-        {
-            selectedStateId = null;
-        }
-
-    }
-
-    public string GetStateId()
-    {
-        return selectedStateId;
     }
 }

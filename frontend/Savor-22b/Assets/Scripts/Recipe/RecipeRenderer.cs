@@ -22,6 +22,9 @@ public class RecipeRenderer : MonoBehaviour
 
     private bool isRecipeSelector = false;
     public int selectedRecipeId;
+    private Dictionary<int, GameObject> recipeUIObjects = new Dictionary<int, GameObject>();
+
+    public GameObject toggleGroupObject;
     public ToggleGroup toggleGroup;
 
     void Start()
@@ -46,8 +49,17 @@ public class RecipeRenderer : MonoBehaviour
             GameObject recipeUI = Instantiate(recipePrefab, recipeContent);
             RecipeUI recipeUIComponent = recipeUI.GetComponent<RecipeUI>();
             recipeUIComponent.SetRecipe(recipe);
+
+            //group the toggles
+            recipeUIComponent.toggleButton.group = toggleGroup;
+
+            //setting listner for FoodGenerator
+            recipeUIComponent.toggleButton.onValueChanged.AddListener(delegate { handleSelectRecipeButton(recipe.id); });
+
+            recipeUIObjects.Add(recipe.id, recipeUI);
         }
     }
+
 
 
     public void DisplayData(string data)
@@ -55,7 +67,6 @@ public class RecipeRenderer : MonoBehaviour
         List<Recipe> recipes = Recipe.CreateFromJSON(data);
 
         DrawRecipeList(recipes);
-        SetToggleGroup();
     }
 
     private void SetRecipeSelectorButton()
@@ -79,10 +90,10 @@ public class RecipeRenderer : MonoBehaviour
 
     private void ActivateRecipeSelector()
     {
-        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
-        foreach (GameObject recipeObject in recipeObjects)
+        foreach (var kvp in recipeUIObjects)
         {
-            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
+            GameObject recipeUI = kvp.Value;
+            Transform recipeToggleTransform = recipeUI.transform.Find("EdibleSelector");
             if (recipeToggleTransform != null)
             {
                 GameObject recipeToggle = recipeToggleTransform.gameObject;
@@ -94,10 +105,10 @@ public class RecipeRenderer : MonoBehaviour
 
     private void DeactivateRecipeSelector()
     {
-        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
-        foreach (GameObject recipeObject in recipeObjects)
+        foreach (var kvp in recipeUIObjects)
         {
-            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
+            GameObject recipeUI = kvp.Value;
+            Transform recipeToggleTransform = recipeUI.transform.Find("EdibleSelector");
             if (recipeToggleTransform != null)
             {
                 GameObject recipeToggle = recipeToggleTransform.gameObject;
@@ -107,29 +118,25 @@ public class RecipeRenderer : MonoBehaviour
         isRecipeSelector = false;
     }
 
-    public int GetRecipeId()
+    // handler for FoodGenerator
+    private void handleSelectRecipeButton(int recipeId)
     {
-        selectedRecipeId = new int();
-        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
-        foreach (GameObject recipeObject in recipeObjects)
-        {
-            RecipeUI selectedObject = recipeObject.GetComponent<RecipeUI>();
-            if (selectedObject.GetRecipeId() != 0)
-                selectedRecipeId = selectedObject.GetRecipeId();
-            break;
-        }
-        return selectedRecipeId;
+        selectedRecipeId = recipeId;
     }
 
-    public void SetToggleGroup()
+    public void ResetRecipeSelectors()
     {
-        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
-        foreach (GameObject recipeObject in recipeObjects)
+        foreach (var kvp in recipeUIObjects)
         {
-            Toggle toggle = recipeObject.GetComponent<Toggle>();
-            toggleGroup.RegisterToggle(toggle);
+            GameObject recipeUI = kvp.Value;
+            Transform recipeToggleTransform = recipeUI.transform.Find("EdibleSelector");
+            if (recipeToggleTransform != null)
+            {
+                GameObject recipeToggle = recipeToggleTransform.gameObject;
+                Toggle toggle = recipeToggle.GetComponent<Toggle>();
+                toggle.isOn = false;
+            }
         }
     }
-
 }
 

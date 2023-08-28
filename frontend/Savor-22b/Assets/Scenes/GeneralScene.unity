@@ -1943,7 +1943,8 @@ MonoBehaviour:
   recipeButton: {fileID: 1151395576}
   combineButton: {fileID: 1388113826}
   selectedRecipeId: 0
-  toggleGroup: {fileID: 0}
+  toggleGroupObject: {fileID: 1704475677}
+  toggleGroup: {fileID: 1704475679}
 --- !u!114 &1297813464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2242,6 +2243,10 @@ MonoBehaviour:
   privateKeyHex: 
   recipeId: 0
   refrigeratorIds: []
+  recipeRendererObject: {fileID: 1297813461}
+  inventoryObject: {fileID: 2011812298}
+  recipeRenderer: {fileID: 0}
+  inventory: {fileID: 0}
 --- !u!224 &1417392055 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7118656563000721105, guid: 8be7299c3760c433ca12df1b5245928a, type: 3}

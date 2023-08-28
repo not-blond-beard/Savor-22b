@@ -14,10 +14,7 @@ public class RecipeUI : MonoBehaviour
 
     public Toggle toggleButton;
 
-    private GameObject RecipePanel;
-    private FoodGenerator foodGenerator;
     public int recipeId;
-    public int selectedRecipeId;
 
 
     public void SetRecipe(Recipe recipe)
@@ -29,25 +26,5 @@ public class RecipeUI : MonoBehaviour
         ingredients = recipe.ingredients;
 
         recipeId = recipe.id;
-
-        toggleButton.onValueChanged.AddListener(delegate { StoreRecipeId(); });
-    }
-
-    private void StoreRecipeId()
-    {
-        if (toggleButton.isOn)
-        {
-            selectedRecipeId = recipeId;
-        }
-        else
-        {
-            selectedRecipeId = 0;
-        }
-
-    }
-
-    public int GetRecipeId()
-    {
-        return selectedRecipeId;
     }
 }
