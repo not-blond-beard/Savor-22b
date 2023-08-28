@@ -32,7 +32,10 @@ public class ItemInventory : MonoBehaviour
 
     private bool isRecipeSelector = false;
 
-    List<string> selectedStateIds;
+
+    private Dictionary<System.Guid, GameObject> ingredientUIObjects = new Dictionary<System.Guid, GameObject>();
+    private Dictionary<System.Guid, GameObject> foodUIObjects = new Dictionary<System.Guid, GameObject>();
+    public List<string> selectedStateIds;
 
 
     private ClientWebSocket clientWebSocket;
@@ -42,7 +45,7 @@ public class ItemInventory : MonoBehaviour
     {
         Subscribe();
 
-        SetRecipeSelectorButton();
+        SetInventorySelectorButton();
     }
     private void OnEnable()
     {
@@ -99,13 +102,19 @@ public class ItemInventory : MonoBehaviour
                 GameObject ingredientUI = Instantiate(ingredientPrefab, ingredientContent);
                 RefrigeratorUI ingredientUIScript = ingredientUI.GetComponent<RefrigeratorUI>();
 
-
                 ingredientUIScript.SetRefrigeratorData(refrigerator);
+
+                ingredientUIScript.toggleButton.onValueChanged.AddListener(delegate { handleSelectInventoryButton(refrigerator.stateId.ToString()); });
 
                 GameObject toggle = ingredientUI.transform.Find("EdibleSelector").gameObject;
                 if (isRecipeSelector)
                 {
                     toggle.SetActive(true);
+                }
+
+                if (!ingredientUIObjects.ContainsKey(refrigerator.stateId))
+                {
+                    ingredientUIObjects.Add(refrigerator.stateId, ingredientUI);
                 }
 
             }
@@ -123,10 +132,17 @@ public class ItemInventory : MonoBehaviour
 
                 foodUIScript.SetRefrigeratorData(refrigerator);
 
+                foodUIScript.toggleButton.onValueChanged.AddListener(delegate { handleSelectInventoryButton(refrigerator.stateId.ToString()); });
+
                 GameObject toggle = foodUI.transform.Find("EdibleSelector").gameObject;
                 if (isRecipeSelector)
                 {
                     toggle.SetActive(true);
+                }
+
+                if (!foodUIObjects.ContainsKey(refrigerator.stateId))
+                {
+                    foodUIObjects.Add(refrigerator.stateId, foodUI);
                 }
             }
         }
@@ -180,87 +196,129 @@ public class ItemInventory : MonoBehaviour
 
 
     // Recipe edible selector
-    private void SetRecipeSelectorButton()
+    private void SetInventorySelectorButton()
     {
-        recipeButton.onClick.AddListener(ToggleRecipeSelector);
+        recipeButton.onClick.AddListener(ToggleInventorySelector);
         combineButton.onClick.AddListener(ResetSelectors);
     }
 
-    private void ToggleRecipeSelector()
+    private void ToggleInventorySelector()
     {
         if (!isRecipeSelector)
         {
-            ActivateRecipeSelector();
+            ActivateInventorySelector();
         }
         else
         {
-            DeactivateRecipeSelector();
+            DeactivateInventorySelector();
         }
     }
 
-
-
-    private void ActivateRecipeSelector()
+    private void ActivateInventorySelector()
     {
-        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
-        foreach (GameObject edibleObject in edibleObjects)
+        foreach (var kvp in ingredientUIObjects)
         {
-            Transform edibleToggleTransform = edibleObject.transform.Find("EdibleSelector");
-            if (edibleToggleTransform != null)
+            GameObject refrigeratorUI = kvp.Value;
+            if (refrigeratorUI != null)
             {
-                GameObject edibleToggle = edibleToggleTransform.gameObject;
-                edibleToggle.SetActive(true);
+                Transform inventorySelectorTransform = refrigeratorUI.transform.Find("EdibleSelector");
+                if (inventorySelectorTransform != null)
+                {
+                    GameObject edibleToggle = inventorySelectorTransform.gameObject;
+                    edibleToggle.SetActive(true);
+                }
             }
+
         }
+        foreach (var kvp in foodUIObjects)
+        {
+            GameObject refrigeratorUI = kvp.Value;
+            if (refrigeratorUI != null)
+            {
+                Transform inventorySelectorTransform = refrigeratorUI.transform.Find("EdibleSelector");
+                if (inventorySelectorTransform != null)
+                {
+                    GameObject edibleToggle = inventorySelectorTransform.gameObject;
+                    edibleToggle.SetActive(true);
+                }
+            }
+
+        }
+
         isRecipeSelector = true;
     }
 
-    private void DeactivateRecipeSelector()
+    private void DeactivateInventorySelector()
     {
-        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
-        foreach (GameObject edibleObject in edibleObjects)
+        foreach (var kvp in ingredientUIObjects)
         {
-            Transform edibleToggleTransform = edibleObject.transform.Find("EdibleSelector");
-            if (edibleToggleTransform != null)
+            GameObject refrigeratorUI = kvp.Value;
+            if (refrigeratorUI != null)
             {
-                GameObject edibleToggle = edibleToggleTransform.gameObject;
-                edibleToggle.SetActive(false);
+                Transform inventorySelectorTransform = refrigeratorUI.transform.Find("EdibleSelector");
+                if (inventorySelectorTransform != null)
+                {
+                    GameObject edibleToggle = inventorySelectorTransform.gameObject;
+                    edibleToggle.SetActive(false);
+                }
             }
         }
+        foreach (var kvp in foodUIObjects)
+        {
+            GameObject refrigeratorUI = kvp.Value;
+            if (refrigeratorUI != null)
+            {
+                Transform inventorySelectorTransform = refrigeratorUI.transform.Find("EdibleSelector");
+                if (inventorySelectorTransform != null)
+                {
+                    GameObject edibleToggle = inventorySelectorTransform.gameObject;
+                    edibleToggle.SetActive(false);
+                }
+            }
+        }
+
         isRecipeSelector = false;
     }
 
     private void ResetSelectors()
     {
-        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
-        foreach (GameObject edibleObject in edibleObjects)
+        foreach (var kvp in ingredientUIObjects)
         {
-            Transform edibleToggleTransform = edibleObject.transform.Find("EdibleSelector");
-            if (edibleToggleTransform != null)
+            GameObject refrigeratorUI = kvp.Value;
+            Transform inventorySelectorTransform = refrigeratorUI.transform.Find("EdibleSelector");
+            if (inventorySelectorTransform != null)
             {
-                GameObject edibleToggle = edibleToggleTransform.gameObject;
+                GameObject edibleToggle = inventorySelectorTransform.gameObject;
                 Toggle toggle = edibleToggle.GetComponent<Toggle>();
                 toggle.isOn = false;
             }
         }
-        DeactivateRecipeSelector();
+        foreach (var kvp in foodUIObjects)
+        {
+            GameObject refrigeratorUI = kvp.Value;
+            Transform inventorySelectorTransform = refrigeratorUI.transform.Find("EdibleSelector");
+            if (inventorySelectorTransform != null)
+            {
+                GameObject edibleToggle = inventorySelectorTransform.gameObject;
+                Toggle toggle = edibleToggle.GetComponent<Toggle>();
+                toggle.isOn = false;
+            }
+        }
+        DeactivateInventorySelector();
+
+        selectedStateIds = new List<string>();
     }
 
-    public List<string> GetStateIds()
+    private void handleSelectInventoryButton(string stateId)
     {
-        selectedStateIds = new List<string>();
-        GameObject[] edibleObjects = GameObject.FindGameObjectsWithTag("Edible");
-        foreach (GameObject edibleObject in edibleObjects)
+        if (selectedStateIds.Contains(stateId))
         {
-            RefrigeratorUI selectedObject = edibleObject.GetComponent<RefrigeratorUI>();
-            if (selectedObject.GetStateId() != null)
-            {
-                selectedStateIds.Add(selectedObject.GetStateId());
-            }
-
+            selectedStateIds.Remove(stateId);
         }
-
-        return selectedStateIds;
+        else
+        {
+            selectedStateIds.Add(stateId);
+        }
     }
 
 }

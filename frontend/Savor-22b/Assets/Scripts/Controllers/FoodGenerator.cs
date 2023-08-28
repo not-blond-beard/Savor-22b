@@ -12,43 +12,49 @@ public class FoodGenerator : MonoBehaviour
     public int recipeId;
     public string[] refrigeratorIds;
 
+    public GameObject recipeRendererObject;
+    public GameObject inventoryObject;
+    public RecipeRenderer recipeRenderer;
+    public ItemInventory inventory;
+
     public async void CreateNewFood()
     {
         GetDatas();
+        if (recipeId == 0)
+        {
+            Debug.Log("Please select valid recipe");
+            return;
+        }
+        if (refrigeratorIds.Length == 0)
+        {
+            Debug.Log("Please select refrigerator");
+        }
+
         GraphApi.Query query = svrReference.GetQueryByName(QueryNames.CREATE_FOOD, GraphApi.Query.Type.Mutation);
 
         // argument must set exact same name in schema
         query.SetArgs(new { privateKeyHex = privateKeyHex, recipeID = recipeId, refrigeratorStateIDs = refrigeratorIds });
         UnityWebRequest request = await svrReference.Post(query);
 
-        ResetRecipeSelectors();
-    }
-
-
-    private void ResetRecipeSelectors()
-    {
-        GameObject[] recipeObjects = GameObject.FindGameObjectsWithTag("Recipe");
-        foreach (GameObject recipeObject in recipeObjects)
-        {
-            Transform recipeToggleTransform = recipeObject.transform.Find("EdibleSelector");
-            if (recipeToggleTransform != null)
-            {
-                GameObject recipeToggle = recipeToggleTransform.gameObject;
-                Toggle toggle = recipeToggle.GetComponent<Toggle>();
-                toggle.isOn = false;
-            }
-        }
+        recipeRenderer.ResetRecipeSelectors();
     }
 
     private void GetDatas()
     {
         // get private key, refrigerator ids
-        ItemInventory inventory = GameObject.Find("InventoryStatePanel").GetComponent<ItemInventory>();
         privateKeyHex = inventory.privateKeyHex;
-        refrigeratorIds = inventory.GetStateIds().ToArray();
+        //refrigeratorIds = inventory.GetStateIds().ToArray();
+        refrigeratorIds = inventory.selectedStateIds.ToArray();
 
         //get recipe id
-        RecipeRenderer recipeRenderer = GameObject.Find("RecipePanel").GetComponent<RecipeRenderer>();
-        recipeId = recipeRenderer.GetRecipeId();
+        recipeId = recipeRenderer.selectedRecipeId;
+        Debug.Log("Number of Edibles selected: " + refrigeratorIds.Length + "\n" + "recipe Id: " + recipeId);
+    }
+
+    void Start()
+    {
+        //Setting inventory, recipe scripts
+        inventory = inventoryObject.GetComponent<ItemInventory>();
+        recipeRenderer = recipeRendererObject.GetComponent<RecipeRenderer>();
     }
 }
