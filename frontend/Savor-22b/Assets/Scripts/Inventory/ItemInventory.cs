@@ -33,8 +33,8 @@ public class ItemInventory : MonoBehaviour
     private bool isRecipeSelector = false;
 
 
-    private Dictionary<System.Guid, GameObject> ingredientUIObjects = new Dictionary<System.Guid, GameObject>();
-    private Dictionary<System.Guid, GameObject> foodUIObjects = new Dictionary<System.Guid, GameObject>();
+    private Dictionary<System.Guid, GameObject> ingredientUIObjects;
+    private Dictionary<System.Guid, GameObject> foodUIObjects;
     public List<string> selectedStateIds;
 
 
@@ -95,6 +95,7 @@ public class ItemInventory : MonoBehaviour
 
     private void DrawIngredientList(Refrigerator[] refrigeratorStateList)
     {
+        ingredientUIObjects = new Dictionary<System.Guid, GameObject>();
         foreach (Refrigerator refrigerator in refrigeratorStateList)
         {
             if (refrigerator.ingredientId.HasValue)
@@ -123,6 +124,7 @@ public class ItemInventory : MonoBehaviour
 
     private void DrawFoodList(Refrigerator[] foodStateList)
     {
+        foodUIObjects = new Dictionary<System.Guid, GameObject>();
         foreach (Refrigerator refrigerator in foodStateList)
         {
             if (refrigerator.recipeId.HasValue)
