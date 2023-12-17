@@ -41,6 +41,12 @@ with the command below.
 $ docker build . -t <IMAGE_TAG>
 ```
 
+Create Your Local appsettings.json
+---
+
+Copy the File: First, copy Savor22b/appsettings.json to Savor22b/appsettings.local.json.
+Modify Paths: Next, modify the paths for GenesisBlockPath, CsvDataResourcePath, etc., to match your local directory structure.
+
 How to Run
 ----------
 
