@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://cg773cnsx4rb0"]
+[gd_scene load_steps=2 format=3 uid="uid://cg773cnsx4rb0"]
+
+[ext_resource type="Script" path="res://scripts/intro.gd" id="1_0m54y"]
 
 [node name="Intro" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_0m54y")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -29,7 +32,7 @@ anchor_bottom = 0.5
 offset_left = -400.0
 offset_top = -240.0
 offset_right = 400.0
-offset_bottom = 10.0005
+offset_bottom = 10.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
@@ -65,7 +68,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"FlatButton"
 theme_override_font_sizes/font_size = 70
 text = "Quit"
 
@@ -91,6 +93,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_type_variation = &"FlatButton"
 theme_override_font_sizes/font_size = 70
 text = "Play"
+
+[connection signal="button_down" from="QuitButtonContainer/Button" to="." method="_on_quit_button_button_down"]
+[connection signal="button_down" from="PlayButtonContainer/Button" to="." method="_on_play_button_button_down"]
