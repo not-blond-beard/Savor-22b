@@ -6,7 +6,6 @@ using Xunit;
 using Savor22b.Action;
 using Savor22b.States;
 using Savor22b.Action.Exceptions;
-using System.Collections.Immutable;
 
 public class PlantingSeedActionTests : ActionTests
 {
@@ -18,8 +17,10 @@ public class PlantingSeedActionTests : ActionTests
     private InventoryState getInventoryState()
     {
         InventoryState inventoryState = new InventoryState();
-        var newSeed = new SeedState(Guid.NewGuid(), 1);
-        inventoryState = inventoryState.AddSeed(newSeed);
+
+        var itemState = new ItemState(Guid.NewGuid(), 1);
+        inventoryState = inventoryState.AddItem(itemState);
+
         return inventoryState;
     }
 
@@ -58,10 +59,12 @@ public class PlantingSeedActionTests : ActionTests
             SignerAddress(),
             beforeRootState.Serialize()
         );
+        var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
-            beforeRootState.InventoryState.SeedStateList[0].StateID,
-            0
+            beforeSeedGuid,
+            0,
+            beforeRootState.InventoryState.ItemStateList[0].StateID
         );
 
         var random = new DummyRandom(1);
@@ -80,8 +83,9 @@ public class PlantingSeedActionTests : ActionTests
             ? new RootState(bdict)
             : throw new Exception();
 
-        Assert.Equal(rootState.VillageState!.HouseFieldStates[0]!.InstalledSeedGuid, beforeRootState.InventoryState.SeedStateList[0].StateID);
-        Assert.Equal(rootState.InventoryState.SeedStateList.Count, 0);
+        Assert.Equal(rootState.VillageState!.HouseFieldStates[0]!.InstalledSeedGuid, beforeSeedGuid);
+        Assert.Equal(rootState.InventoryState.SeedStateList.Count, 1);
+        Assert.Equal(rootState.InventoryState.ItemStateList.Count, 0);
     }
 
     [Fact]
@@ -98,10 +102,12 @@ public class PlantingSeedActionTests : ActionTests
             SignerAddress(),
             beforeRootState.Serialize()
         );
+        var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
-            beforeRootState.InventoryState.SeedStateList[0].StateID,
-            1
+            beforeSeedGuid,
+            1,
+            beforeRootState.InventoryState.ItemStateList[0].StateID
         );
 
         var random = new DummyRandom(1);
@@ -130,10 +136,12 @@ public class PlantingSeedActionTests : ActionTests
             SignerAddress(),
             beforeRootState.Serialize()
         );
+        var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
-            beforeRootState.InventoryState.SeedStateList[0].StateID,
-            VillageState.HouseFieldCount + 1
+            beforeSeedGuid,
+            VillageState.HouseFieldCount + 1,
+            beforeRootState.InventoryState.ItemStateList[0].StateID
         );
 
         var random = new DummyRandom(1);
@@ -152,7 +160,7 @@ public class PlantingSeedActionTests : ActionTests
     }
 
     [Fact]
-    public void Execute_InvalidSeedStateId()
+    public void Execute_InvalidItemStateId()
     {
         IAccountStateDelta beforeState = new DummyState();
 
@@ -162,15 +170,17 @@ public class PlantingSeedActionTests : ActionTests
             SignerAddress(),
             beforeRootState.Serialize()
         );
+        var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
-            Guid.NewGuid(),
-            0
+            beforeSeedGuid,
+            0,
+            Guid.NewGuid()
         );
 
         var random = new DummyRandom(1);
 
-        Assert.Throws<NotFoundDataException>(() =>
+        Assert.Throws<NotHaveRequiredException>(() =>
         {
             plantingSeedAction.Execute(new DummyActionContext
             {
@@ -182,5 +192,4 @@ public class PlantingSeedActionTests : ActionTests
             });
         });
     }
-
 }

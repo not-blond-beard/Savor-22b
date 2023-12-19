@@ -16,13 +16,15 @@ public class PlantingSeedAction : SVRAction
 {
     public Guid SeedGuid;
     public int FieldIndex;
+    public Guid ItemStateIdToUse;
 
     public PlantingSeedAction() { }
 
-    public PlantingSeedAction(Guid seedGuid, int fieldIndex)
+    public PlantingSeedAction(Guid seedGuid, int fieldIndex, Guid itemStateIdToUse)
     {
         SeedGuid = seedGuid;
         FieldIndex = fieldIndex;
+        ItemStateIdToUse = itemStateIdToUse;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
@@ -30,12 +32,14 @@ public class PlantingSeedAction : SVRAction
         {
             [nameof(SeedGuid)] = SeedGuid.Serialize(),
             [nameof(FieldIndex)] = FieldIndex.Serialize(),
+            [nameof(ItemStateIdToUse)] = ItemStateIdToUse.Serialize()
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         SeedGuid = plainValue[nameof(SeedGuid)].ToGuid();
         FieldIndex = plainValue[nameof(FieldIndex)].ToInteger();
+        ItemStateIdToUse = plainValue[nameof(ItemStateIdToUse)].ToGuid();
     }
 
     public void checkAndRaisePlantingAble(RootState rootState)
@@ -54,13 +58,36 @@ public class PlantingSeedAction : SVRAction
         {
             throw new FieldAlreadyOccupiedException("Field is already occupied");
         }
+    }
 
-        SeedState? seedState = rootState.InventoryState.GetSeedState(SeedGuid);
+    private Seed generateRandomSeed(IRandom random, int villageId)
+    {
+        int randomIndex;
+        var seeds = CsvDataHelper.GetSeedCSVData();
+        var village = CsvDataHelper.GetVillageCharacteristicByVillageId(villageId)!;
 
-        if (seedState is null)
+        do
         {
-            throw new NotFoundDataException("Seed not found");
+            randomIndex = random.Next(0, seeds.Count);
+        } while (!village.AvailableSeedIdList.Contains(seeds[randomIndex].Id));
+
+        var randomSeedCsvData = seeds[randomIndex];
+
+        return randomSeedCsvData;
+    }
+
+    private InventoryState FindAndRemoveItem(InventoryState state)
+    {
+        var item = state.ItemStateList.Find(state => state.StateID == ItemStateIdToUse);
+
+        if (item is null)
+        {
+            throw new NotHaveRequiredException($"You don't have `{ItemStateIdToUse}` item");
         }
+
+        state = state.RemoveItem(ItemStateIdToUse);
+
+        return state;
     }
 
     public override IAccountStateDelta Execute(IActionContext ctx)
@@ -76,18 +103,22 @@ public class PlantingSeedAction : SVRAction
         checkAndRaisePlantingAble(rootState);
 
         InventoryState inventoryState = rootState.InventoryState;
-        SeedState seedState = rootState.InventoryState.GetSeedState(SeedGuid)!;
+        inventoryState = FindAndRemoveItem(inventoryState);
 
-        inventoryState = inventoryState.RemoveSeed(SeedGuid);
+        Seed seedCsvData = generateRandomSeed(
+            ctx.Random,
+            rootState.VillageState!.HouseState.VillageID
+        );
+        var seedState = new SeedState(SeedGuid, seedCsvData.Id);
+        inventoryState = inventoryState.AddSeed(seedState);
+
         rootState.SetInventoryState(inventoryState);
-
-        Seed seed = CsvDataHelper.GetSeedById(seedState.SeedID)!;
 
         HouseFieldState houseFieldState = new HouseFieldState(
             SeedGuid,
-            seedState.SeedID,
+            seedCsvData.Id,
             ctx.BlockIndex,
-            seed.RequiredBlock
+            seedCsvData.RequiredBlock
         );
 
         rootState.VillageState!.UpdateHouseFieldState(FieldIndex, houseFieldState);
