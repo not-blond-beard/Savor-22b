@@ -7,6 +7,8 @@
 
 [node name="Node" type="Node" parent="." node_paths=PackedStringArray("bg")]
 script = ExtResource("1_7d86k")
+width = 1000
+height = 500
 bg = NodePath("VillageBackground_NinePatchRect")
 
 [node name="VillageBackground_NinePatchRect" type="NinePatchRect" parent="Node"]
