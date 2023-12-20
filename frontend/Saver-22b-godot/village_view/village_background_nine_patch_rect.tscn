@@ -1,22 +1,27 @@
 [gd_scene load_steps=3 format=3 uid="uid://bnut6era2lyw3"]
 
-[ext_resource type="Texture2D" uid="uid://c0dwyky4dbhth" path="res://32x32-black-line.png" id="1_ig6sc"]
+[ext_resource type="Texture2D" uid="uid://c0dwyky4dbhth" path="res://sprites/32x32-black-line.png" id="1_ig6sc"]
 [ext_resource type="Script" path="res://village_view/VillageView.gd" id="2_1w4b1"]
 
 [node name="VillageBackground_NinePatchRect" type="NinePatchRect" node_paths=PackedStringArray("bg")]
+z_index = -1000
 texture_filter = 1
+custom_minimum_size = Vector2(40, 40)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -960.0
-offset_top = -540.0
-offset_right = -920.0
-offset_bottom = -500.0
+offset_left = -150.0
+offset_top = -150.0
+offset_right = -110.0
+offset_bottom = -110.0
 grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(20, 20)
+size_flags_horizontal = 6
+size_flags_vertical = 6
+mouse_filter = 1
 texture = ExtResource("1_ig6sc")
 patch_margin_left = 3
 patch_margin_top = 3
