@@ -39,6 +39,7 @@ func initialize(width: int, height: int, worldX: int, worldY: int, houses=[]):
 	self.worldX = worldX
 	self.worldY = worldY
 	set_size()
+
 	for house in houses.filter(func (argc): return argc is Vector2):
 		instantiate_house(house)
 
@@ -53,4 +54,5 @@ func instantiate_house(pos: Vector2):
 	print("instantiate_house: ", pos)
 	var house = Origin_house.instantiate()
 	bg.add_child(house)
-	house.set_global_position(root_position + pos * Coordinate_weight)
+	house.set_size(Vector2(Coordinate_weight, Coordinate_weight))
+	house.set_global_position(pos * Coordinate_weight + root_position - Vector2(Coordinate_weight / 2, Coordinate_weight / 2))
