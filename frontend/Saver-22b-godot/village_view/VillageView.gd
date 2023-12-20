@@ -27,8 +27,7 @@ func initialize(width: int, height: int, worldX: int, worldY: int, houses=[]):
 	self.worldX = worldX
 	self.worldY = worldY
 	set_size()
-	
-	for house in houses.filter(func (argc): argc is Vector2):
+	for house in houses.filter(func (argc): return argc is Vector2):
 		instantiate_house(house)
 
 func set_size():
@@ -38,4 +37,4 @@ func set_size():
 	bg.set_position(root_position)
 
 func instantiate_house(pos: Vector2):
-	pass
+	print("instantiate_house: ", pos)

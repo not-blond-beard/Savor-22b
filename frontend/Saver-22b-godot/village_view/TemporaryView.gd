@@ -6,4 +6,4 @@ func _ready():
 	var village_view_instance = village_view_node.instantiate()
 	village_view_instance.set_name("view")
 	add_child(village_view_instance)
-	village_view_instance.initialize(1000,500,0,0)
+	village_view_instance.initialize(1000,500,0,0, [Vector2(0,0),Vector2(1,0),Vector2(0,1),Vector2(1,1)])
