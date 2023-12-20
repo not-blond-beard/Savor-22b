@@ -22,6 +22,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="LeftMarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(810, 2.08165e-12)
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
@@ -37,54 +38,6 @@ color = Color(0, 0, 0, 1)
 
 [node name="VillagesVBoxContainer" type="VBoxContainer" parent="LeftMarginContainer"]
 layout_mode = 2
-
-[node name="VillageMarginContainer" type="MarginContainer" parent="LeftMarginContainer/VillagesVBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 200)
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-
-[node name="Background" type="ColorRect" parent="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "Village #1
-(Households X/Y)"
-
-[node name="VillageMarginContainer2" type="MarginContainer" parent="LeftMarginContainer/VillagesVBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 200)
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-
-[node name="Background" type="ColorRect" parent="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer2"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer2"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "Village #2
-(Households X/Y)"
-
-[node name="VillageMarginContainer3" type="MarginContainer" parent="LeftMarginContainer/VillagesVBoxContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 200)
-layout_mode = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-
-[node name="Background" type="ColorRect" parent="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer3"]
-layout_mode = 2
-
-[node name="Button" type="Button" parent="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer3"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 50
-text = "Village #3
-(Households X/Y)"
 
 [node name="RightMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -115,6 +68,7 @@ layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="RightMarginContainer/MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = 0
 
 [node name="VillageInfoMarginContainer" type="MarginContainer" parent="RightMarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -124,11 +78,15 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="Label" type="Label" parent="RightMarginContainer/MarginContainer/VBoxContainer/VillageInfoMarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="RightMarginContainer/MarginContainer/VBoxContainer/VillageInfoMarginContainer"]
 layout_mode = 2
-size_flags_vertical = 1
+
+[node name="Label" type="Label" parent="RightMarginContainer/MarginContainer/VBoxContainer/VillageInfoMarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 30
 text = "This village's name is \"평범한 도시 1\".
 ID: 1
 World Position: 5, 1
@@ -137,7 +95,7 @@ House Count: 1"
 
 [node name="StartButtonMarginContainer" type="MarginContainer" parent="RightMarginContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 10
+size_flags_vertical = 8
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
@@ -148,7 +106,4 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 70
 text = "Start"
 
-[connection signal="button_down" from="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer/Button" to="." method="_on_village_button_button_down" binds= [0]]
-[connection signal="button_down" from="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer2/Button" to="." method="_on_village_button_button_down" binds= [1]]
-[connection signal="button_down" from="LeftMarginContainer/VillagesVBoxContainer/VillageMarginContainer3/Button" to="." method="_on_village_button_button_down" binds= [2]]
 [connection signal="button_down" from="RightMarginContainer/MarginContainer/VBoxContainer/StartButtonMarginContainer/StartButton" to="." method="_on_start_button_button_down"]
