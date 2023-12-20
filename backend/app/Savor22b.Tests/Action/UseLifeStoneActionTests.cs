@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using Libplanet;
 using Libplanet.State;
 using Savor22b.Action;
+using Savor22b.Action.Exceptions;
 using Savor22b.States;
 using Xunit;
 
@@ -43,18 +44,73 @@ public class UseLifeStoneActionTests : ActionTests
     }
 
     [Fact]
+    public void UseLifeStoneAction_Fail_NoLifeStone()
+    {
+        var stateDelta = CreatePresetStateDelta(hasLifeStone: false);
+
+        var food = DeriveRootStateFromAccountStateDelta(stateDelta)
+            .InventoryState
+            .RefrigeratorStateList[0];
+
+        var action = new UseLifeStoneAction(food.StateID);
+
+        Assert.Throws<NotHaveRequiredException>(
+            () => action.Execute(
+                new DummyActionContext
+                {
+                    PreviousStates = stateDelta,
+                    Signer = SignerAddress(),
+                    Random = random,
+                    Rehearsal = false,
+                    BlockIndex = 1,
+                }
+            )
+        );
+    }
+
+    [Fact]
+    public void UseLifeStoneAction_Fail_AlreadyIsSuperFood()
+    {
+        var stateDelta = CreatePresetStateDelta();
+
+        var food = DeriveRootStateFromAccountStateDelta(stateDelta)
+            .InventoryState
+            .RefrigeratorStateList[0];
+
+        food.IsSuperFood = true;
+
+        var action = new UseLifeStoneAction(food.StateID);
+
+        Assert.Throws<AlreadyIsSuperFoodException>(
+            () => action.Execute(
+                new DummyActionContext
+                {
+                    PreviousStates = stateDelta,
+                    Signer = SignerAddress(),
+                    Random = random,
+                    Rehearsal = false,
+                    BlockIndex = 1,
+                }
+            )
+        );
+    }
+
+    [Fact]
     public void UseLifeStoneAction_AssertPresetStateDelta()
     {
         var stateDelta = CreatePresetStateDelta();
         var inventoryState = DeriveRootStateFromAccountStateDelta(stateDelta).InventoryState;
-
         Assert.Single(inventoryState.ItemStateList);
         Assert.Equal(LifeStoneItemId, inventoryState.ItemStateList[0].ItemID);
         Assert.Single(inventoryState.RefrigeratorStateList);
         Assert.False(inventoryState.RefrigeratorStateList[0].IsSuperFood);
+
+        stateDelta = CreatePresetStateDelta(hasLifeStone: false);
+        inventoryState = DeriveRootStateFromAccountStateDelta(stateDelta).InventoryState;
+        Assert.Empty(inventoryState.ItemStateList);
     }
 
-    private IAccountStateDelta CreatePresetStateDelta()
+    private IAccountStateDelta CreatePresetStateDelta(bool hasLifeStone = true)
     {
         IAccountStateDelta state = new DummyState();
         Address signerAddress = SignerAddress();
@@ -66,7 +122,10 @@ public class UseLifeStoneActionTests : ActionTests
 
         InventoryState inventoryState = rootState.InventoryState;
 
-        inventoryState = inventoryState.AddItem(new ItemState(Guid.NewGuid(), LifeStoneItemId));
+        if (hasLifeStone)
+        {
+            inventoryState = inventoryState.AddItem(new ItemState(Guid.NewGuid(), LifeStoneItemId));
+        }
 
         var food = RefrigeratorState.CreateFood(
             Guid.NewGuid(),

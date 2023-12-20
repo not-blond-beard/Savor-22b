@@ -53,13 +53,13 @@ public class UseLifeStoneAction : SVRAction
 
         if (food.IsSuperFood)
         {
-            throw new Exception($"Food `{FoodStateID}` is already Super Food.");
+            throw new AlreadyIsSuperFoodException($"Food `{FoodStateID}` is already Super Food.");
         }
 
-        var singleLifeStone = inventoryState.ItemStateList.First((e) => e.ItemID == 2);
+        var singleLifeStone = inventoryState.ItemStateList.FirstOrDefault((e) => e.ItemID == 2);
         if (singleLifeStone is null)
         {
-            throw new Exception("No LifeStone is found in user's inventory.");
+            throw new NotHaveRequiredException("No LifeStone is found in user's inventory.");
         }
 
         food.IsSuperFood = true;
