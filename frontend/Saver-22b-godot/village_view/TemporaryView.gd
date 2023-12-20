@@ -13,5 +13,6 @@ func _ready():
 		#0,
 		#0,
 		#[Vector2(0,0),Vector2(1,0),Vector2(0,1),Vector2(1,1)])
-	village_view_instance.initialize_by_village(village)
+
 	add_child(village_view_instance)
+	village_view_instance.initialize_by_village(village)

@@ -45,6 +45,7 @@ func initialize(width: int, height: int, worldX: int, worldY: int, houses=[]):
 func set_size():
 	bg.size.x = width
 	bg.size.y = height
+	bg.custom_minimum_size = bg.size
 	bg.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_KEEP_SIZE)
 	root_position = get_tree().root.size / 2 
 
