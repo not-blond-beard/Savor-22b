@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 
 GlobalSigner="*res://scripts/sign/Signer.gd"
 SvrGqlClient="*res://gql/svr_gql_client.gd"
+SceneContext="*res://scripts/global/scene_context.gd"
 
 [display]
 
