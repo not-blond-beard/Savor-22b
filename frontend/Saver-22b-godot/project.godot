@@ -19,8 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalSigner="*res://scripts/sign/Signer.gd"
-GraphQlClient="*res://gql/GraphQLClient.cs"
-Config="*res://Config.cs"
+SvrGqlClient="*res://gql/svr_gql_client.gd"
 
 [display]
 
@@ -31,6 +30,12 @@ window/stretch/mode="canvas_items"
 [dotnet]
 
 project/assembly_name="Saver-22b-godot"
+
+[file_customization]
+
+folder_colors={
+"res://scenes/": "yellow"
+}
 
 [rendering]
 
