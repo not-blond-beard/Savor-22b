@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bnut6era2lyw3"]
 
-[ext_resource type="Texture2D" uid="uid://c0dwyky4dbhth" path="res://32x32-black-line.png" id="1_ig6sc"]
+[ext_resource type="Texture2D" uid="uid://c0dwyky4dbhth" path="res://sprites/32x32-black-line.png" id="1_ig6sc"]
 [ext_resource type="Script" path="res://village_view/VillageView.gd" id="2_1w4b1"]
 
 [node name="VillageBackground_NinePatchRect" type="NinePatchRect" node_paths=PackedStringArray("bg")]
