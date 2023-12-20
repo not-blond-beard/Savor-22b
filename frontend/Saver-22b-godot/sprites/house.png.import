@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0dwyky4dbhth"
-path="res://.godot/imported/32x32-black-line.png-7f1f5bf1a785648628ee6c0fe73c0830.ctex"
+uid="uid://dajunmx26gvr5"
+path="res://.godot/imported/house.png-692a11096cd356792c6bc12472b23812.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://32x32-black-line.png"
-dest_files=["res://.godot/imported/32x32-black-line.png-7f1f5bf1a785648628ee6c0fe73c0830.ctex"]
+source_file="res://sprites/house.png"
+dest_files=["res://.godot/imported/house.png-692a11096cd356792c6bc12472b23812.ctex"]
 
 [params]
 
