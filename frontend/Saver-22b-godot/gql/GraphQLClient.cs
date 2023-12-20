@@ -25,10 +25,10 @@ public partial class GraphQLClient : Node
 		{
 			GD.Print("Error: ", response.Errors[0].Message);
 		}
-		else
-		{
-			GD.Print("Response: ", response.Data);
-		}
+		// else
+		// {
+		// 	GD.Print("Response: ", response.Data);
+		// }
 		return response.Data;
 	}
 }
