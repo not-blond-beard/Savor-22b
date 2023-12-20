@@ -63,6 +63,12 @@ public class RefrigeratorStateType : ObjectGraphType<RefrigeratorState>
         );
 
         Field<BooleanGraphType>(
+            name: "isSuperFood",
+            description: "Check this food is SuperFood.",
+            resolve: context => context.Source.IsSuperFood
+        );
+
+        Field<BooleanGraphType>(
             name: "isAvailable",
             description: "Check this food is available.",
             resolve: context => context.Source.IsAvailable(blockChain.Count)
