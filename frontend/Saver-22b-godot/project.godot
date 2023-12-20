@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 GlobalSigner="*res://scripts/sign/Signer.gd"
+GraphQlClient="*res://gql/GraphQLClient.cs"
 
 [display]
 
