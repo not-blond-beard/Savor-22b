@@ -17,7 +17,8 @@ public class RefrigeratorState : State
         int atk,
         int spd,
         long? availableBlockIndex,
-        ImmutableList<Guid> usedKitchenEquipmentStateIds
+        ImmutableList<Guid> usedKitchenEquipmentStateIds,
+        bool isSuperFood = false
     )
     {
         StateID = stateID;
@@ -28,6 +29,7 @@ public class RefrigeratorState : State
         DEF = def;
         ATK = atk;
         SPD = spd;
+        IsSuperFood = isSuperFood;
         AvailableBlockIndex = availableBlockIndex;
         UsedKitchenEquipmentStateIds = usedKitchenEquipmentStateIds;
     }
@@ -92,6 +94,7 @@ public class RefrigeratorState : State
         SPD = encoded[nameof(SPD)].ToInteger();
         IngredientID = encoded[nameof(IngredientID)].ToNullableInteger();
         FoodID = encoded[nameof(FoodID)].ToNullableInteger();
+        IsSuperFood = encoded[nameof(IsSuperFood)].ToBoolean();
         AvailableBlockIndex = encoded[nameof(AvailableBlockIndex)].ToNullableLong();
         UsedKitchenEquipmentStateIds = ((List)encoded[nameof(UsedKitchenEquipmentStateIds)])
             .Select(e => e.ToGuid())
@@ -114,6 +117,8 @@ public class RefrigeratorState : State
 
     public int SPD { get; set; }
 
+    public bool IsSuperFood { get; set; }
+
     public long? AvailableBlockIndex { get; set; }
 
     public ImmutableList<Guid> UsedKitchenEquipmentStateIds { get; set; }
@@ -130,6 +135,7 @@ public class RefrigeratorState : State
             new KeyValuePair<IKey, IValue>((Text)nameof(SPD), SPD.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), IngredientID.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(FoodID), FoodID.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(IsSuperFood), IsSuperFood.Serialize()),
             new KeyValuePair<IKey, IValue>(
                 (Text)nameof(UsedKitchenEquipmentStateIds),
                 new List(UsedKitchenEquipmentStateIds.Select(element => element.Serialize()))
@@ -168,7 +174,8 @@ public class RefrigeratorState : State
             && HP == other.HP
             && DEF == other.DEF
             && ATK == other.ATK
-            && SPD == other.SPD;
+            && SPD == other.SPD
+            && IsSuperFood == other.IsSuperFood;
     }
 
     public override int GetHashCode()
@@ -183,6 +190,7 @@ public class RefrigeratorState : State
         hash = hash * 23 + DEF.GetHashCode();
         hash = hash * 23 + ATK.GetHashCode();
         hash = hash * 23 + SPD.GetHashCode();
+        hash = hash * 23 + IsSuperFood.GetHashCode();
 
         return hash;
     }

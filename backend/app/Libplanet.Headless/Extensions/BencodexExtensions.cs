@@ -83,6 +83,22 @@ public static class BencodexExtensions
 
     #endregion long
 
+    #region bool
+
+    public static IValue Serialize(this bool boolean) =>
+        (Text)boolean.ToString();
+
+    public static IValue Serialize(this bool? boolean) =>
+        Serialize(Serialize, boolean);
+
+    public static bool ToBoolean(this IValue serialized) =>
+        bool.Parse(((Text)serialized).Value);
+
+    public static bool? ToNullableBoolean(this IValue serialized) =>
+        Deserialize(ToBoolean, serialized);
+
+    #endregion bool
+
     #region Text
 
     public static IValue Serialize(this string text) =>
