@@ -54,8 +54,9 @@ public class UseLifeStoneActionTests : ActionTests
 
         var action = new UseLifeStoneAction(food.StateID);
 
-        Assert.Throws<NotHaveRequiredException>(
-            () => action.Execute(
+        Assert.Throws<NotHaveRequiredException>(() =>
+        {
+            action.Execute(
                 new DummyActionContext
                 {
                     PreviousStates = stateDelta,
@@ -64,8 +65,8 @@ public class UseLifeStoneActionTests : ActionTests
                     Rehearsal = false,
                     BlockIndex = 1,
                 }
-            )
-        );
+            );
+        });
     }
 
     [Fact]
@@ -73,25 +74,29 @@ public class UseLifeStoneActionTests : ActionTests
     {
         var stateDelta = CreatePresetStateDelta();
 
-        var food = DeriveRootStateFromAccountStateDelta(stateDelta)
-            .InventoryState
-            .RefrigeratorStateList[0];
+        var rootState = DeriveRootStateFromAccountStateDelta(stateDelta);
+        var inventoryState = rootState.InventoryState;
 
+        var food = rootState.InventoryState.RefrigeratorStateList[0];
         food.IsSuperFood = true;
+
+        rootState.SetInventoryState(inventoryState);
 
         var action = new UseLifeStoneAction(food.StateID);
 
-        Assert.Throws<AlreadyIsSuperFoodException>(
-            () => action.Execute(
-                new DummyActionContext
-                {
-                    PreviousStates = stateDelta,
-                    Signer = SignerAddress(),
-                    Random = random,
-                    Rehearsal = false,
-                    BlockIndex = 1,
-                }
-            )
+        Assert.Throws<AlreadyIsSuperFoodException>(() =>
+            {
+                action.Execute(
+                    new DummyActionContext
+                    {
+                        PreviousStates = stateDelta.SetState(SignerAddress(), rootState.Serialize()),
+                        Signer = SignerAddress(),
+                        Random = random,
+                        Rehearsal = false,
+                        BlockIndex = 1,
+                    }
+                );
+            }
         );
     }
 
