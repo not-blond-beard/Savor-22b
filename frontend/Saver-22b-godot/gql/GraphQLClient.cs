@@ -14,7 +14,7 @@ public partial class GraphQLClient : Node
 	{
 		Instance = this;
 
-		client = new GraphQLHttpClient("http://localhost:38080/graphql", new NewtonsoftJsonSerializer());
+		client = new GraphQLHttpClient(Config.Instance.GraphQLUrl, new NewtonsoftJsonSerializer());
 	}
 
 	public async Task<string> QueryAsync(string query)
