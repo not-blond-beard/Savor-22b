@@ -10,6 +10,8 @@ var root_position: Vector2
 @export_group("View nodes")
 @export var bg: NinePatchRect
 
+const Origin_house = preload("res://village_view/house_texture_rect.tscn")
+
 # Called when the node enters the scene tree for the first time.
 # 이건 Start의 성격일지 Awake의 성격일지 아직은 잘 모르겠음
 func _ready():
@@ -47,3 +49,6 @@ func set_size():
 
 func instantiate_house(pos: Vector2):
 	print("instantiate_house: ", pos)
+	var house = Origin_house.instantiate()
+	add_child(house)
+	house.set_position(root_position + pos)

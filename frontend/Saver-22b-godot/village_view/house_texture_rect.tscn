@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjvcx7fit5avb"]
+
+[ext_resource type="Texture2D" uid="uid://dajunmx26gvr5" path="res://sprites/house.png" id="1_4yb37"]
+
+[node name="House_TextureRect" type="TextureRect"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_4yb37")
