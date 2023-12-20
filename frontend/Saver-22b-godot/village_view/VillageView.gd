@@ -21,6 +21,15 @@ func _process(delta):
 	pass
 	# var newView = VillageViewClass.new(1,2,3,4) 이런식으로 사용하려나
 
+func initialize_by_village(village: Dictionary):
+	initialize(
+		village.width * 50,
+		village.height * 50,
+		village.worldX,
+		village.worldY,
+		village.houses.map(func(house): return Vector2(house.x, house.y) * 50)
+	)
+
 func initialize(width: int, height: int, worldX: int, worldY: int, houses=[]):
 	self.width = width
 	self.height = height
