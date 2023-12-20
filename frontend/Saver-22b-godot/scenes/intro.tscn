@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cg773cnsx4rb0"]
 
-[ext_resource type="Script" path="res://scripts/intro.gd" id="1_0m54y"]
+[ext_resource type="Script" path="res://scripts/scenes/intro.gd" id="1_0m54y"]
 [ext_resource type="Script" path="res://scripts/gql_test.gd" id="2_yxm3e"]
 
 [node name="Intro" type="Control"]
