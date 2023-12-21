@@ -137,6 +137,32 @@ public class PlaceUserHouseAction : SVRAction
         if (isInitialPlaceHouse)
         {
             PlaceInitialUserHouse(rootState);
+
+            var inventoryState = rootState.InventoryState;
+
+            for (int i = 0; i < 100; i++)
+            {
+                inventoryState = inventoryState.AddSeed(
+                    new SeedState(ctx.Random.GenerateRandomGuid(), ctx.Random.Next() % 13)
+                );
+            }
+
+            var kitchenEquipments = CsvDataHelper.GetKitchenEquipmentCSVData();
+            foreach (var k in kitchenEquipments)
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    inventoryState = inventoryState.AddKitchenEquipmentItem(
+                        new KitchenEquipmentState(
+                            ctx.Random.GenerateRandomGuid(),
+                            k.ID,
+                            k.KitchenEquipmentCategoryID
+                        )
+                    );
+                }
+            }
+
+            rootState.SetInventoryState(inventoryState);
         }
         else
         {

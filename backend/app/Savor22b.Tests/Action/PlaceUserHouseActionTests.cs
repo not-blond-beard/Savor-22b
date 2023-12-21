@@ -8,6 +8,7 @@ using Savor22b.States;
 using Savor22b.Constants;
 using Libplanet.Assets;
 using Savor22b.Action.Exceptions;
+using System.Collections.Immutable;
 
 public class PlaceUserHouseActionTests : ActionTests
 {
@@ -53,6 +54,26 @@ public class PlaceUserHouseActionTests : ActionTests
         Assert.Equal(
             SignerAddress(),
             globalUserHouseState.UserHouse[$"{villageId},{targetX},{targetY}"]
+        );
+
+        Assert.Equal(100, rootState.InventoryState.SeedStateList.Count);
+        Assert.Equal(
+            Enumerable.Repeat(10, 6).ToImmutableList(),
+            rootState.InventoryState.KitchenEquipmentStateList.Aggregate(
+                new Dictionary<int, int>(),
+                (dict, curr) =>
+                {
+                    if (!dict.ContainsKey(curr.KitchenEquipmentID))
+                    {
+                        dict.Add(curr.KitchenEquipmentID, 1);
+                    }
+                    else
+                    {
+                        dict[curr.KitchenEquipmentID]++;
+                    }
+                    return dict;
+                }
+            ).Values.ToImmutableList()
         );
     }
 
