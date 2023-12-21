@@ -57,6 +57,10 @@ public class PlaceUserHouseActionTests : ActionTests
         );
 
         Assert.Equal(100, rootState.InventoryState.SeedStateList.Count);
+        Assert.All(
+            rootState.InventoryState.SeedStateList,
+            (seed) => Assert.True(seed.SeedID >= 1 && seed.SeedID <= 13)
+        );
         Assert.Equal(
             Enumerable.Repeat(10, 6).ToImmutableList(),
             rootState.InventoryState.KitchenEquipmentStateList.Aggregate(
