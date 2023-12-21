@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://village_view/VillageView.gd" id="2_1w4b1"]
 [ext_resource type="Texture2D" uid="uid://bq1id6g5rr7by" path="res://sprites/mid.png" id="3_e4wt8"]
 
-[node name="VillageBackground_NinePatchRect" type="NinePatchRect" node_paths=PackedStringArray("bg")]
+[node name="VillageBackground_NinePatchRect" type="NinePatchRect" node_paths=PackedStringArray("bg", "root_rect")]
 z_index = -1000
 texture_filter = 1
 custom_minimum_size = Vector2(40, 40)
@@ -30,6 +30,7 @@ patch_margin_right = 3
 patch_margin_bottom = 3
 script = ExtResource("2_1w4b1")
 bg = NodePath(".")
+root_rect = NodePath("TextureRect")
 
 [node name="TextureRect" type="TextureRect" parent="."]
 texture_filter = 1
