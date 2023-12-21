@@ -83,6 +83,8 @@ func build_house():
 	var query_executor = SvrGqlClient.raw(query_string)
 	query_executor.graphql_response.connect(func(data):
 		print("gql response: ", data)
+		print("unsigned tx: ", data["data"]["createAction_PlaceUserHouse"])
+		
 	)
 	add_child(query_executor)
 	query_executor.run({})
