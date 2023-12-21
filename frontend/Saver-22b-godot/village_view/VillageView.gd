@@ -6,9 +6,11 @@ var height: int
 var worldX: int
 var worldY: int
 var root_position: Vector2
+var root_local_position: Vector2
 
 @export_group("View nodes")
 @export var bg: NinePatchRect
+@export var root_rect: TextureRect
 
 const Origin_house = preload("res://village_view/house_texture_rect.tscn")
 const Coordinate_weight = 300
@@ -18,11 +20,12 @@ const Coordinate_weight = 300
 func _ready():
 	set_size()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-# 이게 업데이트구나
-func _process(delta):
-	pass
-	# var newView = VillageViewClass.new(1,2,3,4) 이런식으로 사용하려나
+# Mouse in viewport coordinates.
+func _input(event):
+	var mouse_event = event as InputEventMouseButton
+	if mouse_event != null and mouse_event.is_released() and mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.is_command_or_control_pressed():
+		print("Mouse Click/Unclick at: ", event.position)
+		build_house()
 
 func initialize_by_village(village: Dictionary):
 	initialize(
@@ -48,7 +51,8 @@ func set_size():
 	bg.size.y = height
 	bg.custom_minimum_size = bg.size
 	bg.set_anchors_and_offsets_preset(Control.PRESET_CENTER, Control.PRESET_MODE_KEEP_SIZE)
-	root_position = get_tree().root.size / 2 
+	root_position = get_tree().root.size / 2
+	root_local_position = root_rect.global_position - bg.global_position
 
 func instantiate_house(pos: Vector2):
 	print("instantiate_house: ", pos)
@@ -56,3 +60,13 @@ func instantiate_house(pos: Vector2):
 	bg.add_child(house)
 	house.set_size(Vector2(Coordinate_weight, Coordinate_weight))
 	house.set_global_position(pos * Coordinate_weight + root_position - Vector2(Coordinate_weight / 2, Coordinate_weight / 2))
+
+func build_house():
+	var pos = bg.get_local_mouse_position()
+	var relative_pos = pos - root_local_position
+	relative_pos /= Coordinate_weight
+	relative_pos.x = roundi(relative_pos.x)
+	relative_pos.y = roundi(relative_pos.y)
+	print("build house pos: ", relative_pos)
+	print("root pos: ", root_local_position)
+	print("mouse pos: ", pos)
