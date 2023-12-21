@@ -17,3 +17,9 @@ var place_house_query_format = "query {
 	y: {}
   )
 }"
+
+var stage_tx_query_format = "mutation {
+	stageTransaction(
+		unsignedTransaction:\"%s\",
+		signature:\"%s\")
+}"

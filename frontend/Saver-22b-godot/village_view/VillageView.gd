@@ -83,8 +83,16 @@ func build_house():
 	var query_executor = SvrGqlClient.raw(query_string)
 	query_executor.graphql_response.connect(func(data):
 		print("gql response: ", data)
-		print("unsigned tx: ", data["data"]["createAction_PlaceUserHouse"])
-		
+		var unsigned_tx = data["data"]["createAction_PlaceUserHouse"]
+		print("unsigned tx: ", unsigned_tx)
+		var signature = GlobalSigner.sign(unsigned_tx)
+		print("signed tx: ", signature)
+		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
+		mutation_executor.graphql_response.connect(func(data):
+			print("mutation res: ", data)
+		)
+		add_child(mutation_executor)
+		mutation_executor.run({})
 	)
 	add_child(query_executor)
 	query_executor.run({})
