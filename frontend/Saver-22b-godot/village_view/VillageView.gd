@@ -12,6 +12,7 @@ var root_local_position: Vector2
 @export var bg: NinePatchRect
 @export var root_rect: TextureRect
 
+const Gql_query = preload("res://gql/query.gd")
 const Origin_house = preload("res://village_view/house_texture_rect.tscn")
 const Coordinate_weight = 300
 
@@ -70,3 +71,18 @@ func build_house():
 	print("build house pos: ", relative_pos)
 	print("root pos: ", root_local_position)
 	print("mouse pos: ", pos)
+	print("public key: ", GlobalSigner.signer.GetPublicKey())
+	var gql_query = Gql_query.new()
+	var query_string = gql_query.place_house_query_format.format([
+			"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
+			SceneContext.get_selected_village()["id"],
+			relative_pos.x,
+			relative_pos.y], "{}")
+	print(query_string)
+	
+	var query_executor = SvrGqlClient.raw(query_string)
+	query_executor.graphql_response.connect(func(data):
+		print("gql response: ", data)
+	)
+	add_child(query_executor)
+	query_executor.run({})

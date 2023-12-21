@@ -8,3 +8,12 @@ var get_villages_query = "query {
 		worldY
 	}
 }"
+
+var place_house_query_format = "query {
+  createAction_PlaceUserHouse(
+	publicKey: {},
+  	villageId: {},
+	x: {},
+	y: {}
+  )
+}"
