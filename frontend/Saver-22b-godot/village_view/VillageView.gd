@@ -23,7 +23,7 @@ func _ready():
 # Mouse in viewport coordinates.
 func _input(event):
 	var mouse_event = event as InputEventMouseButton
-	if mouse_event != null and mouse_event.is_released() and mouse_event.button_index == MOUSE_BUTTON_LEFT:
+	if mouse_event != null and mouse_event.is_released() and mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.is_command_or_control_pressed():
 		print("Mouse Click/Unclick at: ", event.position)
 		build_house()
 
