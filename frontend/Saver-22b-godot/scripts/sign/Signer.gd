@@ -1,6 +1,7 @@
 extends Node;
 
 var signer
+var signer_address
 
 func _ready():
 	var script = load("res://scripts/sign/Signer.cs")
@@ -14,6 +15,8 @@ func _ready():
 		var f = FileAccess.open("user://privkey", FileAccess.WRITE)
 		f.store_string(signer.GetRaw())
 		f.close()
+	
+	signer_address = signer.GetAddress()
 
 func sign(unsignedTransaction: String) -> String:
 	return self.signer.Sign(unsignedTransaction)
