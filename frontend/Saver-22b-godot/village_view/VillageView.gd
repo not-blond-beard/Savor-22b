@@ -18,11 +18,11 @@ const Coordinate_weight = 300
 func _ready():
 	set_size()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-# 이게 업데이트구나
-func _process(delta):
-	pass
-	# var newView = VillageViewClass.new(1,2,3,4) 이런식으로 사용하려나
+# Mouse in viewport coordinates.
+func _input(event):
+	if event is InputEventMouseButton and event.is_released():
+		print("Mouse Click/Unclick at: ", event.position)
+		build_house(event.global_position)
 
 func initialize_by_village(village: Dictionary):
 	initialize(
@@ -56,3 +56,10 @@ func instantiate_house(pos: Vector2):
 	bg.add_child(house)
 	house.set_size(Vector2(Coordinate_weight, Coordinate_weight))
 	house.set_global_position(pos * Coordinate_weight + root_position - Vector2(Coordinate_weight / 2, Coordinate_weight / 2))
+
+func build_house(pos: Vector2):
+	var relative_pos = pos - root_position + Vector2(Coordinate_weight / 2, Coordinate_weight / 2)
+	relative_pos /= Coordinate_weight
+	relative_pos.x = roundi(relative_pos.x)
+	relative_pos.y = roundi(relative_pos.y)
+	print("build house pos: ", relative_pos)
