@@ -143,7 +143,7 @@ public class PlaceUserHouseAction : SVRAction
             for (int i = 0; i < 100; i++)
             {
                 inventoryState = inventoryState.AddSeed(
-                    new SeedState(ctx.Random.GenerateRandomGuid(), ctx.Random.Next() % 13)
+                    new SeedState(ctx.Random.GenerateRandomGuid(), ctx.Random.Next() % 13 + 1)
                 );
             }
 
