@@ -27,7 +27,6 @@ func _query_villages():
 			"owner",
 		]),
 	])
-	print(query.serialize())
 	var query_executor = SvrGqlClient.query('query', {}, query)
 	query_executor.graphql_response.connect(
 		func(data):
@@ -41,6 +40,108 @@ func _query_user_state():
 	var query = GQLQuery.new("userState").set_args({
 		"signer_address": "address",
 	}).set_props([
+		GQLQuery.new("villageState").set_props([
+			GQLQuery.new("houseFieldStates").set_props([
+				"installedSeedGuid",
+				"seedID",
+				"installedBlock",
+				"totalBlock",
+				"lastWeedBlock",
+				"weedRemovalCount",
+				"seedName",
+				"isHarvested",
+				"weedRemovalAble",
+			]),
+			GQLQuery.new("houseState").set_props([
+				"villageId",
+				"positionX",
+				"positionY",
+				GQLQuery.new("kitchenState").set_props([
+					GQLQuery.new("firstApplianceSpace").set_props([
+						"spaceNumber",
+						GQLQuery.new("installedKitchenEquipment").set_props([
+							"stateId",
+							"equipmentId",
+							"equipmentName",
+							"blockTimeReductionPercent",
+							"equipmentCategoryId",
+							"equipmentCategoryName",
+							"equipmentCategoryType",
+							"isCooking",
+							"cookingEndBlockIndex",
+							GQLQuery.new("cookingFood").set_props([
+								"stateId",
+								"ingredientId",
+								"foodID",
+								"name",
+								"grade",
+								"hp",
+								"attack",
+								"defense",
+								"speed",
+								"isSuperFood",
+								"isAvailable",
+							]),
+						]),
+					]),
+					GQLQuery.new("secondApplianceSpace").set_props([
+						"spaceNumber",
+						GQLQuery.new("installedKitchenEquipment").set_props([
+							"stateId",
+							"equipmentId",
+							"equipmentName",
+							"blockTimeReductionPercent",
+							"equipmentCategoryId",
+							"equipmentCategoryName",
+							"equipmentCategoryType",
+							"isCooking",
+							"cookingEndBlockIndex",
+							GQLQuery.new("cookingFood").set_props([
+								"stateId",
+								"ingredientId",
+								"foodID",
+								"name",
+								"grade",
+								"hp",
+								"attack",
+								"defense",
+								"speed",
+								"isSuperFood",
+								"isAvailable",
+							]),
+						]),
+					]),
+					GQLQuery.new("thirdApplianceSpace").set_props([
+						"spaceNumber",
+						GQLQuery.new("installedKitchenEquipment").set_props([
+							"stateId",
+							"equipmentId",
+							"equipmentName",
+							"blockTimeReductionPercent",
+							"equipmentCategoryId",
+							"equipmentCategoryName",
+							"equipmentCategoryType",
+							"isCooking",
+							"cookingEndBlockIndex",
+							GQLQuery.new("cookingFood").set_props([
+								"stateId",
+								"ingredientId",
+								"foodID",
+								"name",
+								"grade",
+								"hp",
+								"attack",
+								"defense",
+								"speed",
+								"isSuperFood",
+								"isAvailable",
+							]),
+						]),
+					]),
+				]),
+				"villageName",
+			])
+		]),
 		GQLQuery.new("inventoryState").set_props([
 			GQLQuery.new("seedStateList").set_props([
 				"stateId",
@@ -91,7 +192,6 @@ func _query_user_state():
 			]),
 		]),
 	])
-	print(query.serialize())
 	var query_executor = SvrGqlClient.query(
 		'query',
 		{
