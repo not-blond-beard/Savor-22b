@@ -1,19 +1,16 @@
 namespace Savor22b.GraphTypes.Query;
 
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using GraphQL;
 using GraphQL.Types;
 using Libplanet;
-using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.Blockchain;
 using Libplanet.Crypto;
 using Libplanet.Net;
-using Libplanet.Tx;
 using Savor22b.Action;
 using Savor22b.GraphTypes.Types;
-using Savor22b.Model;
+using Savor22b.States;
 
 public class Query : ObjectGraphType
 {
@@ -165,41 +162,6 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
-            "createAction_UseRandomSeedItem",
-            description: "Use Random Seed Item",
-            arguments: new QueryArguments(
-                new QueryArgument<NonNullGraphType<StringGraphType>>
-                {
-                    Name = "publicKey",
-                    Description = "The base64-encoded public key for Transaction.",
-                },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
-                {
-                    Name = "itemStateID",
-                    Description = "item state id to use",
-                }
-            ),
-            resolve: context =>
-            {
-                var publicKey = new PublicKey(
-                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
-                );
-
-                var action = new UseRandomSeedItemAction(
-                    Guid.NewGuid(),
-                    context.GetArgument<Guid>("itemStateID")
-                );
-
-                return new GetUnsignedTransactionHex(
-                    action,
-                    publicKey,
-                    _blockChain,
-                    _swarm
-                ).UnsignedTransactionHex;
-            }
-        );
-
-        Field<NonNullGraphType<StringGraphType>>(
             "createAction_BuyKitchenEquipment",
             description: "Buy kitchen equipment",
             arguments: new QueryArguments(
@@ -252,6 +214,11 @@ public class Query : ObjectGraphType
                 {
                     Name = "fieldIndex",
                     Description = "Target field Index",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "itemStateIdToUse",
+                    Description = "Item state id to use (Guid)",
                 }
             ),
             resolve: context =>
@@ -262,7 +229,8 @@ public class Query : ObjectGraphType
 
                 var action = new PlantingSeedAction(
                     context.GetArgument<Guid>("seedStateId"),
-                    context.GetArgument<int>("fieldIndex")
+                    context.GetArgument<int>("fieldIndex"),
+                    context.GetArgument<Guid>("itemStateIdToUse")
                 );
 
                 return new GetUnsignedTransactionHex(
@@ -470,6 +438,38 @@ public class Query : ObjectGraphType
                 );
 
                 var action = new CancelFoodAction(context.GetArgument<Guid>("foodStateId"));
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_UseLifeStoneAction",
+            description: "Use LifeStone",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "foodStateId",
+                    Description = "Food state Id (Guid)",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new UseLifeStoneAction(context.GetArgument<Guid>("foodStateId"));
 
                 return new GetUnsignedTransactionHex(
                     action,

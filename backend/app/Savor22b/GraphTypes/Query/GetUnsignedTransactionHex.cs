@@ -42,9 +42,9 @@ public class GetUnsignedTransactionHex
         _blockChain = blockChain;
         _swarm = swarm;
 
-#if DEBUG
-        Signing(UnsignedTransactionHex);
-#endif
+// #if DEBUG
+//         Signing(UnsignedTransactionHex);
+// #endif
     }
 
     public string UnsignedTransactionHex { get; private set; }

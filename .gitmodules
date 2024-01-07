@@ -1,0 +1,3 @@
+[submodule "frontend/Saver-22b-godot/addons/GodotGraphQL"]
+	path = frontend/Saver-22b-godot/addons/GodotGraphQL
+	url = https://github.com/Dracks/GodotGraphQL.git

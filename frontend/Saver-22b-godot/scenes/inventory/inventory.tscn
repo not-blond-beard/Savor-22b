@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://riiie4g746ea"]
+
+[ext_resource type="Script" path="res://scenes/inventory/Inventory.gd" id="1_swc55"]
+
+[node name="Inventory" type="Control"]
+custom_minimum_size = Vector2(1000, 700)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_swc55")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1000, 800)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect"]
+custom_minimum_size = Vector2(1000, 800)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Kinds" type="HBoxContainer" parent="ColorRect/VBoxContainer"]
+custom_minimum_size = Vector2(1000, 200)
+layout_mode = 2
+
+[node name="Slots" type="GridContainer" parent="ColorRect/VBoxContainer"]
+custom_minimum_size = Vector2(1000, 500)
+layout_mode = 2
+
+[node name="CloseButton" type="TextureButton" parent="ColorRect/VBoxContainer"]
+layout_mode = 2
