@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjvcx7fit5avb"]
+[gd_scene load_steps=3 format=3 uid="uid://ccrlf3kfcisji"]
 
 [ext_resource type="Texture2D" uid="uid://dajunmx26gvr5" path="res://sprites/house.png" id="1_4yb37"]
+[ext_resource type="Script" path="res://village_view/house_texture_rect.gd" id="2_hemgv"]
 
 [node name="House_TextureRect" type="TextureRect"]
 anchors_preset = 8
@@ -17,3 +18,19 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("1_4yb37")
+script = ExtResource("2_hemgv")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -6.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 10
+text = "Enter"
+
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]

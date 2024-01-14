@@ -26,7 +26,14 @@ func _input(event):
 	var mouse_event = event as InputEventMouseButton
 	if mouse_event != null and mouse_event.is_released() and mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.is_command_or_control_pressed():
 		print("Mouse Click/Unclick at: ", event.position)
-		build_house()
+		print("root pos: ", root_local_position)
+		var pos = bg.get_local_mouse_position()
+		print("mouse pos: ", pos)
+		var relative_pos = pos - root_local_position
+		relative_pos /= Coordinate_weight
+		relative_pos.x = roundi(relative_pos.x)
+		relative_pos.y = roundi(relative_pos.y)
+		build_house(relative_pos)
 
 func initialize_by_village(village: Dictionary):
 	initialize(
@@ -61,16 +68,14 @@ func instantiate_house(pos: Vector2):
 	bg.add_child(house)
 	house.set_size(Vector2(Coordinate_weight, Coordinate_weight))
 	house.set_global_position(pos * Coordinate_weight + root_position - Vector2(Coordinate_weight / 2, Coordinate_weight / 2))
+	house.button_down.connect(func(house_pos):
+		#var village = SceneContext.get_selected_village()
+		#village.houses.
+		get_tree().change_scene_to_file("res://scenes/farm.tscn")
+	)
 
-func build_house():
-	var pos = bg.get_local_mouse_position()
-	var relative_pos = pos - root_local_position
-	relative_pos /= Coordinate_weight
-	relative_pos.x = roundi(relative_pos.x)
-	relative_pos.y = roundi(relative_pos.y)
+func build_house(relative_pos: Vector2):
 	print("build house pos: ", relative_pos)
-	print("root pos: ", root_local_position)
-	print("mouse pos: ", pos)
 	print("public key: ", GlobalSigner.signer.GetPublicKey())
 	var gql_query = Gql_query.new()
 	var query_string = gql_query.place_house_query_format.format([

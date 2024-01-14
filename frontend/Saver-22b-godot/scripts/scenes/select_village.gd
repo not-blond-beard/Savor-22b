@@ -28,4 +28,3 @@ func _on_village_button_button_down(village_index):
 func _on_start_button_button_down():
 	print("start button down: %s" % SceneContext.selected_village_index)
 	get_tree().change_scene_to_file("res://village_view/VillageView.tscn")
-	#get_tree().change_scene_to_file("res://scenes/farm.tscn")
