@@ -27,6 +27,7 @@ func _query_villages():
 			"owner",
 		]),
 	])
+	print(query.serialize())
 	var query_executor = SvrGqlClient.query('query', {}, query)
 	query_executor.graphql_response.connect(
 		func(data):
@@ -192,6 +193,7 @@ func _query_user_state():
 			]),
 		]),
 	])
+	print(query.serialize())
 	var query_executor = SvrGqlClient.query(
 		'query',
 		{
