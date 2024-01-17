@@ -41,6 +41,9 @@ var villages: Array
 var selected_village_index := 0
 var user_state: Dictionary
 
+var selected_house_index := 0
+var selected_village_capacity := 0
+
 #func _ready():
 	#var json = JSON.new()
 	#var error = json.parse(villages_json_string)
@@ -57,3 +60,5 @@ func set_user_state(query_data: Dictionary):
 
 func get_selected_village():
 	return villages[selected_village_index]
+
+
