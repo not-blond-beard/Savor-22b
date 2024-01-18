@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0qm0ud7mwmwb"]
+
+[ext_resource type="Script" path="res://ui/farm_slot_button.gd" id="1_vqq1f"]
+
+[node name="FarmSlotButton" type="ColorRect"]
+custom_minimum_size = Vector2(2.08165e-12, 200)
+size_flags_horizontal = 3
+size_flags_vertical = 0
+script = ExtResource("1_vqq1f")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 50
+text = "[벼] 자라는 중
+[N 블록 남음]"

@@ -1,0 +1,100 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg773cnsx4rb0"]
+
+[ext_resource type="Script" path="res://scripts/scenes/intro.gd" id="1_0m54y"]
+
+[node name="Intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0m54y")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(800, 250)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = -240.0
+offset_right = 400.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 70
+text = "SAVOR 22B"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="QuitButtonContainer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_top = -280.0
+offset_right = 600.0
+offset_bottom = -160.0
+grow_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="QuitButtonContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 70
+text = "Quit"
+
+[node name="PlayButtonContainer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -600.0
+offset_top = -280.0
+offset_right = -100.0
+offset_bottom = -160.0
+grow_horizontal = 0
+grow_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="PlayButtonContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 70
+text = "Play"
+
+[connection signal="button_down" from="QuitButtonContainer/Button" to="." method="_on_quit_button_button_down"]
+[connection signal="button_down" from="PlayButtonContainer/Button" to="." method="_on_play_button_button_down"]
