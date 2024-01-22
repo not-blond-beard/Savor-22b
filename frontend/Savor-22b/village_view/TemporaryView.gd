@@ -16,3 +16,4 @@ func _ready():
 
 	add_child(village_view_instance)
 	village_view_instance.initialize_by_village(village)
+	
