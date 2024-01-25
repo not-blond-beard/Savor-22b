@@ -4,19 +4,20 @@ const SELECT_HOUSE_BUTTON = preload("res://ui/house_slot_button.tscn")
 const SLOT_IS_FULL = preload("res://ui/notice_popup.tscn")
 
 @onready var noticepopup = $MarginContainer/Background/Noticepopup
-@onready var gridcontainer = $MarginContainer/Background/HomeGridContainer
+@onready var gridcontainer = $MarginContainer/Background/MarginContainer/ScrollContainer/HomeGridContainer
 
 var houses = []
 
 func _ready():
 	print("select_house scene ready")
-	#var size = SceneContext.selected_village_capacity
+	var size = SceneContext.selected_village_capacity
 	testinput()
 	
-	var size = 12
+	gridcontainer.columns = SceneContext.selected_village_width
+	
 	
 	for i in range(size):
-		var house = {"x" : size, "y" : 0, "owner" : "none"}
+		var house = {"x" : i, "y" : 0, "owner" : "none"}
 		houses.append(house)
 		var button = SELECT_HOUSE_BUTTON.instantiate()
 		button.set_house(house)
