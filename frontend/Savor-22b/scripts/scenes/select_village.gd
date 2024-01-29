@@ -34,5 +34,6 @@ func _on_start_button_button_down():
 	var capacity = village["height"] * village["width"]
 	SceneContext.selected_village_capacity = capacity
 	SceneContext.selected_village_width = village["width"]
-	
+	SceneContext.selected_village_height = village["height"]
+		
 	get_tree().change_scene_to_file("res://scenes/select_house.tscn")

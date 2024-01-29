@@ -44,6 +44,7 @@ var user_state: Dictionary
 var selected_house_index := 0
 var selected_village_capacity := 0
 var selected_village_width := 0
+var selected_village_height := 0
 
 #func _ready():
 	#var json = JSON.new()
