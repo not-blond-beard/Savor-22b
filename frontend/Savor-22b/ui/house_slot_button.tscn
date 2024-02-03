@@ -6,7 +6,7 @@
 
 [node name="HouseSlotButton" type="ColorRect"]
 z_as_relative = false
-custom_minimum_size = Vector2(200, 150)
+custom_minimum_size = Vector2(400, 150)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -33,5 +33,6 @@ theme_override_styles/pressed = SubResource("StyleBoxEmpty_phxol")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_phxol")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_phxol")
 text = "집 설치 가능"
+text_overrun_behavior = 3
 
 [connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
