@@ -15,9 +15,6 @@ func _ready():
 	print("select_house scene ready")
 	var size = SceneContext.selected_village_capacity
 	
-	print(houses)
-
-	
 	gridcontainer.columns = SceneContext.selected_village_width
 	
 	var startxloc = -(( SceneContext.selected_village_width - 1 ) / 2)
@@ -45,8 +42,7 @@ func _ready():
 			if h1["x"] == h2["x"] and h1["y"] == h2["y"]:
 				h2["owner"] = h1["owner"]
 			
-	for slot in houses:
-		var info = slot
+	for info in houses:
 		var button = SELECT_HOUSE_BUTTON.instantiate()
 		button.set_house(info)
 		button.button_down.connect(button_selected)
@@ -55,7 +51,7 @@ func _ready():
 
 func button_selected(house_index):
 	var format_string1 = "house button down: %s"
-	var format_string2 = "location: %s"
+	var format_string2 = "selected slot location: %s"
 	print(format_string1 % house_index)
 	print(format_string2 % houses[house_index])	
 	SceneContext.selected_house_index = house_index
@@ -71,6 +67,7 @@ func _on_build_button_button_down():
 		print_notice()
 	else:
 		build_house()
+
 
 	
 func print_notice():
@@ -103,7 +100,25 @@ func build_house():
 	add_child(query_executor)
 	query_executor.run({})
 
+
+
+func _on_refresh_button_button_down():
+	Intro._query_villages()
 	
+	for child in gridcontainer.get_children():
+		child.queue_free()
+	
+	for h0 in houses:
+		h0["owner"] = "none"
 
-
-
+	existhouses = SceneContext.get_selected_village()["houses"]
+	for h1 in existhouses:
+		for h2 in houses:
+			if h1["x"] == h2["x"] and h1["y"] == h2["y"]:
+				h2["owner"] = h1["owner"]
+			
+	for info in houses:
+		var button = SELECT_HOUSE_BUTTON.instantiate()
+		button.set_house(info)
+		button.button_down.connect(button_selected)
+		gridcontainer.add_child(button)

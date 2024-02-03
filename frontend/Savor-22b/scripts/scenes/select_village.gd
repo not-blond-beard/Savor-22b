@@ -7,6 +7,8 @@ const SELECT_VILLAGE_VILLAGE_BUTTON = preload("res://ui/select_village_village_b
 
 func _ready():
 	print("select_village scene ready")
+	Intro._query_villages()
+	_update_village_info_label()
 	for village in SceneContext.villages:
 		var button = SELECT_VILLAGE_VILLAGE_BUTTON.instantiate()
 		button.set_village(village)
