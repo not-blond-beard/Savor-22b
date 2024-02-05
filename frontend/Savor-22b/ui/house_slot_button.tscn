@@ -1,8 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://djwsh8gou8pgp"]
+[gd_scene load_steps=4 format=3 uid="uid://djwsh8gou8pgp"]
 
 [ext_resource type="Script" path="res://ui/house_slot_button.gd" id="1_x2rs7"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_phxol"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uhfil"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
 
 [node name="HouseSlotButton" type="ColorRect"]
 z_as_relative = false
@@ -29,9 +37,10 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxEmpty_phxol")
 theme_override_styles/hover = SubResource("StyleBoxEmpty_phxol")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_phxol")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_uhfil")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_phxol")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_phxol")
+toggle_mode = true
 text = "집 설치 가능"
 text_overrun_behavior = 3
 

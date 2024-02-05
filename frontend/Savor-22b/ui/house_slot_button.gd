@@ -29,6 +29,9 @@ func update_owner():
 		if h1["x"] == house["x"] and h1["y"] == house["y"]:
 			house["owner"] = h1["owner"]
 
+func disable_button():
+	if(button.button_pressed):
+		button.button_pressed = false
 
 
 func _on_button_button_down():
