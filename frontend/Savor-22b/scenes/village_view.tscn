@@ -88,31 +88,6 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 70
 text = "Enter Selected Dungeon"
 
-[node name="BuildMenuButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -390.0
-offset_top = -50.0
-offset_right = 30.0
-offset_bottom = 50.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0, 0, 0, 1)
-
-[node name="BuildMenuButton" type="Button" parent="BottomMenuMarginContainer/Control/BuildMenuButtonContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 70
-text = "Build house"
-
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
 offset_top = 140.0
@@ -157,4 +132,3 @@ offset_bottom = 340.0
 
 [connection signal="button_down" from="TopMenuMarginContainer/Control/HomeButtonContainer/HomeButton" to="." method="_on_home_button_button_down"]
 [connection signal="button_down" from="BottomMenuMarginContainer/Control/EnterButtonContainer/EnterButton" to="." method="_on_enter_button_button_down"]
-[connection signal="button_down" from="BottomMenuMarginContainer/Control/BuildMenuButtonContainer/BuildMenuButton" to="." method="_on_build_menu_button_button_down"]

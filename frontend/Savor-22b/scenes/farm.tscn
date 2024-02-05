@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://vy5r0acj44oh"]
+[gd_scene load_steps=6 format=3 uid="uid://vy5r0acj44oh"]
 
 [ext_resource type="Script" path="res://scripts/scenes/farm.gd" id="1_q2tum"]
+[ext_resource type="PackedScene" uid="uid://c0qm0ud7mwmwb" path="res://ui/farm_slot_button.tscn" id="2_fjqrk"]
+[ext_resource type="PackedScene" uid="uid://bjcg2kocdfuua" path="res://ui/farm_slot_done.tscn" id="3_5vjtx"]
+[ext_resource type="PackedScene" uid="uid://bf6be56dhvlws" path="res://ui/farm_slot_empty.tscn" id="4_eb1ui"]
+[ext_resource type="PackedScene" uid="uid://kttsr2bn7o31" path="res://ui/farm_install_popup.tscn" id="5_ka4ym"]
 
 [node name="Farm" type="Control"]
 layout_mode = 3
@@ -10,6 +14,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_q2tum")
+metadata/_edit_horizontal_guides_ = [-309.0]
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
@@ -48,16 +53,54 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-columns = 2
+theme_override_constants/separation = 100
+
+[node name="Left" type="VBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="FarmSlotButton" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="FarmSlotButton2" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="FarmSlotButton3" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="FarmSlotDone" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("3_5vjtx")]
+layout_mode = 2
+
+[node name="FarmSlotDone2" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("3_5vjtx")]
+layout_mode = 2
+
+[node name="Right" type="VBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="FarmSlotButton" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="FarmSlotEmpty" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_eb1ui")]
+layout_mode = 2
+
+[node name="FarmSlotEmpty2" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_eb1ui")]
+layout_mode = 2
+
+[node name="FarmSlotEmpty3" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_eb1ui")]
+layout_mode = 2
+
+[node name="FarmSlotEmpty4" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_eb1ui")]
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -86,3 +129,15 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
 text = "Inventory"
+
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ColorRect" parent="Popups" instance=ExtResource("5_ka4ym")]
+layout_mode = 0
+offset_left = 1225.0
+offset_top = 476.0
+offset_right = 1625.0
+offset_bottom = 776.0
