@@ -1,15 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://dy1e0tpo1lsby"]
+[gd_scene load_steps=2 format=3 uid="uid://wkyffjkvp7av"]
 
-[ext_resource type="Script" path="res://scripts/scenes/select_house.gd" id="1_012c4"]
+[ext_resource type="Script" path="res://scripts/scenes/village_view.gd" id="1_oar4x"]
 
-[node name="SelectHouse" type="Control"]
+[node name="VillageView" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_012c4")
+script = ExtResource("1_oar4x")
 
 [node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
@@ -40,7 +40,7 @@ offset_bottom = 100.0
 size_flags_horizontal = 4
 color = Color(0, 0, 0, 1)
 
-[node name="Button" type="Button" parent="TopMenuMarginContainer/Control/HomeButtonContainer"]
+[node name="HomeButton" type="Button" parent="TopMenuMarginContainer/Control/HomeButtonContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -49,24 +49,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
 text = "Home"
-
-[node name="BackButtonContainer2" type="ColorRect" parent="TopMenuMarginContainer/Control"]
-layout_mode = 0
-offset_left = 540.0
-offset_right = 950.0
-offset_bottom = 100.0
-size_flags_horizontal = 4
-color = Color(0, 0, 0, 1)
-
-[node name="BackButton" type="Button" parent="TopMenuMarginContainer/Control/BackButtonContainer2"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/font_size = 70
-text = "Back"
 
 [node name="BottomMenuMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -81,22 +63,22 @@ theme_override_constants/margin_bottom = 20
 [node name="Control" type="Control" parent="BottomMenuMarginContainer"]
 layout_mode = 2
 
-[node name="BuildButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
+[node name="EnterButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 570.0
+offset_left = 50.0
 offset_top = -50.0
-offset_right = 930.0
+offset_right = 950.0
 offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="BuildButton" type="Button" parent="BottomMenuMarginContainer/Control/BuildButtonContainer"]
+[node name="EnterButton" type="Button" parent="BottomMenuMarginContainer/Control/EnterButtonContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -104,24 +86,24 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
-text = "Build"
+text = "Enter Selected Dungeon"
 
-[node name="RefreshButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
+[node name="BuildMenuButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 70.0
+offset_left = -390.0
 offset_top = -50.0
-offset_right = 430.0
+offset_right = 30.0
 offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="RefreshButton" type="Button" parent="BottomMenuMarginContainer/Control/RefreshButtonContainer"]
+[node name="BuildMenuButton" type="Button" parent="BottomMenuMarginContainer/Control/BuildMenuButtonContainer"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -129,7 +111,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
-text = "Refresh"
+text = "Build house"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -173,8 +155,6 @@ offset_top = 300.0
 offset_right = 640.0
 offset_bottom = 340.0
 
-[connection signal="pressed" from="TopMenuMarginContainer/Control/HomeButtonContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="button_down" from="TopMenuMarginContainer/Control/BackButtonContainer2/BackButton" to="." method="_on_back_button_button_down"]
-[connection signal="button_down" from="BottomMenuMarginContainer/Control/BuildButtonContainer/BuildButton" to="." method="_on_build_button_button_down"]
-[connection signal="button_down" from="BottomMenuMarginContainer/Control/RefreshButtonContainer/RefreshButton" to="." method="_on_build_button_button_down"]
-[connection signal="button_down" from="BottomMenuMarginContainer/Control/RefreshButtonContainer/RefreshButton" to="." method="_on_refresh_button_button_down"]
+[connection signal="button_down" from="TopMenuMarginContainer/Control/HomeButtonContainer/HomeButton" to="." method="_on_home_button_button_down"]
+[connection signal="button_down" from="BottomMenuMarginContainer/Control/EnterButtonContainer/EnterButton" to="." method="_on_enter_button_button_down"]
+[connection signal="button_down" from="BottomMenuMarginContainer/Control/BuildMenuButtonContainer/BuildMenuButton" to="." method="_on_build_menu_button_button_down"]

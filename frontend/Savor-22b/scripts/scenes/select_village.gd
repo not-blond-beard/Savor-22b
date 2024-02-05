@@ -38,4 +38,4 @@ func _on_start_button_button_down():
 	SceneContext.selected_village_width = village["width"]
 	SceneContext.selected_village_height = village["height"]
 		
-	get_tree().change_scene_to_file("res://scenes/select_house.tscn")
+	get_tree().change_scene_to_file("res://scenes/village_view.tscn")
