@@ -1,20 +1,35 @@
-[gd_scene load_steps=2 format=3 uid="uid://c0qm0ud7mwmwb"]
+[gd_scene load_steps=3 format=3 uid="uid://c0qm0ud7mwmwb"]
 
 [ext_resource type="Script" path="res://ui/farm_slot_button.gd" id="1_vqq1f"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1e62"]
+bg_color = Color(0.866667, 0.498039, 0.215686, 1)
+
 [node name="FarmSlotButton" type="ColorRect"]
-custom_minimum_size = Vector2(2.08165e-12, 200)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 3
-size_flags_vertical = 0
+size_flags_vertical = 2
 script = ExtResource("1_vqq1f")
 
-[node name="Button" type="Button" parent="."]
+[node name="V" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Button" type="Button" parent="V"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_b1e62")
 text = "[벼] 자라는 중
 [N 블록 남음]"
