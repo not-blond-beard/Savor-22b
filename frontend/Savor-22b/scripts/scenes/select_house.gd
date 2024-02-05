@@ -57,11 +57,10 @@ func button_selected(house_index):
 	SceneContext.selected_house_index = house_index
 	SceneContext.selected_house_location = houses[house_index]
 
-	
+	#Toggle mode
 	for slot in gridcontainer.get_children():
-		print(slot.get_index())
 		if(slot.get_index() != house_index):
-			slot.disable_button()
+			slot.disable_button_selected()
 
 
 
@@ -129,3 +128,7 @@ func _on_refresh_button_button_down():
 		button.set_house(info)
 		button.button_down.connect(button_selected)
 		gridcontainer.add_child(button)
+
+
+func _on_back_button_button_down():
+	get_tree().change_scene_to_file("res://scenes/village_view.tscn")
