@@ -56,6 +56,11 @@ func button_selected(house_index):
 	print(format_string2 % houses[house_index])	
 	SceneContext.selected_house_index = house_index
 	SceneContext.selected_house_location = houses[house_index]
+	
+	for slot in gridcontainer.get_children():
+		print(slot.get_index())
+		if(slot.get_index() != house_index):
+			slot.disable_button()
 
 
 func _on_button_pressed():
