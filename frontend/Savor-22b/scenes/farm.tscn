@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://vy5r0acj44oh"]
+[gd_scene load_steps=3 format=3 uid="uid://vy5r0acj44oh"]
 
 [ext_resource type="Script" path="res://scripts/scenes/farm.gd" id="1_q2tum"]
+[ext_resource type="PackedScene" uid="uid://c0qm0ud7mwmwb" path="res://ui/farm_slot_button.tscn" id="2_fjqrk"]
 
 [node name="Farm" type="Control"]
 layout_mode = 3
@@ -48,16 +49,53 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 200
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
-[node name="GridContainer" type="GridContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer"]
 layout_mode = 2
-theme_override_constants/h_separation = 10
-theme_override_constants/v_separation = 10
-columns = 2
+theme_override_constants/separation = 100
+
+[node name="Left" type="VBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Slot1" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot2" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot3" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot4" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot5" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Right" type="VBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Slot6" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot7" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot8" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot9" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
+
+[node name="Slot10" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("2_fjqrk")]
+layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
