@@ -1,10 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://vy5r0acj44oh"]
-
 [ext_resource type="Script" path="res://scripts/scenes/farm.gd" id="1_q2tum"]
 [ext_resource type="PackedScene" uid="uid://c0qm0ud7mwmwb" path="res://ui/farm_slot_button.tscn" id="2_fjqrk"]
 [ext_resource type="PackedScene" uid="uid://bjcg2kocdfuua" path="res://ui/farm_slot_done.tscn" id="3_5vjtx"]
 [ext_resource type="PackedScene" uid="uid://bf6be56dhvlws" path="res://ui/farm_slot_empty.tscn" id="4_eb1ui"]
 [ext_resource type="PackedScene" uid="uid://kttsr2bn7o31" path="res://ui/farm_install_popup.tscn" id="5_ka4ym"]
+
 
 [node name="Farm" type="Control"]
 layout_mode = 3
@@ -67,6 +66,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 20
 
+
 [node name="FarmSlotButton" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("2_fjqrk")]
 layout_mode = 2
 
@@ -80,11 +80,13 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="FarmSlotDone2" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Left" instance=ExtResource("3_5vjtx")]
+
 layout_mode = 2
 
 [node name="Right" type="VBoxContainer" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+
 theme_override_constants/separation = 20
 
 [node name="FarmSlotButton" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("2_fjqrk")]
@@ -100,6 +102,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="FarmSlotEmpty4" parent="MarginContainer/HBoxContainer/ColorRect/MarginContainer/HBoxContainer/Right" instance=ExtResource("4_eb1ui")]
+
 layout_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
