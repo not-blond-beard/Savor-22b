@@ -1,3 +1,5 @@
+[gd_scene load_steps=3 format=3 uid="uid://vy5r0acj44oh"]
+
 [ext_resource type="Script" path="res://scripts/scenes/farm.gd" id="1_q2tum"]
 [ext_resource type="PackedScene" uid="uid://c0qm0ud7mwmwb" path="res://ui/farm_slot_button.tscn" id="2_fjqrk"]
 [ext_resource type="PackedScene" uid="uid://bjcg2kocdfuua" path="res://ui/farm_slot_done.tscn" id="3_5vjtx"]
