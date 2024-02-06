@@ -23,6 +23,7 @@ SvrGqlClient="*res://gql/svr_gql_client.gd"
 SceneContext="*res://scripts/global/scene_context.gd"
 GlobalInventory="*res://scripts/global/inventory.gd"
 Intro="*res://scripts/scenes/intro.gd"
+TestPanel="*res://scenes/testpanel/test_panel.gd"
 
 [display]
 

@@ -39,9 +39,9 @@ theme_override_constants/h_separation = 300
 theme_override_constants/v_separation = 300
 columns = 5
 
-[node name="VillageView" type="Button" parent="Background/MarginContainer/GridContainer"]
+[node name="button" type="Button" parent="Background/MarginContainer/GridContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
-text = "VillageView.tscn"
+text = "farm.tscn"
 
-[connection signal="pressed" from="Background/MarginContainer/GridContainer/VillageView" to="." method="_on_village_view_pressed"]
+[connection signal="pressed" from="Background/MarginContainer/GridContainer/button" to="." method="_on_button_pressed"]

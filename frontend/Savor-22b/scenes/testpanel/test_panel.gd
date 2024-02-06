@@ -10,5 +10,6 @@ func _input(event):
 			get_tree().change_scene_to_file("res://scenes/testpanel/test_panel.tscn")
 			print("Test panel open")
 
-func _on_village_view_pressed():
-	get_tree().change_scene_to_file("res://village_view/VillageView.tscn")
+
+func _on_button_pressed():
+	get_tree().change_scene_to_file("res://scenes/farm.tscn")

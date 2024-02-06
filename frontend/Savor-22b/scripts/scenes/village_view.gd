@@ -71,8 +71,7 @@ func disable_buttons():
 func _on_home_button_button_down():
 	get_tree().change_scene_to_file("res://scenes/select_village.tscn")
 
-func _on_build_menu_button_button_down():
-	get_tree().change_scene_to_file("res://scenes/select_house.tscn")
+
 
 
 func _on_enter_button_button_down():
