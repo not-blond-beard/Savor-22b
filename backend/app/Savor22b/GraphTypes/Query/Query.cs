@@ -226,11 +226,6 @@ public class Query : ObjectGraphType
                     Name = "publicKey",
                     Description = "The base64-encoded public key for Transaction.",
                 },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
-                {
-                    Name = "seedStateId",
-                    Description = "Seed state Id (Guid)",
-                },
                 new QueryArgument<NonNullGraphType<IntGraphType>>
                 {
                     Name = "fieldIndex",
@@ -249,7 +244,7 @@ public class Query : ObjectGraphType
                 );
 
                 var action = new PlantingSeedAction(
-                    context.GetArgument<Guid>("seedStateId"),
+                    Guid.NewGuid(),
                     context.GetArgument<int>("fieldIndex"),
                     context.GetArgument<Guid>("itemStateIdToUse")
                 );
