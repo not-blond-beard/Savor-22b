@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c10m1dv6u7ks7"]
+[gd_scene load_steps=4 format=3 uid="uid://c10m1dv6u7ks7"]
 
 [ext_resource type="Script" path="res://scripts/scenes/farm.gd" id="1_q2tum"]
+[ext_resource type="PackedScene" uid="uid://co4t4p5pawylr" path="res://ui/asset.tscn" id="2_vkmuk"]
+
 [ext_resource type="PackedScene" uid="uid://kttsr2bn7o31" path="res://ui/farm_install_popup.tscn" id="5_ka4ym"]
 
 [node name="Farm" type="Control"]
@@ -83,6 +85,11 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MC/HC/VBoxContainer/MarginContainer"]
+
+layout_mode = 2
+
+[node name="Asset" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_vkmuk")]
+
 layout_mode = 2
 
 [node name="HomeButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]

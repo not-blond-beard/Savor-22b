@@ -4,6 +4,7 @@ func _ready():
 	print("intro scene ready")
 	_query_villages()
 	_query_user_state()
+	_query_assets()
 
 func _on_quit_button_button_down():
 	print("quit button down")
@@ -35,6 +36,26 @@ func _query_villages():
 	)
 	add_child(query_executor)
 	query_executor.run({})
+	
+func _query_assets():
+	var query = GQLQuery.new("asset").set_args({
+		"signer_address": "address",
+	})
+	print(query.serialize())
+	var query_executor = SvrGqlClient.query(
+		'query',
+		{
+			"signer_address": "String!",
+		},
+		query)
+	query_executor.graphql_response.connect(
+		func(data):
+			SceneContext.set_user_asset(data)
+	)
+	add_child(query_executor)
+	query_executor.run({
+		"signer_address": GlobalSigner.signer_address
+	})
 
 func _query_user_state():
 	print("signer address: %s" % GlobalSigner.signer_address)
