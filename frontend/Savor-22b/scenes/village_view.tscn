@@ -50,6 +50,24 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 70
 text = "Home"
 
+[node name="FarmButtonContainer" type="ColorRect" parent="TopMenuMarginContainer/Control"]
+layout_mode = 0
+offset_left = 460.0
+offset_right = 870.0
+offset_bottom = 100.0
+size_flags_horizontal = 4
+color = Color(0, 0, 0, 1)
+
+[node name="FarmButton" type="Button" parent="TopMenuMarginContainer/Control/FarmButtonContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 70
+text = "Farm"
+
 [node name="BottomMenuMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
 offset_top = 940.0
@@ -131,5 +149,5 @@ offset_right = 640.0
 offset_bottom = 340.0
 
 [connection signal="button_down" from="TopMenuMarginContainer/Control/HomeButtonContainer/HomeButton" to="." method="_on_home_button_button_down"]
+[connection signal="button_down" from="TopMenuMarginContainer/Control/FarmButtonContainer/FarmButton" to="." method="_on_farm_button_button_down"]
 [connection signal="button_down" from="BottomMenuMarginContainer/Control/EnterButtonContainer/EnterButton" to="." method="_on_enter_button_button_down"]
-
