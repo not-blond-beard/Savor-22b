@@ -27,6 +27,27 @@ public class Query : ObjectGraphType
         _blockChain = blockChain;
         _swarm = swarm;
 
+        Field<UserStateType>(
+            "userState",
+            description: "The specified address's user state",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "address",
+                    Description = "The account holder's 40-hex address",
+                }
+            ),
+            resolve: context =>
+            {
+                var accountAddress = new Address(context.GetArgument<string>("address"));
+                var rootStateEncoded = blockChain.GetState(accountAddress);
+                RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+                    ? new RootState(bdict)
+                    : new RootState();
+                return rootState;
+            }
+        );
+
         Field<StringGraphType>(
             "asset",
             description: "The specified address's balance in MNT.",
@@ -205,11 +226,6 @@ public class Query : ObjectGraphType
                     Name = "publicKey",
                     Description = "The base64-encoded public key for Transaction.",
                 },
-                new QueryArgument<NonNullGraphType<GuidGraphType>>
-                {
-                    Name = "seedStateId",
-                    Description = "Seed state Id (Guid)",
-                },
                 new QueryArgument<NonNullGraphType<IntGraphType>>
                 {
                     Name = "fieldIndex",
@@ -228,7 +244,7 @@ public class Query : ObjectGraphType
                 );
 
                 var action = new PlantingSeedAction(
-                    context.GetArgument<Guid>("seedStateId"),
+                    Guid.NewGuid(),
                     context.GetArgument<int>("fieldIndex"),
                     context.GetArgument<Guid>("itemStateIdToUse")
                 );
