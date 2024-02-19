@@ -40,6 +40,7 @@ extends Node
 var villages: Array
 var selected_village_index := 0
 var user_state: Dictionary
+var user_asset: String
 
 var selected_house_index := 0
 var selected_house_location: Dictionary
@@ -60,6 +61,9 @@ func set_villages(query_data: Dictionary):
 
 func set_user_state(query_data: Dictionary):
 	user_state = query_data.data.userState
+
+func set_user_asset(query_data: Dictionary):
+	user_asset = query_data.data.asset
 
 func get_selected_village():
 	return villages[selected_village_index]
