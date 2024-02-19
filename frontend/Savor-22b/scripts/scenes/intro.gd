@@ -90,6 +90,19 @@ func _query_user_state():
 				"itemName",
 			]),
 		]),
+		GQLQuery.new("villageState").set_props([
+			GQLQuery.new("houseFieldStates").set_props([
+				"installedSeedGuid",
+				"seedID",
+				"installedBlock",
+				"totalBlock",
+				"lastWeedBlock",
+				"weedRemovalCount",
+				"seedName",
+				"isHarvested",
+				"weedRemovalAble"
+			])
+		])
 	])
 	print(query.serialize())
 	var query_executor = SvrGqlClient.query(

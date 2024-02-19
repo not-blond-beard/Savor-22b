@@ -6,8 +6,7 @@ signal button_down(child_index: int)
 
 var farm_slot: Dictionary
 
-var format_string = """%s %s
-	(%d %s)"""
+var format_string = "[%s] %s"
 
 func _ready():
 	_update_button()
@@ -16,8 +15,8 @@ func _update_button():
 	if button == null:
 		return
 
-	button.text = format_string % [farm_slot.seedName, "자라는 중", farm_slot.totalBlock, "블록 남음"]
-	
+	button.text = format_string % [farm_slot.seedName, "수확하기"]
+
 
 func set_farm_slot(farm_slot: Dictionary):
 	self.farm_slot = farm_slot

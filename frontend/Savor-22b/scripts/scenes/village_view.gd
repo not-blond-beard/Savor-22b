@@ -77,3 +77,7 @@ func _on_home_button_button_down():
 func _on_enter_button_button_down():
 	pass # Replace with function body.
 
+
+
+func _on_farm_button_button_down():
+	get_tree().change_scene_to_file("res://scenes/farm.tscn")
