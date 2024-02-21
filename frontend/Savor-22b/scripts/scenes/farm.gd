@@ -55,3 +55,29 @@ func farm_selected(farm_index):
 	print(format_string % farm_index)
 	SceneContext.selected_field_index = farm_index
 
+
+func plant_seed():
+	var gql_query = Gql_query.new()
+	var query_string = gql_query.plant_seed_query_format.format([
+		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
+		SceneContext.selected_field_index,
+		itemStateIdToUse], "{}")
+	print(query_string)
+	
+	var query_executor = SvrGqlClient.raw(query_string)
+	query_executor.graphql_response.connect(func(data):
+		print("gql response: ", data)
+		var unsigned_tx = data["data"]["createAction_PlantingSeed"]
+		print("unsigned tx: ", unsigned_tx)
+		var signature = GlobalSigner.sign(unsigned_tx)
+		print("signed tx: ", signature)
+		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
+		mutation_executor.graphql_response.connect(func(data):
+			print("mutation res: ", data)
+		)
+		add_child(mutation_executor)
+		mutation_executor.run({})
+	)
+	add_child(query_executor)
+	query_executor.run({})
+

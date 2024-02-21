@@ -23,3 +23,11 @@ var stage_tx_query_format = "mutation {
 		unsignedTransaction:\"%s\",
 		signature:\"%s\")
 }"
+
+var plant_seed_query_format = "query {
+	createAction_PlantingSeed(
+		publicKey: {},
+		fieldIndex: {},
+		itemStateIdToUse: {}
+	)
+}"
