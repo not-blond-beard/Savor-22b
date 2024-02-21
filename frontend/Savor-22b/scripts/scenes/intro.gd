@@ -68,6 +68,11 @@ func _query_user_state():
 				"seedId",
 				"name",
 			]),
+			GQLQuery.new("itemStateList").set_props([
+				"stateID",
+				"itemID",
+				"itemName",
+			]),
 			GQLQuery.new("refrigeratorStateList").set_props([
 				"stateId",
 				"ingredientId",

@@ -10,6 +10,7 @@ const Gql_query = preload("res://gql/query.gd")
 @onready var rightfarm = $MC/HC/CR/MC/HC/Right
 
 var farms = []
+var itemStateIds = []
 var itemStateIdToUse
 
 func _ready():
@@ -17,6 +18,9 @@ func _ready():
 	
 	print(SceneContext.user_state["villageState"]["houseFieldStates"])
 	farms = SceneContext.user_state["villageState"]["houseFieldStates"]
+	
+	print(SceneContext.user_state["inventoryState"]["itemStateList"])
+	itemStateIds = SceneContext.user_state["inventoryState"]["itemStateList"]
 	
 	#create blank slots
 	for i in range(0,5):
