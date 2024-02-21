@@ -2,12 +2,10 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1w3ox"]
 bg_color = Color(0.866667, 0.498039, 0.215686, 1)
-
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
 border_width_bottom = 3
-
 border_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6tw4s"]
@@ -34,22 +32,18 @@ theme_override_font_sizes/font_size = 50
 text = "   종자 심기"
 vertical_alignment = 1
 
-
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_bottom = 10
 
 [node name="Text" type="Label" parent="VBoxContainer/MarginContainer"]
-
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 35
-
 text = "랜덤 종자 하나를 소모해서
 종자를 심기 (n개 남음)"
-
 vertical_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]

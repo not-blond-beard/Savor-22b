@@ -48,6 +48,8 @@ var selected_village_capacity := 0
 var selected_village_width := 0
 var selected_village_height := 0
 
+var selected_field_index := 0
+
 #func _ready():
 	#var json = JSON.new()
 	#var error = json.parse(villages_json_string)
