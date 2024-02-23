@@ -4,10 +4,14 @@ const FARM_SLOT_EMPTY = preload("res://ui/farm_slot_empty.tscn")
 const FARM_SLOT_OCCUPIED = preload("res://ui/farm_slot_button.tscn")
 const FARM_SLOT_DONE = preload("res://ui/farm_slot_done.tscn")
 
+const INSTALL_POPUP = preload("res://ui/farm_install_popup.tscn")
+
 const Gql_query = preload("res://gql/query.gd")
 
 @onready var leftfarm = $MC/HC/CR/MC/HC/Left
 @onready var rightfarm = $MC/HC/CR/MC/HC/Right
+
+@onready var popuparea = $Popups
 
 var farms = []
 var itemStateIds = []
@@ -51,21 +55,32 @@ func _ready():
 			else:
 				farm = FARM_SLOT_OCCUPIED.instantiate()
 		
-		rightfarm.add_child(farm)	
+		rightfarm.add_child(farm)
 	
 	
 func farm_selected(farm_index):
 	var format_string = "farm selected: %s"
 	print(format_string % farm_index)
 	SceneContext.selected_field_index = farm_index
+	
+	plant_popup()
 
+func plant_popup():
+	if is_instance_valid(popuparea):
+		for child in popuparea.get_children():
+			child.queue_free()
+	
+	var mousepos = get_local_mouse_position() + Vector2(0, -200)
+	var installpopup = INSTALL_POPUP.instantiate()
+	popuparea.add_child(installpopup)
+	installpopup.set_position(mousepos)
 
 func plant_seed():
 	var gql_query = Gql_query.new()
 	var query_string = gql_query.plant_seed_query_format.format([
 		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
 		SceneContext.selected_field_index,
-		itemStateIdToUse], "{}")
+		itemStateIds["stateID"]], "{}")
 	print(query_string)
 	
 	var query_executor = SvrGqlClient.raw(query_string)

@@ -42,4 +42,11 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_esont")
 text = "[비어있음]
 종자 심기"
 
+[node name="Popup" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 530.0
+offset_top = -8.0
+offset_right = 570.0
+offset_bottom = 32.0
+
 [connection signal="button_down" from="V/Button" to="." method="_on_button_button_down"]
