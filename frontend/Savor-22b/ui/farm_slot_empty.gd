@@ -1,9 +1,5 @@
 extends ColorRect
 
-const INSTALL_POPUP = preload("res://ui/farm_install_popup.tscn")
-
-@onready var popup = $Popup
-
 signal button_down(child_index: int)
 
 var isleft: bool
@@ -13,6 +9,7 @@ func _ready():
 
 func _on_button_button_down():
 	
+	# return index of selected slot
 	if (isleft):
 		button_down.emit(get_index())
 	else:
