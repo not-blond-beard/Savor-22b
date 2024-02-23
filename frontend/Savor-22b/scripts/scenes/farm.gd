@@ -52,8 +52,10 @@ func _ready():
 		else:
 			if(farms[i]["isHarvested"]):
 				farm = FARM_SLOT_DONE.instantiate()
+				farm.set_farm_slot(farms[i])				
 			else:
 				farm = FARM_SLOT_OCCUPIED.instantiate()
+				farm.set_farm_slot(farms[i])				
 		
 		rightfarm.add_child(farm)
 	
@@ -74,13 +76,15 @@ func plant_popup():
 	var installpopup = INSTALL_POPUP.instantiate()
 	popuparea.add_child(installpopup)
 	installpopup.set_position(mousepos)
+	installpopup.accept_button_down.connect(plant_seed)
+	
 
 func plant_seed():
 	var gql_query = Gql_query.new()
 	var query_string = gql_query.plant_seed_query_format.format([
 		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
 		SceneContext.selected_field_index,
-		itemStateIds["stateID"]], "{}")
+		"\"%s\"" % itemStateIds[0]["stateID"]], "{}")
 	print(query_string)
 	
 	var query_executor = SvrGqlClient.raw(query_string)
