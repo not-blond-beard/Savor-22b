@@ -72,8 +72,11 @@ func plant_popup():
 		for child in popuparea.get_children():
 			child.queue_free()
 	
+	var amount = itemStateIds.size()
+	print(amount)
 	var mousepos = get_local_mouse_position() + Vector2(0, -200)
 	var installpopup = INSTALL_POPUP.instantiate()
+	installpopup.set_amount(amount)
 	popuparea.add_child(installpopup)
 	installpopup.set_position(mousepos)
 	installpopup.accept_button_down.connect(plant_seed)
