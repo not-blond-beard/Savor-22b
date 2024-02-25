@@ -35,3 +35,5 @@ theme_override_font_sizes/font_size = 50
 theme_override_styles/normal = SubResource("StyleBoxFlat_b1e62")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_fgm2y")
 text = "[밀] 수확하기"
+
+[connection signal="button_down" from="V/Button" to="." method="_on_button_button_down"]

@@ -5,6 +5,7 @@ const FARM_SLOT_OCCUPIED = preload("res://ui/farm_slot_button.tscn")
 const FARM_SLOT_DONE = preload("res://ui/farm_slot_done.tscn")
 
 const INSTALL_POPUP = preload("res://ui/farm_install_popup.tscn")
+const DONE_POPUP = preload("res://ui/done_notice_popup.tscn")
 
 const Gql_query = preload("res://gql/query.gd")
 
@@ -16,6 +17,8 @@ const Gql_query = preload("res://gql/query.gd")
 var farms = []
 var itemStateIds = []
 var itemStateIdToUse
+
+var harvestedName
 
 func _ready():
 	print("farm scene ready")
@@ -36,9 +39,13 @@ func _ready():
 		else:
 			if(farms[i]["isHarvested"]):
 				farm = FARM_SLOT_DONE.instantiate()
+				farm.im_left()
 				farm.set_farm_slot(farms[i])
+				farm.button_down.connect(farm_selected)
+				farm.button_down_name.connect(harvested_name)
 			else:
 				farm = FARM_SLOT_OCCUPIED.instantiate()
+				farm.im_left()
 				farm.set_farm_slot(farms[i])
 		
 		leftfarm.add_child(farm)
@@ -52,10 +59,14 @@ func _ready():
 		else:
 			if(farms[i]["isHarvested"]):
 				farm = FARM_SLOT_DONE.instantiate()
-				farm.set_farm_slot(farms[i])				
+				farm.im_right()
+				farm.set_farm_slot(farms[i])
+				farm.button_down.connect(farm_selected)
+				farm.button_down_name.connect(harvested_name)
 			else:
 				farm = FARM_SLOT_OCCUPIED.instantiate()
-				farm.set_farm_slot(farms[i])				
+				farm.im_right()
+				farm.set_farm_slot(farms[i])
 		
 		rightfarm.add_child(farm)
 	
@@ -64,8 +75,13 @@ func farm_selected(farm_index):
 	var format_string = "farm selected: %s"
 	print(format_string % farm_index)
 	SceneContext.selected_field_index = farm_index
-	
-	plant_popup()
+	if (farms[farm_index] == null):
+		plant_popup()
+	else:
+		if(farms[farm_index]["isHarvested"]):
+			done_popup()
+		else:
+			pass
 
 func plant_popup():
 	if is_instance_valid(popuparea):
@@ -80,7 +96,7 @@ func plant_popup():
 	popuparea.add_child(installpopup)
 	installpopup.set_position(mousepos)
 	installpopup.accept_button_down.connect(plant_seed)
-	
+
 
 func plant_seed():
 	var gql_query = Gql_query.new()
@@ -107,3 +123,18 @@ func plant_seed():
 	add_child(query_executor)
 	query_executor.run({})
 
+func harvested_name(seedName):
+	harvestedName = seedName
+	print(seedName)
+
+func done_popup():
+	print("알림 출력")
+	if is_instance_valid(popuparea):
+		for child in popuparea.get_children():
+			child.queue_free()
+
+	var donepopup = DONE_POPUP.instantiate()
+	donepopup.set_seedname(harvestedName)
+	popuparea.add_child(donepopup)
+	donepopup.set_position(Vector2(700,500))
+	
