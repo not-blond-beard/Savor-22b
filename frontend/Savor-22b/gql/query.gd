@@ -31,3 +31,12 @@ var plant_seed_query_format = "query {
 		itemStateIdToUse: {}
 	)
 }"
+
+
+var harvest_seed_query_format = "query {
+	createAction_HarvestingSeed(
+		publicKey: {},
+		fieldIndex: {}
+	)
+}"
+

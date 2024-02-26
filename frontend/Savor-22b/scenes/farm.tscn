@@ -100,7 +100,17 @@ size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
 text = "Inventory"
 
+[node name="RefreshButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "Refresh"
+
 [node name="Popups" type="Control" parent="."]
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+
+[connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/RefreshButton" to="." method="_on_refresh_button_button_down"]
+

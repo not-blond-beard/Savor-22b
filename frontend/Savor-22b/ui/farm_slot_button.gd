@@ -8,6 +8,8 @@ var farm_slot: Dictionary
 
 var format_string = """%s %s
 	(%d %s)"""
+	
+var isleft: bool
 
 func _ready():
 	_update_button()
@@ -24,4 +26,15 @@ func set_farm_slot(farm_slot: Dictionary):
 	_update_button()
 
 func _on_button_button_down():
-	button_down.emit(get_index())
+	if (isleft):
+		button_down.emit(get_index())
+	else:
+		button_down.emit(get_index()+5)
+
+
+
+func im_right():
+	isleft = false
+
+func im_left():
+	isleft = true
