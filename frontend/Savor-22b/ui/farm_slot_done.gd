@@ -2,6 +2,7 @@ extends ColorRect
 
 signal button_down(child_index: int)
 signal button_down_name(seedName: String)
+signal button_down_harvest
 
 @onready var button = $V/Button
 
@@ -33,6 +34,7 @@ func _on_button_button_down():
 		button_down.emit(get_index()+5)
 
 	print("done button signal")
+	button_down_harvest.emit()
 
 func im_right():
 	isleft = false

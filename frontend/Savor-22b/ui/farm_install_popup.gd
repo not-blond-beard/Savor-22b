@@ -27,6 +27,7 @@ func set_amount(amount: int):
 
 func _on_accept_button_down():
 	accept_button_down.emit()
+	queue_free()
 
 
 func _on_cancel_button_down():

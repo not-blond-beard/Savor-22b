@@ -145,3 +145,8 @@ func _query_user_state():
 	query_executor.run({
 		"signer_address": GlobalSigner.signer_address
 	})
+
+func reload_datas():
+	_query_villages()
+	_query_user_state()
+	_query_assets()
