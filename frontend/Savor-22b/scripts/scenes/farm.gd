@@ -5,7 +5,9 @@ const FARM_SLOT_OCCUPIED = preload("res://ui/farm_slot_button.tscn")
 const FARM_SLOT_DONE = preload("res://ui/farm_slot_done.tscn")
 
 const INSTALL_POPUP = preload("res://ui/farm_install_popup.tscn")
+
 const DONE_POPUP = preload("res://ui/done_notice_popup.tscn")
+
 
 const Gql_query = preload("res://gql/query.gd")
 
@@ -18,9 +20,11 @@ var farms = []
 var itemStateIds = []
 var itemStateIdToUse
 
+
 var harvestedName
 
 var actionSuccess = false
+
 
 func _ready():
 	print("farm scene ready")
@@ -195,3 +199,4 @@ func fetch_new():
 
 func _on_refresh_button_button_down():
 	fetch_new()
+

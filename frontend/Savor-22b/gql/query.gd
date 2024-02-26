@@ -32,9 +32,11 @@ var plant_seed_query_format = "query {
 	)
 }"
 
+
 var harvest_seed_query_format = "query {
 	createAction_HarvestingSeed(
 		publicKey: {},
 		fieldIndex: {}
 	)
 }"
+
