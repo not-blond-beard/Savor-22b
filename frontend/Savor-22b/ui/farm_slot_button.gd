@@ -1,6 +1,7 @@
 extends ColorRect
 
 signal button_down(child_index: int)
+signal button_down_action
 
 @onready var button = $V/Button
 
@@ -30,7 +31,7 @@ func _on_button_button_down():
 		button_down.emit(get_index())
 	else:
 		button_down.emit(get_index()+5)
-
+	button_down_action.emit()
 
 
 func im_right():

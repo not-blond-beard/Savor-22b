@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://c48jlsophfki6"]
+[gd_scene load_steps=3 format=3 uid="uid://c48jlsophfki6"]
+
+[ext_resource type="Script" path="res://ui/farm_remove_done_popup.gd" id="1_6dq0m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eamck"]
 bg_color = Color(0, 0, 0, 1)
@@ -7,6 +9,7 @@ bg_color = Color(0, 0, 0, 1)
 offset_right = 700.0
 offset_bottom = 160.0
 color = Color(0.866667, 0.498039, 0.215686, 1)
+script = ExtResource("1_6dq0m")
 
 [node name="M" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -37,3 +40,5 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 50
 theme_override_styles/normal = SubResource("StyleBoxFlat_eamck")
 text = "      확인      "
+
+[connection signal="button_down" from="M/V/Button" to="." method="_on_button_button_down"]
