@@ -1,0 +1,61 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhh3viy4esoci"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhy67"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="ShopItem" type="ColorRect"]
+offset_right = 600.0
+offset_bottom = 300.0
+color = Color(1, 0.541176, 0, 1)
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="V" type="VBoxContainer" parent="M"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Itemname" type="Label" parent="M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "아이템 이름"
+
+[node name="Description" type="ColorRect" parent="M/V"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.619608, 0.34902, 0, 1)
+
+[node name="Text" type="Label" parent="M/V/Description"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "아이템 설명"
+
+[node name="H" type="HBoxContainer" parent="M/V"]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 2
+
+[node name="Cancel" type="Button" parent="M/V/H"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_yhy67")
+text = "      취소      "
+
+[node name="Buy" type="Button" parent="M/V/H"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_yhy67")
+text = "      구매      "
