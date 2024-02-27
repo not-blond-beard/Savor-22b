@@ -202,8 +202,9 @@ func remove_popup():
 	popuparea.add_child(removepopup)
 	removepopup.set_position(Vector2(700,500))
 	removepopup.button_yes.connect(remove_done_popup)
-	
+
 func remove_done_popup():
+	remove_seed()
 	if is_instance_valid(popuparea):
 		for child in popuparea.get_children():
 			child.queue_free()
@@ -216,6 +217,31 @@ func remove_done_popup():
 func control_seed():
 	#code here
 	action_popup()
+
+func remove_seed():
+	var gql_query = Gql_query.new()
+	var query_string = gql_query.remove_seed_query_format.format([
+		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
+		SceneContext.selected_field_index], "{}")
+	print(query_string)
+	
+	var query_executor = SvrGqlClient.raw(query_string)
+	query_executor.graphql_response.connect(func(data):
+		print("gql response: ", data)
+		var unsigned_tx = data["data"]["createAction_RemovePlantedSeed"]
+		print("unsigned tx: ", unsigned_tx)
+		var signature = GlobalSigner.sign(unsigned_tx)
+		print("signed tx: ", signature)
+		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
+		mutation_executor.graphql_response.connect(func(data):
+			print("mutation res: ", data)
+		)
+		add_child(mutation_executor)
+		mutation_executor.run({})
+	)
+	add_child(query_executor)
+	query_executor.run({})
+	fetch_new()
 
 func fetch_new():
 # fetch datas
