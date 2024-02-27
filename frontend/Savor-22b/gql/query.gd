@@ -40,3 +40,10 @@ var harvest_seed_query_format = "query {
 	)
 }"
 
+
+var remove_seed_query_format = "query {
+	createAction_RemovePlantedSeed(
+		publicKey: {},
+		fieldIndex: {}
+	)
+}"

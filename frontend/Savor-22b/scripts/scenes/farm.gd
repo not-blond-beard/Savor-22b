@@ -5,9 +5,10 @@ const FARM_SLOT_OCCUPIED = preload("res://ui/farm_slot_button.tscn")
 const FARM_SLOT_DONE = preload("res://ui/farm_slot_done.tscn")
 
 const INSTALL_POPUP = preload("res://ui/farm_install_popup.tscn")
-
 const DONE_POPUP = preload("res://ui/done_notice_popup.tscn")
-
+const ACTION_POPUP = preload("res://ui/farm_action_popup.tscn")
+const REMOVE_POPUP = preload("res://ui/farm_ask_remove_popup.tscn")
+const REMOVE_DONE_POPUP = preload("res://ui/farm_remove_done_popup.tscn")
 
 const Gql_query = preload("res://gql/query.gd")
 
@@ -36,6 +37,7 @@ func _ready():
 	itemStateIds = SceneContext.user_state["inventoryState"]["itemStateList"]
 	
 	#create blank slots
+	# Left slot
 	for i in range(0,5):
 		var farm
 		if (farms[i] == null):
@@ -53,11 +55,13 @@ func _ready():
 			else:
 				farm = FARM_SLOT_OCCUPIED.instantiate()
 				farm.im_left()
-				#insert farm.button_down.connect(farm_selected) if needed
+				farm.button_down.connect(farm_selected)
+				farm.button_down_action.connect(control_seed)
 				farm.set_farm_slot(farms[i])
 		
 		leftfarm.add_child(farm)
-		
+	
+	# Right slot
 	for i in range(5,10):
 		var farm
 		if (farms[i] == null):
@@ -75,7 +79,8 @@ func _ready():
 			else:
 				farm = FARM_SLOT_OCCUPIED.instantiate()
 				farm.im_right()
-				#insert farm.button_down.connect(farm_selected) if needed
+				farm.button_down.connect(farm_selected)
+				farm.button_down_action.connect(control_seed)
 				farm.set_farm_slot(farms[i])
 		
 		rightfarm.add_child(farm)
@@ -176,7 +181,68 @@ func harvest_seed():
 	query_executor.run({})
 	actionSuccess = true
 	fetch_new()
+
+func action_popup():
+	print("행동 팝업")
+	if is_instance_valid(popuparea):
+		for child in popuparea.get_children():
+			child.queue_free()
 	
+	var actionpopup = ACTION_POPUP.instantiate()
+	popuparea.add_child(actionpopup)
+	actionpopup.set_position(Vector2(700,500))
+	actionpopup.button_down_remove.connect(remove_popup)
+	
+func remove_popup():
+	if is_instance_valid(popuparea):
+		for child in popuparea.get_children():
+			child.queue_free()
+	
+	var removepopup = REMOVE_POPUP.instantiate()
+	popuparea.add_child(removepopup)
+	removepopup.set_position(Vector2(700,500))
+	removepopup.button_yes.connect(remove_done_popup)
+
+func remove_done_popup():
+	remove_seed()
+	if is_instance_valid(popuparea):
+		for child in popuparea.get_children():
+			child.queue_free()
+	
+	var donepopup = REMOVE_DONE_POPUP.instantiate()
+	popuparea.add_child(donepopup)
+	donepopup.set_position(Vector2(700,500))
+	donepopup.refresh_me.connect(fetch_new)
+
+func control_seed():
+	#code here
+	action_popup()
+
+func remove_seed():
+	var gql_query = Gql_query.new()
+	var query_string = gql_query.remove_seed_query_format.format([
+		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
+		SceneContext.selected_field_index], "{}")
+	print(query_string)
+	
+	var query_executor = SvrGqlClient.raw(query_string)
+	query_executor.graphql_response.connect(func(data):
+		print("gql response: ", data)
+		var unsigned_tx = data["data"]["createAction_RemovePlantedSeed"]
+		print("unsigned tx: ", unsigned_tx)
+		var signature = GlobalSigner.sign(unsigned_tx)
+		print("signed tx: ", signature)
+		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
+		mutation_executor.graphql_response.connect(func(data):
+			print("mutation res: ", data)
+		)
+		add_child(mutation_executor)
+		mutation_executor.run({})
+	)
+	add_child(query_executor)
+	query_executor.run({})
+	fetch_new()
+
 func fetch_new():
 # fetch datas
 	Intro._query_user_state()
@@ -195,7 +261,6 @@ func fetch_new():
 			child.queue_free()
 	
 	_ready()
-
 
 func _on_refresh_button_button_down():
 	fetch_new()
