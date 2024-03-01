@@ -44,4 +44,16 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "farm.tscn"
 
+[node name="button2" type="Button" parent="Background/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "text set"
+
+[node name="Label" type="Label" parent="Background/MarginContainer/GridContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "label text"
+
 [connection signal="pressed" from="Background/MarginContainer/GridContainer/button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="Background/MarginContainer/GridContainer/button2" to="." method="_on_button_2_pressed"]
