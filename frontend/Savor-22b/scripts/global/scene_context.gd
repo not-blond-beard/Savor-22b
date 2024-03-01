@@ -42,6 +42,8 @@ var selected_village_index := 0
 var user_state: Dictionary
 var user_asset: String
 
+var shop: Dictionary
+
 var selected_house_index := 0
 var selected_house_location: Dictionary
 var selected_village_capacity := 0
@@ -70,4 +72,5 @@ func set_user_asset(query_data: Dictionary):
 func get_selected_village():
 	return villages[selected_village_index]
 
-
+func set_shop(query_data: Dictionary):
+	shop = query_data.data.shop

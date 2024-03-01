@@ -148,6 +148,11 @@ offset_top = 300.0
 offset_right = 640.0
 offset_bottom = 340.0
 
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="button_down" from="TopMenuMarginContainer/Control/HomeButtonContainer/HomeButton" to="." method="_on_home_button_button_down"]
 [connection signal="button_down" from="TopMenuMarginContainer/Control/FarmButtonContainer/FarmButton" to="." method="_on_farm_button_button_down"]
 [connection signal="button_down" from="BottomMenuMarginContainer/Control/EnterButtonContainer/EnterButton" to="." method="_on_enter_button_button_down"]

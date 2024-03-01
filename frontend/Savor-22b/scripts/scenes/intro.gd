@@ -5,6 +5,8 @@ func _ready():
 	_query_villages()
 	_query_user_state()
 	_query_assets()
+	_query_shop()
+
 
 func _on_quit_button_button_down():
 	print("quit button down")
@@ -145,6 +147,26 @@ func _query_user_state():
 	query_executor.run({
 		"signer_address": GlobalSigner.signer_address
 	})
+	
+func _query_shop():
+	var query = GQLQuery.new("shop").set_props([
+		GQLQuery.new("items").set_props([
+			"id",
+			"name",
+			"price",
+		])
+	])
+	print(query.serialize())
+	var query_executor = SvrGqlClient.query(
+		'query',{}, query)
+		
+	query_executor.graphql_response.connect(
+		func(data):
+			SceneContext.set_shop(data)
+	)
+	add_child(query_executor)
+	query_executor.run({})
+
 
 func reload_datas():
 	_query_villages()
