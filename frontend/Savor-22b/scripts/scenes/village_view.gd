@@ -2,7 +2,12 @@ extends Control
 
 const SELECT_HOUSE_BUTTON = preload("res://ui/house_slot_button.tscn")
 
+const SYS_SHOP = preload("res://scenes/shop/systemshop.tscn")
+
+
 @onready var gridcontainer = $MarginContainer/Background/MarginContainer/ScrollContainer/HomeGridContainer
+
+@onready var popups = $Popups
 
 var houses = []
 var existhouses = SceneContext.get_selected_village()["houses"]
@@ -81,3 +86,12 @@ func _on_enter_button_button_down():
 
 func _on_farm_button_button_down():
 	get_tree().change_scene_to_file("res://scenes/farm.tscn")
+
+#open shop with S input
+func _input(event):
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_S:
+			var shop = SYS_SHOP.instantiate()
+			popups.add_child(shop)
+			shop.set_position(Vector2(400, 150))
+
