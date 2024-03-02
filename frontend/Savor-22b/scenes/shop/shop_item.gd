@@ -7,7 +7,7 @@ signal button_down
 
 var item: Dictionary
 
-var desc_format_string = "%s"
+var desc_format_string = "%s : %s %s"
 
 func _ready():
 	update_item()
@@ -17,9 +17,8 @@ func update_item():
 	if itemname == null:
 		return
 	
-		# 아이템 설명이 추가되면 아이디 대신 이름 넣고 설명 란에 설명 추가하면 됩니다.
-	itemname.text = str(item.id)
-	desc.text = item.name
+	itemname.text = item.name
+	desc.text = desc_format_string % ["가격", item.price, "BBG"]
 
 func set_item(info: Dictionary):
 	item = info
