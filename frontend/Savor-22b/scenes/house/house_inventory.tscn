@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://dupiw5pjpvulw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dth2p"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_50occ"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="HouseInventory" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="V" type="VBoxContainer" parent="M"]
+layout_mode = 2
+theme_override_constants/separation = -1
+
+[node name="submenu" type="MarginContainer" parent="M/V"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="tools" type="Button" parent="M/V/submenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_dth2p")
+text = " 조리 도구 "
+
+[node name="Panel" type="Panel" parent="M/V"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_50occ")
+
+[node name="M" type="MarginContainer" parent="M/V/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -1,0 +1,75 @@
+[gd_scene load_steps=2 format=3 uid="uid://bpobpaan3tquv"]
+
+[ext_resource type="Script" path="res://scripts/scenes/house.gd" id="1_suicg"]
+
+[node name="House" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_suicg")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Background"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = " 집 화면"
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="V" type="VBoxContainer" parent="M"]
+layout_mode = 2
+
+[node name="menus" type="MarginContainer" parent="M/V"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="V" type="VBoxContainer" parent="M/V/menus"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="HomeButton" type="Button" parent="M/V/menus/V"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "Home"
+
+[node name="InventoryButton" type="Button" parent="M/V/menus/V"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "Inventory"
+
+[node name="RefreshButton" type="Button" parent="M/V/menus/V"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "Refresh"
+
+[node name="subscene" type="MarginContainer" parent="M/V"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20

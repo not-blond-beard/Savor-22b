@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwqquis7w31g7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk6tx"]
+bg_color = Color(1, 0.541176, 0, 1)
+
+[node name="Kitchentools" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="V" type="VBoxContainer" parent="M"]
+layout_mode = 2
+
+[node name="Items" type="MarginContainer" parent="M/V"]
+layout_mode = 2
+
+[node name="G" type="GridContainer" parent="M/V/Items"]
+layout_mode = 2
+
+[node name="Button" type="MarginContainer" parent="M/V"]
+layout_mode = 2
+theme_override_constants/margin_right = 80
+
+[node name="Close" type="Button" parent="M/V/Button"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rk6tx")
+text = "   닫기   "
