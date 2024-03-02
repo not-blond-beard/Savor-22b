@@ -1,6 +1,6 @@
 extends ColorRect
 
-signal button_down(item_id: int)
+signal button_down
 
 @onready var itemname = $M/V/Itemname
 @onready var desc = $M/V/Description/Text
@@ -26,4 +26,6 @@ func set_item(info: Dictionary):
 
 
 func _on_buy_button_down():
-	button_down.emit(item.id)
+	SceneContext.selected_item_index = item.id
+	SceneContext.selected_item_name = item.name
+	button_down.emit()

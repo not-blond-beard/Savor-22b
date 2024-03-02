@@ -11,6 +11,8 @@ const Gql_query = preload("res://gql/query.gd")
 
 var shopitems = []
 
+
+
 func _ready():
 	print("shop opened")
 	shopitems = SceneContext.shop
@@ -29,12 +31,13 @@ func _ready():
 func buy_item():
 	print("buy item")
 	var askpopup = SHOP_ASK_POPUP.instantiate()
-	
+	askpopup.buy_button_down.connect(buyquery)
+	askpopup.set_itemname(SceneContext.selected_item_name)
 	popup.add_child(askpopup)
 	
 
 func buyquery():
-	var itemnum = 1
+	var itemnum = SceneContext.selected_item_index
 	var gql_query = Gql_query.new()
 	var query_string = gql_query.buy_shop_item_query_format.format([
 		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
@@ -57,6 +60,20 @@ func buyquery():
 	)
 	add_child(query_executor)
 	query_executor.run({})
+	
+	print_done_popup()
+
+func print_done_popup():
+	clear_popup()
+	var pop = SHOP_DONE_POPUP.instantiate()
+	popup.add_child(pop)
+
+
+
+func clear_popup():
+	if is_instance_valid(popup):
+		for pop in popup.get_children():
+			pop.queue_free()
 
 func _on_close_button_down():
 	queue_free()
