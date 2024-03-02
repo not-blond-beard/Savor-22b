@@ -47,3 +47,11 @@ var remove_seed_query_format = "query {
 		fieldIndex: {}
 	)
 }"
+
+
+var buy_shop_item_query_format = "query {
+	createAction_BuyShopItem(
+		publicKey: {},
+		desiredShopItemID: {}
+	)
+}"

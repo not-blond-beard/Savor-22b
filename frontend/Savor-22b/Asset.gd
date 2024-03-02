@@ -6,6 +6,7 @@ var asset
 var format_string = "%s : %s"
 
 func _ready():
+	Intro._query_assets()
 	asset = SceneContext.user_asset
 	update_asset()
 	

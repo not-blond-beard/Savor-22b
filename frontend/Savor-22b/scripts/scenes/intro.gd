@@ -167,8 +167,3 @@ func _query_shop():
 	add_child(query_executor)
 	query_executor.run({})
 
-
-func reload_datas():
-	_query_villages()
-	_query_user_state()
-	_query_assets()
