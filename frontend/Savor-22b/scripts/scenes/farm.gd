@@ -265,3 +265,7 @@ func fetch_new():
 func _on_refresh_button_button_down():
 	fetch_new()
 
+
+
+func _on_home_button_button_down():
+	get_tree().change_scene_to_file("res://scenes/house/house.tscn")

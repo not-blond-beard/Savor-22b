@@ -111,4 +111,5 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/HomeButton" to="." method="_on_home_button_button_down"]
 [connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/RefreshButton" to="." method="_on_refresh_button_button_down"]
