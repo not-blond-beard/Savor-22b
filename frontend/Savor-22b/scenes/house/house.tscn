@@ -49,11 +49,11 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 size_flags_horizontal = 8
 
-[node name="HomeButton" type="Button" parent="M/V/menus/V"]
+[node name="RecipeButton" type="Button" parent="M/V/menus/V"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
-text = "Home"
+text = "Recipe"
 
 [node name="InventoryButton" type="Button" parent="M/V/menus/V"]
 layout_mode = 2

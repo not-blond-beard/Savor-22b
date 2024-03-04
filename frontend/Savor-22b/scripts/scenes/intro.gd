@@ -154,6 +154,15 @@ func _query_shop():
 			"id",
 			"name",
 			"price",
+		]),
+		GQLQuery.new("kitchenEquipments").set_props([
+			"id",
+			"categoryID",
+			"categoryLabel",
+			"categoryType",
+			"name",
+			"blockTimeReductionPercent",
+			"price"
 		])
 	])
 	print(query.serialize())

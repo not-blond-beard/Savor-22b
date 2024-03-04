@@ -34,11 +34,21 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="tools" type="Button" parent="M/V/submenu"]
+[node name="H" type="HBoxContainer" parent="M/V/submenu"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="tools" type="Button" parent="M/V/submenu/H"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_dth2p")
 text = " 조리 도구 "
+
+[node name="shop" type="Button" parent="M/V/submenu/H"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_dth2p")
+text = " 도구 상점 "
 
 [node name="Panel" type="Panel" parent="M/V"]
 layout_mode = 2
@@ -52,3 +62,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[connection signal="button_down" from="M/V/submenu/H/tools" to="." method="_on_tools_button_down"]
+[connection signal="button_down" from="M/V/submenu/H/shop" to="." method="_on_shop_button_down"]
