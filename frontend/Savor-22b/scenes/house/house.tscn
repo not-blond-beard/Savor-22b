@@ -74,4 +74,9 @@ theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
 [connection signal="button_down" from="M/V/menus/V/InventoryButton" to="." method="_on_inventory_button_button_down"]
