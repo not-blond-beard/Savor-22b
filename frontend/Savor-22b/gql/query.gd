@@ -55,3 +55,10 @@ var buy_shop_item_query_format = "query {
 		desiredShopItemID: {}
 	)
 }"
+
+var buy_kitchen_equipment_query_format = "query {
+	createAction_BuyKitchenEquipment(
+		publicKey: {},
+		desiredEquipmentID: {}
+	)
+}"
