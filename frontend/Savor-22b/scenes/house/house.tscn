@@ -80,3 +80,4 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [connection signal="button_down" from="M/V/menus/V/InventoryButton" to="." method="_on_inventory_button_button_down"]
+[connection signal="button_down" from="M/V/menus/V/RefreshButton" to="." method="_on_refresh_button_button_down"]

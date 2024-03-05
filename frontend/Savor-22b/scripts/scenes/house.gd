@@ -24,6 +24,7 @@ func buypopup():
 	var askpopup = ASK_POPUP.instantiate()
 	askpopup.set_itemname(SceneContext.selected_item_name)
 	askpopup.buy_button_down.connect(buyaction)
+	askpopup.set_position(Vector2(900,600))
 	popup.add_child(askpopup)
 
 func buyaction():
@@ -31,6 +32,7 @@ func buyaction():
 	buytool()
 	
 	var donepopup = DONE_POPUP.instantiate()
+	donepopup.set_position(Vector2(900,600))
 	popup.add_child(donepopup)
 	
 func buytool():
@@ -62,3 +64,12 @@ func clear_popup():
 	if is_instance_valid(popup):
 		for pop in popup.get_children():
 			pop.queue_free()
+
+
+
+func _on_refresh_button_button_down():
+	Intro._query_user_state()
+	
+	if is_instance_valid(subscene):
+		for scene in subscene.get_children():
+			scene.queue_free()

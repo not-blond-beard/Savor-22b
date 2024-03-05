@@ -4,6 +4,8 @@ const TOOL = preload("res://scenes/house/tool.tscn")
 
 @onready var grid = $M/V/Items/G
 
+signal closetab
+
 var tools
 
 func _ready():
@@ -13,4 +15,10 @@ func _ready():
 		var toolpanel = TOOL.instantiate()
 		toolpanel.set_info(tool)
 		grid.add_child(toolpanel)
+
+
+
+func _on_close_button_down():
+	closetab.emit()
+	queue_free()
 

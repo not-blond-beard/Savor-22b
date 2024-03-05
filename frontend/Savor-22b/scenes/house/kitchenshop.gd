@@ -5,6 +5,7 @@ const TOOL = preload("res://scenes/house/tool.tscn")
 @onready var grid = $M/V/Items/G
 
 signal buysignal
+signal closetab
 
 var list
 
@@ -20,3 +21,8 @@ func _ready():
 
 func popup():
 	buysignal.emit()
+
+
+func _on_close_button_down():
+	closetab.emit()
+	queue_free()
