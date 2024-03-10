@@ -168,5 +168,4 @@ offset_bottom = 340.0
 [connection signal="pressed" from="TopMenuMarginContainer/HBoxContainer/HomeButton" to="." method="_on_button_pressed"]
 [connection signal="button_down" from="TopMenuMarginContainer/HBoxContainer/BackButton" to="." method="_on_back_button_button_down"]
 [connection signal="button_down" from="BottomMenuMarginContainer/Control/BuildButtonContainer/BuildButton" to="." method="_on_build_button_button_down"]
-[connection signal="button_down" from="BottomMenuMarginContainer/Control/RefreshButtonContainer/RefreshButton" to="." method="_on_build_button_button_down"]
 [connection signal="button_down" from="BottomMenuMarginContainer/Control/RefreshButtonContainer/RefreshButton" to="." method="_on_refresh_button_button_down"]
