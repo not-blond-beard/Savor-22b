@@ -73,3 +73,7 @@ func _on_refresh_button_button_down():
 	if is_instance_valid(subscene):
 		for scene in subscene.get_children():
 			scene.queue_free()
+
+
+func _on_farm_button_button_down():
+	get_tree().change_scene_to_file("res://scenes/farm.tscn")
