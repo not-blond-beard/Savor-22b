@@ -8,9 +8,7 @@ const KITCHEN_SHOP = preload("res://scenes/house/kitchenshop.tscn")
 signal buysignal
 
 func _ready():
-	var kitchens = KITCHEN_TOOLS.instantiate()
-	
-	panel.add_child(kitchens)
+	_on_tools_button_down()
 
 
 
