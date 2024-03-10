@@ -3,6 +3,10 @@ namespace Savor22b.Tests.Action;
 using Microsoft.Extensions.Configuration;
 using Libplanet;
 using Libplanet.Crypto;
+using System;
+using Libplanet.State;
+using Savor22b.States;
+
 
 public class ActionTests
 {
@@ -32,5 +36,13 @@ public class ActionTests
     public Address SignerAddress()
     {
         return _signer.PublicKey.ToAddress();
+    }
+
+    public RootState DeriveRootStateFromAccountStateDelta(IAccountStateDelta stateDelta) {
+        var rootStateEncoded = stateDelta.GetState(SignerAddress());
+        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new RootState(bdict)
+            : throw new Exception();
+        return rootState;
     }
 }
