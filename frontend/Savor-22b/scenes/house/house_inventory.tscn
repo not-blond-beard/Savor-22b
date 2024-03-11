@@ -1,8 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://dupiw5pjpvulw"]
+[gd_scene load_steps=7 format=3 uid="uid://dupiw5pjpvulw"]
 
 [ext_resource type="Script" path="res://scenes/house/house_inventory.gd" id="1_7w8e6"]
+[ext_resource type="ButtonGroup" uid="uid://bccohgbb2f7bj" path="res://scenes/house/inven_button_group.tres" id="2_rutrm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dth2p"]
+bg_color = Color(0.262745, 0.262745, 0.262745, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bi312"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n017i"]
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_50occ"]
@@ -42,12 +49,19 @@ theme_override_constants/separation = 20
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_dth2p")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bi312")
+toggle_mode = true
+button_pressed = true
+button_group = ExtResource("2_rutrm")
 text = " 조리 도구 "
 
 [node name="shop" type="Button" parent="M/V/submenu/H"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_dth2p")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_n017i")
+toggle_mode = true
+button_group = ExtResource("2_rutrm")
 text = " 도구 상점 "
 
 [node name="Panel" type="Panel" parent="M/V"]
