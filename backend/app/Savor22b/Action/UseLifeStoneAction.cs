@@ -8,6 +8,7 @@ using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Action.Exceptions;
 using Savor22b.States;
+using Savor22b.Constants;
 
 [ActionType(nameof(UseLifeStoneAction))]
 public class UseLifeStoneAction : SVRAction
@@ -49,6 +50,11 @@ public class UseLifeStoneAction : SVRAction
         if (food is null)
         {
             throw new NotFoundDataException($"NotFound `{FoodStateID}` food state id");
+        }
+
+        if (food.GetEdibleType() != Edible.FOOD)
+        {
+            throw new NotHaveRequiredException($"`{FoodStateID}` is not Food.");
         }
 
         if (food.IsSuperFood)
