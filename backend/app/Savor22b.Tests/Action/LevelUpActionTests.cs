@@ -4,7 +4,6 @@ using System;
 using System.Collections.Immutable;
 using Libplanet;
 using Libplanet.State;
-using NetMQ;
 using Savor22b.Action;
 using Savor22b.Action.Exceptions;
 using Savor22b.States;
@@ -35,15 +34,14 @@ public class LevelUpActionTests : ActionTests
         );
 
         var afterState = DeriveRootStateFromAccountStateDelta(stateDelta);
-        var afterFood = beforeState.InventoryState.RefrigeratorStateList[0];
+        var afterFood = afterState.InventoryState.RefrigeratorStateList[0];
 
         Assert.True(beforeState.InventoryState.ItemStateList.Count > afterState.InventoryState.ItemStateList.Count);
-        Assert.True(beforeFood.ATK < afterFood.ATK);
-        Assert.True(beforeFood.Level < afterFood.Level);
+        Assert.True(beforeFood.Level + 1 == afterFood.Level);
     }
 
     [Fact]
-    public void LevelUpAction_Fail_NoMsg()
+    public void LevelUpAction_Fail_NotEnoughMsg()
     {
         var stateDelta = CreatePresetStateDelta(hasMsg: false);
 
@@ -71,7 +69,7 @@ public class LevelUpActionTests : ActionTests
     [Fact]
     public void LevelUpAction_Fail_MaxLevel()
     {
-        var stateDelta = CreatePresetStateDelta();
+        var stateDelta = CreatePresetStateDelta(false, 20);
 
         var rootState = DeriveRootStateFromAccountStateDelta(stateDelta);
 
@@ -95,7 +93,7 @@ public class LevelUpActionTests : ActionTests
         );
     }
 
-    private IAccountStateDelta CreatePresetStateDelta(bool hasMsg = true)
+    private IAccountStateDelta CreatePresetStateDelta(bool hasMsg = true, int level = 1)
     {
         IAccountStateDelta state = new DummyState();
         Address signerAddress = SignerAddress();
@@ -109,7 +107,7 @@ public class LevelUpActionTests : ActionTests
 
         if (hasMsg)
         {
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 100; i++)
             {
                 inventoryState = inventoryState.AddItem(new ItemState(Guid.NewGuid(), MsgItemId));
             }
@@ -126,6 +124,8 @@ public class LevelUpActionTests : ActionTests
             1,
             ImmutableList<Guid>.Empty
         );
+        food.IsSuperFood = true;
+        food.Level = level;
         inventoryState = inventoryState.AddRefrigeratorItem(food);
 
         rootState.SetInventoryState(inventoryState);

@@ -29,6 +29,7 @@ public class RefrigeratorState : State
         DEF = def;
         ATK = atk;
         SPD = spd;
+        Level = 1;
         IsSuperFood = isSuperFood;
         AvailableBlockIndex = availableBlockIndex;
         UsedKitchenEquipmentStateIds = usedKitchenEquipmentStateIds;
@@ -92,6 +93,7 @@ public class RefrigeratorState : State
         DEF = encoded[nameof(DEF)].ToInteger();
         ATK = encoded[nameof(ATK)].ToInteger();
         SPD = encoded[nameof(SPD)].ToInteger();
+        Level = encoded[nameof(Level)].ToInteger();
         IngredientID = encoded[nameof(IngredientID)].ToNullableInteger();
         FoodID = encoded[nameof(FoodID)].ToNullableInteger();
         IsSuperFood = encoded[nameof(IsSuperFood)].ToBoolean();
@@ -117,11 +119,30 @@ public class RefrigeratorState : State
 
     public int SPD { get; set; }
 
+    public int Level { get; set; }
+
     public bool IsSuperFood { get; set; }
 
     public long? AvailableBlockIndex { get; set; }
 
     public ImmutableList<Guid> UsedKitchenEquipmentStateIds { get; set; }
+
+    public RefrigeratorState LevelUp()
+    {
+        return new RefrigeratorState(
+            StateID,
+            IngredientID,
+            FoodID,
+            Grade,
+            HP,
+            DEF,
+            ATK,
+            SPD,
+            AvailableBlockIndex,
+            UsedKitchenEquipmentStateIds,
+            IsSuperFood
+        ) { Level = this.Level + 1 };
+    }
 
     public IValue Serialize()
     {
@@ -133,6 +154,7 @@ public class RefrigeratorState : State
             new KeyValuePair<IKey, IValue>((Text)nameof(DEF), DEF.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(ATK), ATK.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(SPD), SPD.Serialize()),
+            new KeyValuePair<IKey, IValue>((Text)nameof(Level), Level.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(IngredientID), IngredientID.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(FoodID), FoodID.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(IsSuperFood), IsSuperFood.Serialize()),
@@ -175,6 +197,7 @@ public class RefrigeratorState : State
             && DEF == other.DEF
             && ATK == other.ATK
             && SPD == other.SPD
+            && Level == other.Level
             && IsSuperFood == other.IsSuperFood;
     }
 
@@ -190,6 +213,7 @@ public class RefrigeratorState : State
         hash = hash * 23 + DEF.GetHashCode();
         hash = hash * 23 + ATK.GetHashCode();
         hash = hash * 23 + SPD.GetHashCode();
+        hash = hash * 23 + Level.GetHashCode();
         hash = hash * 23 + IsSuperFood.GetHashCode();
 
         return hash;

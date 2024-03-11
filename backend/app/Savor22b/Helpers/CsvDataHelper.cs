@@ -17,6 +17,7 @@ public static class CsvDataHelper
     private static ImmutableList<KitchenEquipmentCategory> kitchenEquipmentCategoryList;
     private static ImmutableList<Item> itemList;
     private static ImmutableList<Village> villageList;
+    private static ImmutableList<Level> levelList;
     private static ImmutableList<VillageCharacteristic> villageCharacteristicList;
 
     public static void Initialize(string csvDataPath)
@@ -310,6 +311,33 @@ public static class CsvDataHelper
 
     #endregion village
 
+    #region level
+
+    private static void initLevelCSVData()
+    {
+        if (levelList == null)
+        {
+            CsvParser<Level> csvParser = new CsvParser<Level>();
+            var csvPath = GetCSVDataPath(CsvDataFileNames.Level);
+            levelList = csvParser.ParseCsv(csvPath).ToImmutableList();
+        }
+    }
+
+    public static ImmutableList<Level> GetLevelCSVData()
+    {
+        initLevelCSVData();
+
+        return levelList;
+    }
+
+    public static Level? GetLevelByID(int id)
+    {
+        initLevelCSVData();
+
+        return levelList.Find(level => level.Id == id);
+    }
+
+    #endregion level
 
     #region villageCharacteristic
 
