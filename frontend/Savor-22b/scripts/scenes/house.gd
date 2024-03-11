@@ -77,3 +77,7 @@ func _on_refresh_button_button_down():
 
 func _on_farm_button_button_down():
 	get_tree().change_scene_to_file("res://scenes/farm.tscn")
+
+
+func _on_village_button_button_down():
+	get_tree().change_scene_to_file("res://scenes/village_view.tscn")

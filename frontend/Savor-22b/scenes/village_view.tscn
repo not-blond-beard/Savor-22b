@@ -48,7 +48,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
-text = "Home"
+text = " 마을 선택으로 "
 
 [node name="FarmButtonContainer" type="ColorRect" parent="TopMenuMarginContainer/Control"]
 layout_mode = 0
@@ -66,7 +66,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
-text = "Farm"
+text = " 내 밭으로 가기 "
 
 [node name="BottomMenuMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -104,7 +104,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
-text = "Enter Selected Dungeon"
+text = "던전 진입하기"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0

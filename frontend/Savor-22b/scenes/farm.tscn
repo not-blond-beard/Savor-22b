@@ -92,19 +92,19 @@ layout_mode = 2
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
-text = "Home"
+text = "부엌으로"
 
 [node name="InventoryButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
-text = "Inventory"
+text = "인벤토리"
 
 [node name="RefreshButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
-text = "Refresh"
+text = "새로고침"
 
 [node name="Popups" type="Control" parent="."]
 anchors_preset = 0

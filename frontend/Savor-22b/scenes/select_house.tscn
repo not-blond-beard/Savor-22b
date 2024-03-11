@@ -52,13 +52,13 @@ alignment = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_cba5k")
-text = "마을 선택으로"
+text = " 마을 선택으로 "
 
 [node name="BackButton" type="Button" parent="TopMenuMarginContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_epcma")
-text = "마을 전체 보기"
+text = " 마을 전체 보기 "
 
 [node name="BottomMenuMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
