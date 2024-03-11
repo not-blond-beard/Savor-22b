@@ -12,4 +12,5 @@ public static class CsvDataFileNames
     public static readonly string Village = "villages.csv";
     public static readonly string VillageCharacteristics = "village_characteristics.csv";
     public static readonly string Stat = "stat.csv";
+    public static readonly string Level = "level.csv";
 }

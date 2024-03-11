@@ -496,6 +496,38 @@ public class Query : ObjectGraphType
             }
         );
 
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_LevelUpAction",
+            description: "Super Food LevelUp",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "foodStateId",
+                    Description = "Food state Id (Guid)",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new LevelUpAction(context.GetArgument<Guid>("foodStateId"));
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
         AddField(new CalculateRelocationCostQuery());
         AddField(new VillagesQuery(blockChain));
         AddField(new ShopQuery());

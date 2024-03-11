@@ -7,17 +7,17 @@ using Libplanet.Action;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.Action.Exceptions;
+using Savor22b.Model;
 using Savor22b.States;
-using Savor22b.Constants;
 
-[ActionType(nameof(UseLifeStoneAction))]
-public class UseLifeStoneAction : SVRAction
+[ActionType(nameof(LevelUpAction))]
+public class LevelUpAction : SVRAction
 {
-    public UseLifeStoneAction()
+    public LevelUpAction()
     {
     }
 
-    public UseLifeStoneAction(Guid foodStateID)
+    public LevelUpAction(Guid foodStateID)
     {
         FoodStateID = foodStateID;
     }
@@ -52,28 +52,35 @@ public class UseLifeStoneAction : SVRAction
             throw new NotFoundDataException($"NotFound `{FoodStateID}` food state id");
         }
 
-        if (food.GetEdibleType() != Edible.FOOD)
+        if (!food.IsSuperFood)
         {
-            throw new NotHaveRequiredException($"`{FoodStateID}` is not Food.");
+            throw new SuperFoodRequiredException($"Food `{FoodStateID}` is not Super Food.");
         }
 
-        if (food.IsSuperFood)
+        Level? nextLevelInfo = CsvDataHelper.GetLevelByID(food.Level + 1);
+
+        if (nextLevelInfo == null)
         {
-            throw new AlreadyIsSuperFoodException($"Food `{FoodStateID}` is already Super Food.");
+            throw new AlreadyMaxLevelException($"Already Max Level.");
         }
 
-        var singleLifeStone = inventoryState.ItemStateList.FirstOrDefault((e) => e.ItemID == 2);
-        if (singleLifeStone is null)
+        var msgs = inventoryState.ItemStateList.FindAll((e) => e.ItemID == 3);
+        if (msgs.Count < nextLevelInfo.RequiredMsgCount)
         {
-            throw new NotHaveRequiredException("No LifeStone is found in user's inventory.");
+            throw new NotHaveRequiredException("Not Enough Msg");
         }
 
-        food.IsSuperFood = true;
+        for (int i = 0; i < nextLevelInfo.RequiredMsgCount; i++)
+        {
+            inventoryState = inventoryState.RemoveItem(msgs[i].StateID);
+        }
+
+        food = food.LevelUp();
 
         inventoryState = inventoryState.RemoveRefrigeratorItem(food.StateID);
         inventoryState = inventoryState.AddRefrigeratorItem(food);
-        inventoryState = inventoryState.RemoveItem(singleLifeStone.StateID);
         rootState.SetInventoryState(inventoryState);
+
         return states.SetState(context.Signer, rootState.Serialize());
     }
 
