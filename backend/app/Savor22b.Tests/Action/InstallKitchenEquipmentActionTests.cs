@@ -30,6 +30,7 @@ public class InstallKitchenEquipmentActionTests : ActionTests
                 ImmutableList<KitchenEquipmentState>.Empty.Add(new KitchenEquipmentState(Guid.NewGuid(), 1, 1)),
                 ImmutableList<ItemState>.Empty
             ),
+            new DungeonState(),
             new VillageState(
                 new HouseState(
                     1, 1, 1, new KitchenState()
@@ -99,6 +100,7 @@ public class InstallKitchenEquipmentActionTests : ActionTests
                 ImmutableList<KitchenEquipmentState>.Empty,
                 ImmutableList<ItemState>.Empty
             ),
+            new DungeonState(),
             new VillageState(
                 new HouseState(
                     1, 1, 1, new KitchenState()
@@ -138,6 +140,7 @@ public class InstallKitchenEquipmentActionTests : ActionTests
                 ImmutableList<KitchenEquipmentState>.Empty,
                 ImmutableList<ItemState>.Empty
             ),
+            new DungeonState(),
             null
         );
 

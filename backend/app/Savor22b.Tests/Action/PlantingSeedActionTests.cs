@@ -95,7 +95,8 @@ public class PlantingSeedActionTests : ActionTests
 
         InventoryState inventoryState = getInventoryState();
         RootState beforeRootState = new RootState(
-            inventoryState
+            inventoryState,
+            new DungeonState()
         );
 
         beforeState = beforeState.SetState(
