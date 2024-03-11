@@ -17,5 +17,10 @@ public class UserStateType : ObjectGraphType<RootState>
             description: "The village state of the user.",
             resolve: context => context.Source.VillageState
         );
+        Field<NonNullGraphType<DungeonStateType>>(
+            name: "dungeonState",
+            description: "The dungeon state of the user.",
+            resolve: context => context.Source.DungeonState
+        );
     }
 }

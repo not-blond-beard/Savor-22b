@@ -44,6 +44,11 @@ public class DungeonState : State
         });
     }
 
+    public int GetDungeonKeyCount(long blockIndex)
+    {
+        return MaxDungeonKey - GetCurrentDungeonKeyHistories(blockIndex).Count;
+    }
+
     public ImmutableList<DungeonKeyHistory> GetCurrentDungeonKeyHistories(long blockIndex)
     {
         var lowerBoundIndex = blockIndex - (MaxDungeonKey * DungeonKeyChargeIntervalBlock);
