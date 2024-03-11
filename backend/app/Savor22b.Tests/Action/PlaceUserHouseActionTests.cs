@@ -64,7 +64,7 @@ public class PlaceUserHouseActionTests : ActionTests
         prevGlobalUserHouseState.UserHouse.Add("1,0,0", SignerAddress());
 
         VillageState villageState = new VillageState(new HouseState(1, 0, 0, new KitchenState()));
-        RootState prevRootState = new RootState(new InventoryState(), villageState);
+        RootState prevRootState = new RootState(new InventoryState(), new DungeonState(), villageState);
 
         state = state.MintAsset(
             SignerAddress(),
@@ -141,6 +141,7 @@ public class PlaceUserHouseActionTests : ActionTests
         VillageState villageState = new VillageState(new HouseState(1, 0, 0, new KitchenState()));
         RootState prevRootState = new RootState(
             new InventoryState(),
+            new DungeonState(),
             villageState,
             new RelocationState(1, 90, 1, 0, 0)
         );

@@ -5,6 +5,7 @@ using Bencodex.Types;
 public class RootState : State
 {
     public InventoryState InventoryState { get; private set; }
+    public DungeonState DungeonState { get; private set; }
 
     public RelocationState? RelocationState { get; private set; }
 
@@ -13,31 +14,15 @@ public class RootState : State
     public RootState()
     {
         InventoryState = new InventoryState();
+        DungeonState = new DungeonState();
         VillageState = null;
         RelocationState = null;
     }
 
-    public RootState(InventoryState inventoryState)
+    public RootState(InventoryState inventoryState, DungeonState dungeonState, VillageState? villageState = null, RelocationState? relocationState = null)
     {
-        InventoryState = inventoryState;
-        VillageState = null;
-        RelocationState = null;
-    }
-
-    public RootState(InventoryState inventoryState, VillageState villageState)
-    {
-        InventoryState = inventoryState;
-        VillageState = villageState;
-        RelocationState = null;
-    }
-
-    public RootState(
-        InventoryState inventoryState,
-        VillageState villageState,
-        RelocationState relocationState
-    )
-    {
-        InventoryState = inventoryState;
+        InventoryState = inventoryState ?? new InventoryState();
+        DungeonState = dungeonState ?? new DungeonState();
         VillageState = villageState;
         RelocationState = relocationState;
     }
@@ -53,6 +38,17 @@ public class RootState : State
         else
         {
             InventoryState = new InventoryState();
+        }
+
+        if (encoded.ContainsKey((Text)nameof(DungeonState)))
+        {
+            DungeonState = new DungeonState(
+                (Bencodex.Types.Dictionary)encoded[nameof(DungeonState)]
+            );
+        }
+        else
+        {
+            DungeonState = new DungeonState();
         }
 
         if (encoded.ContainsKey((Text)nameof(VillageState)))
@@ -100,6 +96,10 @@ public class RootState : State
             new KeyValuePair<IKey, IValue>(
                 (Text)nameof(InventoryState),
                 InventoryState.Serialize()
+            ),
+            new KeyValuePair<IKey, IValue>(
+                (Text)nameof(DungeonState),
+                DungeonState.Serialize()
             ),
         };
 

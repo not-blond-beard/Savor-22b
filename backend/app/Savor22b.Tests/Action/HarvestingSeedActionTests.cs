@@ -19,6 +19,7 @@ public class HarvestingSeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = new RootState(
             new InventoryState(),
+            new DungeonState(),
             new VillageState(
                 new HouseState(
                     1, 1, 1, new KitchenState()
@@ -70,6 +71,7 @@ public class HarvestingSeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = new RootState(
             new InventoryState(),
+            new DungeonState(),
             new VillageState(
                 new HouseState(
                     1, 1, 1, new KitchenState()
