@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cg773cnsx4rb0"]
+[gd_scene load_steps=3 format=3 uid="uid://cg773cnsx4rb0"]
 
 [ext_resource type="Script" path="res://scripts/scenes/intro.gd" id="1_0m54y"]
+[ext_resource type="Script" path="res://scenes/addressdisplay.gd" id="2_63u45"]
 
 [node name="Intro" type="Control"]
 layout_mode = 3
@@ -95,6 +96,31 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
 text = "Play"
+
+[node name="Info" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="H" type="HBoxContainer" parent="Info"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="Info/H"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "Address : "
+
+[node name="addressdisplay" type="LineEdit" parent="Info/H"]
+custom_minimum_size = Vector2(850, 2.08165e-12)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+placeholder_text = "address_info"
+max_length = 100
+script = ExtResource("2_63u45")
 
 [connection signal="button_down" from="QuitButtonContainer/Button" to="." method="_on_quit_button_button_down"]
 [connection signal="button_down" from="PlayButtonContainer/Button" to="." method="_on_play_button_button_down"]
