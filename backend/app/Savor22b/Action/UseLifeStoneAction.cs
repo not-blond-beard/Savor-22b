@@ -63,6 +63,9 @@ public class UseLifeStoneAction : SVRAction
         }
 
         food.IsSuperFood = true;
+
+        inventoryState = inventoryState.RemoveRefrigeratorItem(food.StateID);
+        inventoryState = inventoryState.AddRefrigeratorItem(food);
         inventoryState = inventoryState.RemoveItem(singleLifeStone.StateID);
         rootState.SetInventoryState(inventoryState);
         return states.SetState(context.Signer, rootState.Serialize());

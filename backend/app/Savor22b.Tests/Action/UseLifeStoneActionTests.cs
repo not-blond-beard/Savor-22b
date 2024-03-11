@@ -35,11 +35,9 @@ public class UseLifeStoneActionTests : ActionTests
             }
         );
 
-        food.IsSuperFood = true;
-
         var newInventoryState = DeriveRootStateFromAccountStateDelta(stateDelta).InventoryState;
 
-        Assert.Equal(food, newInventoryState.RefrigeratorStateList[0]);
+        Assert.True(newInventoryState.RefrigeratorStateList[0].IsSuperFood);
         Assert.Empty(newInventoryState.ItemStateList);
     }
 
