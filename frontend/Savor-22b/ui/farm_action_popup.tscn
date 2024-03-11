@@ -32,6 +32,13 @@ alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 theme_override_styles/normal = SubResource("StyleBoxFlat_yesvl")
-text = "제거하기"
+text = "종자 제거하기"
+
+[node name="Cancel" type="Button" parent="M/V"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_yesvl")
+text = "행동 취소"
 
 [connection signal="button_down" from="M/V/Remove" to="." method="_on_remove_button_down"]
+[connection signal="button_down" from="M/V/Cancel" to="." method="_on_cancel_button_down"]

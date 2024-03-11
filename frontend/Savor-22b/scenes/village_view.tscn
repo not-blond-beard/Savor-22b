@@ -35,7 +35,7 @@ layout_mode = 2
 
 [node name="HomeButtonContainer" type="ColorRect" parent="TopMenuMarginContainer/Control"]
 layout_mode = 0
-offset_right = 410.0
+offset_right = 450.0
 offset_bottom = 100.0
 size_flags_horizontal = 4
 color = Color(0, 0, 0, 1)
@@ -53,7 +53,7 @@ text = " 마을 선택으로 "
 [node name="FarmButtonContainer" type="ColorRect" parent="TopMenuMarginContainer/Control"]
 layout_mode = 0
 offset_left = 460.0
-offset_right = 870.0
+offset_right = 910.0
 offset_bottom = 100.0
 size_flags_horizontal = 4
 color = Color(0, 0, 0, 1)

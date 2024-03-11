@@ -10,3 +10,7 @@ func _ready():
 func _on_remove_button_down():
 	button_down_remove.emit()
 
+
+
+func _on_cancel_button_down():
+	queue_free()
