@@ -176,6 +176,7 @@ public class CreateFoodActionTests : ActionTests
 
         RootState rootState = new RootState(
             inventoryState,
+            new DungeonState(),
             new VillageState(new HouseState(1, 1, 1, resultKitchenState))
         );
 
