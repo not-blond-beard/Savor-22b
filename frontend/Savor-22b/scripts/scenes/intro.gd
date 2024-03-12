@@ -1,12 +1,13 @@
 extends Control
 
+
 func _ready():
 	print("intro scene ready")
 	_query_villages()
 	_query_user_state()
 	_query_assets()
 	_query_shop()
-
+	
 
 func _on_quit_button_button_down():
 	print("quit button down")
@@ -175,4 +176,3 @@ func _query_shop():
 	)
 	add_child(query_executor)
 	query_executor.run({})
-

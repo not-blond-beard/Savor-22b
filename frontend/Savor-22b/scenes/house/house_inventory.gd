@@ -6,6 +6,7 @@ const KITCHEN_SHOP = preload("res://scenes/house/kitchenshop.tscn")
 @onready var panel = $M/V/Panel/C
 
 signal buysignal
+signal closeall
 
 func _ready():
 	_on_tools_button_down()
@@ -32,6 +33,7 @@ func clear_popup():
 			pop.queue_free()
 
 func closetab():
+	closeall.emit()
 	queue_free()
 
 func popup():

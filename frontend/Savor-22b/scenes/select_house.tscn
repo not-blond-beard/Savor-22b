@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://dy1e0tpo1lsby"]
+[gd_scene load_steps=4 format=3 uid="uid://dy1e0tpo1lsby"]
 
 [ext_resource type="Script" path="res://scripts/scenes/select_house.gd" id="1_012c4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cba5k"]
+bg_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epcma"]
+bg_color = Color(0, 0, 0, 1)
 
 [node name="SelectHouse" type="Control"]
 layout_mode = 3
@@ -27,46 +33,32 @@ offset_right = 1920.0
 offset_bottom = 140.0
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 20
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 20
 
-[node name="Control" type="Control" parent="TopMenuMarginContainer"]
+[node name="Title" type="Label" parent="TopMenuMarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = " 집 짓기 화면"
 
-[node name="HomeButtonContainer" type="ColorRect" parent="TopMenuMarginContainer/Control"]
-layout_mode = 0
-offset_right = 410.0
-offset_bottom = 100.0
-size_flags_horizontal = 4
-color = Color(0, 0, 0, 1)
+[node name="HBoxContainer" type="HBoxContainer" parent="TopMenuMarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 2
 
-[node name="Button" type="Button" parent="TopMenuMarginContainer/Control/HomeButtonContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="HomeButton" type="Button" parent="TopMenuMarginContainer/HBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 70
-text = "Home"
+theme_override_styles/normal = SubResource("StyleBoxFlat_cba5k")
+text = " 마을 선택으로 "
 
-[node name="BackButtonContainer2" type="ColorRect" parent="TopMenuMarginContainer/Control"]
-layout_mode = 0
-offset_left = 540.0
-offset_right = 950.0
-offset_bottom = 100.0
-size_flags_horizontal = 4
-color = Color(0, 0, 0, 1)
-
-[node name="BackButton" type="Button" parent="TopMenuMarginContainer/Control/BackButtonContainer2"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="BackButton" type="Button" parent="TopMenuMarginContainer/HBoxContainer"]
+layout_mode = 2
 theme_override_font_sizes/font_size = 70
-text = "Back"
+theme_override_styles/normal = SubResource("StyleBoxFlat_epcma")
+text = " 마을 전체 보기 "
 
 [node name="BottomMenuMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -104,7 +96,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
-text = "Build"
+text = "집 짓기"
 
 [node name="RefreshButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
 layout_mode = 1
@@ -129,7 +121,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_font_sizes/font_size = 70
-text = "Refresh"
+text = "새로고침"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0
@@ -173,8 +165,7 @@ offset_top = 300.0
 offset_right = 640.0
 offset_bottom = 340.0
 
-[connection signal="pressed" from="TopMenuMarginContainer/Control/HomeButtonContainer/Button" to="." method="_on_button_pressed"]
-[connection signal="button_down" from="TopMenuMarginContainer/Control/BackButtonContainer2/BackButton" to="." method="_on_back_button_button_down"]
+[connection signal="pressed" from="TopMenuMarginContainer/HBoxContainer/HomeButton" to="." method="_on_button_pressed"]
+[connection signal="button_down" from="TopMenuMarginContainer/HBoxContainer/BackButton" to="." method="_on_back_button_button_down"]
 [connection signal="button_down" from="BottomMenuMarginContainer/Control/BuildButtonContainer/BuildButton" to="." method="_on_build_button_button_down"]
 [connection signal="button_down" from="BottomMenuMarginContainer/Control/RefreshButtonContainer/RefreshButton" to="." method="_on_refresh_button_button_down"]
-[connection signal="button_down" from="BottomMenuMarginContainer/Control/RefreshButtonContainer/RefreshButton" to="." method="_on_build_button_button_down"]

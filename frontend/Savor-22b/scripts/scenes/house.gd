@@ -15,8 +15,14 @@ func _ready():
 
 
 func _on_inventory_button_button_down():
+	clear_popup()
+	if is_instance_valid(subscene):
+		for scene in subscene.get_children():
+			scene.queue_free()
+			
 	var inventory = HOUSE_INVENTORY.instantiate()
 	inventory.buysignal.connect(buypopup)
+	inventory.closeall.connect(clear_popup)
 	subscene.add_child(inventory)
 
 
@@ -77,3 +83,7 @@ func _on_refresh_button_button_down():
 
 func _on_farm_button_button_down():
 	get_tree().change_scene_to_file("res://scenes/farm.tscn")
+
+
+func _on_village_button_button_down():
+	get_tree().change_scene_to_file("res://scenes/village_view.tscn")
