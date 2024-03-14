@@ -555,6 +555,7 @@ public class Query : ObjectGraphType
                 new RecipeResponse(
                     recipe.ID,
                     recipe.Name,
+                    recipe.RequiredBlock,
                     recipeIngredientComponents,
                     recipeFoodComponents
                 )

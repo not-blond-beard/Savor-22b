@@ -23,6 +23,12 @@ public class RecipeGraphType
                 resolve: context => context.Source.Name
             );
 
+            Field<IntGraphType>(
+                name: "required",
+                description: "The RequiredBlock of the recipe.",
+                resolve: context => context.Source.RequiredBlock
+            );
+
             Field<ListGraphType<RecipeComponentType>>(
                 name: "ingredientIDList",
                 description: "The list of ingredients in the recipe.",
