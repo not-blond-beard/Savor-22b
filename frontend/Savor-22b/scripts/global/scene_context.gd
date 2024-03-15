@@ -43,6 +43,7 @@ var user_state: Dictionary
 var user_asset: String
 
 var shop: Dictionary
+var recipe: Dictionary
 
 var selected_house_index := 0
 var selected_house_location: Dictionary
@@ -77,3 +78,6 @@ func get_selected_village():
 
 func set_shop(query_data: Dictionary):
 	shop = query_data.data.shop
+	
+func set_recipe(query_data: Dictionary):
+	recipe = query_data.data

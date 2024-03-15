@@ -1,12 +1,13 @@
 extends Control
 
-
 func _ready():
 	print("intro scene ready")
 	_query_villages()
 	_query_user_state()
 	_query_assets()
 	_query_shop()
+	_query_recipe()
+	
 	
 
 func _on_quit_button_button_down():
@@ -176,3 +177,28 @@ func _query_shop():
 	)
 	add_child(query_executor)
 	query_executor.run({})
+
+func _query_recipe():
+	var query = GQLQuery.new("recipe").set_props([
+		"id",
+		"name",
+		GQLQuery.new("ingredientIDList").set_props([
+			"id",
+			"name",
+		]),
+		GQLQuery.new("foodIDList").set_props([
+			"id",
+			"name"
+		])
+	])
+	print(query.serialize())
+	var query_executor = SvrGqlClient.query(
+		'query',{}, query)
+		
+	query_executor.graphql_response.connect(
+		func(data):
+			SceneContext.set_recipe(data)
+	)
+	add_child(query_executor)
+	query_executor.run({})
+

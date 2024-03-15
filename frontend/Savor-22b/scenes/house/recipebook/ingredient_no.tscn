@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3 uid="uid://cte67bdw48cd6"]
+
+[ext_resource type="Script" path="res://scenes/house/recipebook/ingredient_no.gd" id="1_8dhac"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jup0i"]
+bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="FontVariation" id="FontVariation_g1ith"]
+variation_embolden = -0.4
+
+[node name="ingredient_no" type="Control"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 180.0
+offset_bottom = 110.0
+script = ExtResource("1_8dhac")
+
+[node name="NoIng" type="Button" parent="."]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+
+[node name="Desc" type="VBoxContainer" parent="NoIng"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="Name" type="Label" parent="NoIng/Desc"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+text = "[라드]"
+
+[node name="No" type="Label" parent="NoIng/Desc"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_g1ith")
+theme_override_font_sizes/font_size = 25
+text = "없음"
