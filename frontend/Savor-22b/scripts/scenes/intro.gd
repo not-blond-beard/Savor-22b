@@ -1,6 +1,5 @@
 extends Control
 
-
 func _ready():
 	print("intro scene ready")
 	_query_villages()
@@ -8,6 +7,7 @@ func _ready():
 	_query_assets()
 	_query_shop()
 	_query_recipe()
+	
 	
 
 func _on_quit_button_button_down():
@@ -198,7 +198,7 @@ func _query_recipe():
 	query_executor.graphql_response.connect(
 		func(data):
 			SceneContext.set_recipe(data)
-			print(SceneContext.recipe)
 	)
 	add_child(query_executor)
 	query_executor.run({})
+

@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://blowb3mc1asp1"]
 
-[ext_resource type="StyleBox" uid="uid://b2nqsuwp80vsg" path="res://scenes/house/recipe_style_box_flat.tres" id="1_txpcy"]
+[ext_resource type="StyleBox" uid="uid://b2nqsuwp80vsg" path="res://scenes/house/recipebook/recipe_style_box_flat.tres" id="1_txpcy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvose"]
 bg_color = Color(0.94902, 0.694118, 0.0784314, 1)
@@ -74,13 +74,9 @@ corner_radius_bottom_left = 30
 [node name="Recipebook" type="Control"]
 custom_minimum_size = Vector2(1600, 900)
 layout_mode = 3
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -800.0
-offset_right = 800.0
+anchors_preset = 0
+offset_right = 1600.0
 offset_bottom = 900.0
-grow_horizontal = 2
 
 [node name="background" type="Panel" parent="."]
 custom_minimum_size = Vector2(1600, 900)
