@@ -3,24 +3,24 @@ namespace Savor22b.States;
 using System.Collections.Immutable;
 using Bencodex.Types;
 
-public class DungeonState : State
+public class UserDungeonState : State
 {
     public static readonly int MaxDungeonKey = 5;
     public static readonly int DungeonKeyChargeIntervalBlock = 12;
 
     public ImmutableList<DungeonKeyHistory> DungeonKeyHistories { get; private set; }
 
-    public DungeonState()
+    public UserDungeonState()
     {
         DungeonKeyHistories = ImmutableList<DungeonKeyHistory>.Empty;
     }
 
-    public DungeonState(ImmutableList<DungeonKeyHistory> dungeonKeyHistories)
+    public UserDungeonState(ImmutableList<DungeonKeyHistory> dungeonKeyHistories)
     {
         DungeonKeyHistories = dungeonKeyHistories;
     }
 
-    public DungeonState(Dictionary encoded)
+    public UserDungeonState(Dictionary encoded)
     {
         if (encoded.TryGetValue((Text)nameof(DungeonKeyHistories), out var dungeonKeyHistories))
         {
@@ -36,12 +36,15 @@ public class DungeonState : State
 
     public IValue Serialize()
     {
-        return new Dictionary(new[]
-        {
-            new KeyValuePair<IKey, IValue>(
-                (Text)nameof(DungeonKeyHistories),
-                new List(DungeonKeyHistories.Select(element => element.Serialize()))),
-        });
+        return new Dictionary(
+            new[]
+            {
+                new KeyValuePair<IKey, IValue>(
+                    (Text)nameof(DungeonKeyHistories),
+                    new List(DungeonKeyHistories.Select(element => element.Serialize()))
+                ),
+            }
+        );
     }
 
     public int GetDungeonKeyCount(long blockIndex)

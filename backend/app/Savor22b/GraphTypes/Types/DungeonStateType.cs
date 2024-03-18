@@ -1,24 +1,40 @@
 namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
-using Libplanet.Blockchain;
-using Libplanet.Net;
-using Libplanet.Store;
-using Savor22b.States;
+using Savor22b.Model;
 
-public class DungeonStateType : ObjectGraphType<DungeonState>
+public class DungeonStateType : ObjectGraphType<Dungeon>
 {
-    public DungeonStateType(
-        BlockChain blockChain,
-        BlockRenderer blockRenderer,
-        IStore store,
-        Swarm? swarm = null
-    )
+    public DungeonStateType()
     {
+        Field<NonNullGraphType<StringGraphType>>(
+            "name",
+            description: "던전의 이름입니다.",
+            resolve: context => context.Source.Name
+        );
+
         Field<NonNullGraphType<IntGraphType>>(
-            name: "DungeonKeyCount",
-            description: "The number of dungeon keys the user has.",
-            resolve: context => context.Source.GetDungeonKeyCount(blockChain.Count)
+            "x",
+            description: "던전이 위치하는 마을의 x 좌표입니다.",
+            resolve: context => context.Source.X
+        );
+
+        Field<NonNullGraphType<IntGraphType>>(
+            "y",
+            description: "던전이 위치하는 마을의 y 좌표입니다.",
+            resolve: context => context.Source.Y
+        );
+
+        Field<NonNullGraphType<IntGraphType>>(
+            "id",
+            description: "던전의 유니크 아이디입니다.",
+            resolve: context => context.Source.ID
+        );
+
+        Field<NonNullGraphType<IntGraphType>>(
+            "villageId",
+            description: "던전이 위치하는 마을의 id 입니다.",
+            resolve: context => context.Source.VillageId
         );
     }
 }

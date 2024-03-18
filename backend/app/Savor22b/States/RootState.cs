@@ -5,7 +5,7 @@ using Bencodex.Types;
 public class RootState : State
 {
     public InventoryState InventoryState { get; private set; }
-    public DungeonState DungeonState { get; private set; }
+    public UserDungeonState UserDungeonState { get; private set; }
 
     public RelocationState? RelocationState { get; private set; }
 
@@ -14,15 +14,20 @@ public class RootState : State
     public RootState()
     {
         InventoryState = new InventoryState();
-        DungeonState = new DungeonState();
+        UserDungeonState = new UserDungeonState();
         VillageState = null;
         RelocationState = null;
     }
 
-    public RootState(InventoryState inventoryState, DungeonState dungeonState, VillageState? villageState = null, RelocationState? relocationState = null)
+    public RootState(
+        InventoryState inventoryState,
+        UserDungeonState dungeonState,
+        VillageState? villageState = null,
+        RelocationState? relocationState = null
+    )
     {
         InventoryState = inventoryState ?? new InventoryState();
-        DungeonState = dungeonState ?? new DungeonState();
+        UserDungeonState = dungeonState ?? new UserDungeonState();
         VillageState = villageState;
         RelocationState = relocationState;
     }
@@ -40,15 +45,15 @@ public class RootState : State
             InventoryState = new InventoryState();
         }
 
-        if (encoded.ContainsKey((Text)nameof(DungeonState)))
+        if (encoded.ContainsKey((Text)nameof(UserDungeonState)))
         {
-            DungeonState = new DungeonState(
-                (Bencodex.Types.Dictionary)encoded[nameof(DungeonState)]
+            UserDungeonState = new UserDungeonState(
+                (Bencodex.Types.Dictionary)encoded[nameof(UserDungeonState)]
             );
         }
         else
         {
-            DungeonState = new DungeonState();
+            UserDungeonState = new UserDungeonState();
         }
 
         if (encoded.ContainsKey((Text)nameof(VillageState)))
@@ -98,8 +103,8 @@ public class RootState : State
                 InventoryState.Serialize()
             ),
             new KeyValuePair<IKey, IValue>(
-                (Text)nameof(DungeonState),
-                DungeonState.Serialize()
+                (Text)nameof(UserDungeonState),
+                UserDungeonState.Serialize()
             ),
         };
 
