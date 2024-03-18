@@ -47,5 +47,15 @@ public class VillageType : ObjectGraphType<VillageDetail>
             description: "This is a list of houses that exist within the village",
             resolve: context => context.Source.Houses
         );
+
+        Field<NonNullGraphType<ListGraphType<DungeonStateType>>>(
+            "dungeons",
+            description: "마을 내에 위치하는 던전 목록입니다. ",
+            resolve: context =>
+            {
+                var dungeons = CsvDataHelper.GetDungeonCSVData().ToArray();
+                return dungeons.Where(d => d.VillageId == context.Source.Id).ToArray();
+            }
+        );
     }
 }

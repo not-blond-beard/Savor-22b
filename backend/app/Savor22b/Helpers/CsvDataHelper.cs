@@ -20,6 +20,8 @@ public static class CsvDataHelper
     private static ImmutableList<Level> levelList;
     private static ImmutableList<VillageCharacteristic> villageCharacteristicList;
 
+    private static ImmutableList<Dungeon> dungeonList;
+
     public static void Initialize(string csvDataPath)
     {
         csvDataResourcePath = csvDataPath;
@@ -34,6 +36,34 @@ public static class CsvDataHelper
     {
         return csvDataResourcePath;
     }
+
+    #region dungeon
+
+    private static void initDungeonCSVData()
+    {
+        if (dungeonList == null)
+        {
+            CsvParser<Dungeon> csvParser = new CsvParser<Dungeon>();
+            var csvPath = GetCSVDataPath(CsvDataFileNames.Dungeon);
+            dungeonList = csvParser.ParseCsv(csvPath).ToImmutableList();
+        }
+    }
+
+    public static ImmutableList<Dungeon> GetDungeonCSVData()
+    {
+        initDungeonCSVData();
+
+        return dungeonList;
+    }
+
+    public static Dungeon? GetDungeonById(int id)
+    {
+        initDungeonCSVData();
+
+        return dungeonList.Find(dungeon => dungeon.ID == id);
+    }
+
+    #endregion dungeon
 
     #region seed
 
