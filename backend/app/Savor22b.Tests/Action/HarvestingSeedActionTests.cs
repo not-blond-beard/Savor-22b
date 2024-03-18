@@ -8,10 +8,7 @@ using Savor22b.States;
 
 public class HarvestingSeedActionTests : ActionTests
 {
-
-    public HarvestingSeedActionTests()
-    {
-    }
+    public HarvestingSeedActionTests() { }
 
     [Fact]
     public void Execute_Success_Normal()
@@ -19,40 +16,30 @@ public class HarvestingSeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = new RootState(
             new InventoryState(),
-            new DungeonState(),
-            new VillageState(
-                new HouseState(
-                    1, 1, 1, new KitchenState()
-                )
-            )
+            new UserDungeonState(),
+            new VillageState(new HouseState(1, 1, 1, new KitchenState()))
         );
 
-        beforeRootState.VillageState!.UpdateHouseFieldState(0, new HouseFieldState(
-            Guid.NewGuid(),
-            1,
-            1,
-            5
-        ));
-
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
+        beforeRootState.VillageState!.UpdateHouseFieldState(
+            0,
+            new HouseFieldState(Guid.NewGuid(), 1, 1, 5)
         );
+
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var random = new DummyRandom(1);
-        HarvestingSeedAction action = new HarvestingSeedAction(
-            0,
-            Guid.NewGuid()
-        );
+        HarvestingSeedAction action = new HarvestingSeedAction(0, Guid.NewGuid());
 
-        IAccountStateDelta state = action.Execute(new DummyActionContext
-        {
-            PreviousStates = beforeState,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 6,
-        });
+        IAccountStateDelta state = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 6,
+            }
+        );
 
         var rootStateEncoded = state.GetState(SignerAddress());
 
@@ -64,49 +51,36 @@ public class HarvestingSeedActionTests : ActionTests
         Assert.Equal(1, rootState.InventoryState.RefrigeratorStateList.Count);
     }
 
-
     [Fact]
     public void Execute_Success_AfterRemoveWeed()
     {
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = new RootState(
             new InventoryState(),
-            new DungeonState(),
-            new VillageState(
-                new HouseState(
-                    1, 1, 1, new KitchenState()
-                )
-            )
+            new UserDungeonState(),
+            new VillageState(new HouseState(1, 1, 1, new KitchenState()))
         );
 
-        beforeRootState.VillageState!.UpdateHouseFieldState(0, new HouseFieldState(
-            Guid.NewGuid(),
-            1,
-            1,
-            10,
-            4,
-            1
-        ));
-
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
+        beforeRootState.VillageState!.UpdateHouseFieldState(
+            0,
+            new HouseFieldState(Guid.NewGuid(), 1, 1, 10, 4, 1)
         );
+
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var random = new DummyRandom(1);
-        HarvestingSeedAction action = new HarvestingSeedAction(
-            0,
-            Guid.NewGuid()
-        );
+        HarvestingSeedAction action = new HarvestingSeedAction(0, Guid.NewGuid());
 
-        IAccountStateDelta state = action.Execute(new DummyActionContext
-        {
-            PreviousStates = beforeState,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 10,
-        });
+        IAccountStateDelta state = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 10,
+            }
+        );
 
         var rootStateEncoded = state.GetState(SignerAddress());
 

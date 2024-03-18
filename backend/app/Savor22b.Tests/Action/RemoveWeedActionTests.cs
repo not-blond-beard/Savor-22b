@@ -8,21 +8,14 @@ using Savor22b.States;
 
 public class RemoveWeedActionTests : ActionTests
 {
-
-    public RemoveWeedActionTests()
-    {
-    }
+    public RemoveWeedActionTests() { }
 
     public RootState createRootStatePreset()
     {
         RootState beforeRootState = new RootState(
             new InventoryState(),
-            new DungeonState(),
-            new VillageState(
-                new HouseState(
-                    1, 1, 1, new KitchenState()
-                )
-            )
+            new UserDungeonState(),
+            new VillageState(new HouseState(1, 1, 1, new KitchenState()))
         );
 
         return beforeRootState;
@@ -34,32 +27,26 @@ public class RemoveWeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = createRootStatePreset();
 
-        HouseFieldState houseFieldState = new(
-            Guid.NewGuid(),
-            1,
-            1,
-            10
-        );
+        HouseFieldState houseFieldState = new(Guid.NewGuid(), 1, 1, 10);
 
         beforeRootState.VillageState!.UpdateHouseFieldState(0, houseFieldState);
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var random = new DummyRandom(1);
 
         RemoveWeedAction action = new RemoveWeedAction(0);
 
-        IAccountStateDelta state = action.Execute(new DummyActionContext
-        {
-            PreviousStates = beforeState,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 5,
-        });
+        IAccountStateDelta state = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 5,
+            }
+        );
 
         var rootStateEncoded = state.GetState(SignerAddress());
 
@@ -67,20 +54,10 @@ public class RemoveWeedActionTests : ActionTests
             ? new RootState(bdict)
             : throw new Exception();
 
-        Assert.Equal(
-            5,
-            rootState.VillageState!.HouseFieldStates[0]!.LastWeedBlock
-        );
-        Assert.Equal(
-            1,
-            rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalCount
-        );
-        Assert.Equal(
-            false,
-            rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalAble(6)
-        );
+        Assert.Equal(5, rootState.VillageState!.HouseFieldStates[0]!.LastWeedBlock);
+        Assert.Equal(1, rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalCount);
+        Assert.Equal(false, rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalAble(6));
     }
-
 
     [Fact]
     public void Execute_Success_SecondWeedRemove()
@@ -88,34 +65,26 @@ public class RemoveWeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = createRootStatePreset();
 
-        HouseFieldState houseFieldState = new(
-            Guid.NewGuid(),
-            1,
-            1,
-            10,
-            3,
-            1
-        );
+        HouseFieldState houseFieldState = new(Guid.NewGuid(), 1, 1, 10, 3, 1);
 
         beforeRootState.VillageState!.UpdateHouseFieldState(0, houseFieldState);
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var random = new DummyRandom(1);
 
         RemoveWeedAction action = new RemoveWeedAction(0);
 
-        IAccountStateDelta state = action.Execute(new DummyActionContext
-        {
-            PreviousStates = beforeState,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 6,
-        });
+        IAccountStateDelta state = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 6,
+            }
+        );
 
         var rootStateEncoded = state.GetState(SignerAddress());
 
@@ -123,17 +92,8 @@ public class RemoveWeedActionTests : ActionTests
             ? new RootState(bdict)
             : throw new Exception();
 
-        Assert.Equal(
-            6,
-            rootState.VillageState!.HouseFieldStates[0]!.LastWeedBlock
-        );
-        Assert.Equal(
-            2,
-            rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalCount
-        );
-        Assert.Equal(
-            false,
-            rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalAble(7)
-        );
+        Assert.Equal(6, rootState.VillageState!.HouseFieldStates[0]!.LastWeedBlock);
+        Assert.Equal(2, rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalCount);
+        Assert.Equal(false, rootState.VillageState!.HouseFieldStates[0]!.WeedRemovalAble(7));
     }
 }

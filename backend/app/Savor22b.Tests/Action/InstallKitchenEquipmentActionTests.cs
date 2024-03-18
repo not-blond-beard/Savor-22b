@@ -11,9 +11,7 @@ using Xunit;
 
 public class InstallKitchenEquipmentActionTests : ActionTests
 {
-    public InstallKitchenEquipmentActionTests()
-    {
-    }
+    public InstallKitchenEquipmentActionTests() { }
 
     [Theory]
     [InlineData(1)]
@@ -27,32 +25,32 @@ public class InstallKitchenEquipmentActionTests : ActionTests
             new InventoryState(
                 ImmutableList<SeedState>.Empty,
                 ImmutableList<RefrigeratorState>.Empty,
-                ImmutableList<KitchenEquipmentState>.Empty.Add(new KitchenEquipmentState(Guid.NewGuid(), 1, 1)),
+                ImmutableList<KitchenEquipmentState>.Empty.Add(
+                    new KitchenEquipmentState(Guid.NewGuid(), 1, 1)
+                ),
                 ImmutableList<ItemState>.Empty
             ),
-            new DungeonState(),
-            new VillageState(
-                new HouseState(
-                    1, 1, 1, new KitchenState()
-                )
-            )
+            new UserDungeonState(),
+            new VillageState(new HouseState(1, 1, 1, new KitchenState()))
         );
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
+
+        var action = new InstallKitchenEquipmentAction(
+            beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
+            spaceNumber
         );
 
-        var action = new InstallKitchenEquipmentAction(beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID, spaceNumber);
-
-        var afterState = action.Execute(new DummyActionContext
-        {
-            PreviousStates = beforeState,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 1,
-        });
+        var afterState = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            }
+        );
 
         var afterRootStateEncoded = afterState.GetState(SignerAddress());
         RootState afterRootState = afterRootStateEncoded is Bencodex.Types.Dictionary bdict
@@ -62,25 +60,44 @@ public class InstallKitchenEquipmentActionTests : ActionTests
         Assert.Single(afterRootState.InventoryState.KitchenEquipmentStateList);
         Assert.Equal(
             beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
-            afterRootState.InventoryState.KitchenEquipmentStateList[0].StateID);
+            afterRootState.InventoryState.KitchenEquipmentStateList[0].StateID
+        );
 
         if (spaceNumber == 1)
         {
             Assert.Equal(
                 beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
-                afterRootState.VillageState!.HouseState.KitchenState.FirstApplianceSpace.InstalledKitchenEquipmentStateId);
+                afterRootState
+                    .VillageState!
+                    .HouseState
+                    .KitchenState
+                    .FirstApplianceSpace
+                    .InstalledKitchenEquipmentStateId
+            );
         }
         else if (spaceNumber == 2)
         {
             Assert.Equal(
                 beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
-                afterRootState.VillageState!.HouseState.KitchenState.SecondApplianceSpace.InstalledKitchenEquipmentStateId);
+                afterRootState
+                    .VillageState!
+                    .HouseState
+                    .KitchenState
+                    .SecondApplianceSpace
+                    .InstalledKitchenEquipmentStateId
+            );
         }
         else if (spaceNumber == 3)
         {
             Assert.Equal(
                 beforeRootState.InventoryState.KitchenEquipmentStateList[0].StateID,
-                afterRootState.VillageState!.HouseState.KitchenState.ThirdApplianceSpace.InstalledKitchenEquipmentStateId);
+                afterRootState
+                    .VillageState!
+                    .HouseState
+                    .KitchenState
+                    .ThirdApplianceSpace
+                    .InstalledKitchenEquipmentStateId
+            );
         }
         else
         {
@@ -100,31 +117,26 @@ public class InstallKitchenEquipmentActionTests : ActionTests
                 ImmutableList<KitchenEquipmentState>.Empty,
                 ImmutableList<ItemState>.Empty
             ),
-            new DungeonState(),
-            new VillageState(
-                new HouseState(
-                    1, 1, 1, new KitchenState()
-                )
-            )
+            new UserDungeonState(),
+            new VillageState(new HouseState(1, 1, 1, new KitchenState()))
         );
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var action = new InstallKitchenEquipmentAction(Guid.NewGuid(), 1);
 
         Assert.Throws<NotHaveRequiredException>(() =>
         {
-            action.Execute(new DummyActionContext
-            {
-                PreviousStates = beforeState,
-                Signer = SignerAddress(),
-                Random = random,
-                Rehearsal = false,
-                BlockIndex = 1,
-            });
+            action.Execute(
+                new DummyActionContext
+                {
+                    PreviousStates = beforeState,
+                    Signer = SignerAddress(),
+                    Random = random,
+                    Rehearsal = false,
+                    BlockIndex = 1,
+                }
+            );
         });
     }
 
@@ -140,27 +152,26 @@ public class InstallKitchenEquipmentActionTests : ActionTests
                 ImmutableList<KitchenEquipmentState>.Empty,
                 ImmutableList<ItemState>.Empty
             ),
-            new DungeonState(),
+            new UserDungeonState(),
             null
         );
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var action = new InstallKitchenEquipmentAction(Guid.NewGuid(), 1);
 
         Assert.Throws<InvalidVillageStateException>(() =>
         {
-            action.Execute(new DummyActionContext
-            {
-                PreviousStates = beforeState,
-                Signer = SignerAddress(),
-                Random = random,
-                Rehearsal = false,
-                BlockIndex = 1,
-            });
+            action.Execute(
+                new DummyActionContext
+                {
+                    PreviousStates = beforeState,
+                    Signer = SignerAddress(),
+                    Random = random,
+                    Rehearsal = false,
+                    BlockIndex = 1,
+                }
+            );
         });
     }
 }

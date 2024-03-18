@@ -9,10 +9,7 @@ using Savor22b.Action.Exceptions;
 
 public class PlantingSeedActionTests : ActionTests
 {
-
-    public PlantingSeedActionTests()
-    {
-    }
+    public PlantingSeedActionTests() { }
 
     private InventoryState getInventoryState()
     {
@@ -26,14 +23,7 @@ public class PlantingSeedActionTests : ActionTests
 
     private VillageState getVillageState()
     {
-        VillageState villageState = new VillageState(
-            new HouseState(
-                1,
-                1,
-                1,
-                new KitchenState()
-            )
-        );
+        VillageState villageState = new VillageState(new HouseState(1, 1, 1, new KitchenState()));
         return villageState;
     }
 
@@ -55,10 +45,7 @@ public class PlantingSeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = createRootStatePreset();
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
         var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
@@ -69,21 +56,26 @@ public class PlantingSeedActionTests : ActionTests
 
         var random = new DummyRandom(1);
 
-        IAccountStateDelta state = plantingSeedAction.Execute(new DummyActionContext
-        {
-            PreviousStates = beforeState,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 1,
-        });
+        IAccountStateDelta state = plantingSeedAction.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            }
+        );
 
         var rootStateEncoded = state.GetState(SignerAddress());
         RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
             ? new RootState(bdict)
             : throw new Exception();
 
-        Assert.Equal(rootState.VillageState!.HouseFieldStates[0]!.InstalledSeedGuid, beforeSeedGuid);
+        Assert.Equal(
+            rootState.VillageState!.HouseFieldStates[0]!.InstalledSeedGuid,
+            beforeSeedGuid
+        );
         Assert.Equal(rootState.InventoryState.SeedStateList.Count, 1);
         Assert.Equal(rootState.InventoryState.ItemStateList.Count, 0);
     }
@@ -94,15 +86,9 @@ public class PlantingSeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
 
         InventoryState inventoryState = getInventoryState();
-        RootState beforeRootState = new RootState(
-            inventoryState,
-            new DungeonState()
-        );
+        RootState beforeRootState = new RootState(inventoryState, new UserDungeonState());
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
         var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
@@ -115,14 +101,16 @@ public class PlantingSeedActionTests : ActionTests
 
         Assert.Throws<InvalidVillageStateException>(() =>
         {
-            plantingSeedAction.Execute(new DummyActionContext
-            {
-                PreviousStates = beforeState,
-                Signer = SignerAddress(),
-                Random = random,
-                Rehearsal = false,
-                BlockIndex = 1,
-            });
+            plantingSeedAction.Execute(
+                new DummyActionContext
+                {
+                    PreviousStates = beforeState,
+                    Signer = SignerAddress(),
+                    Random = random,
+                    Rehearsal = false,
+                    BlockIndex = 1,
+                }
+            );
         });
     }
 
@@ -133,10 +121,7 @@ public class PlantingSeedActionTests : ActionTests
 
         RootState beforeRootState = createRootStatePreset();
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
         var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
@@ -149,14 +134,16 @@ public class PlantingSeedActionTests : ActionTests
 
         Assert.Throws<InvalidFieldIndexException>(() =>
         {
-            plantingSeedAction.Execute(new DummyActionContext
-            {
-                PreviousStates = beforeState,
-                Signer = SignerAddress(),
-                Random = random,
-                Rehearsal = false,
-                BlockIndex = 1,
-            });
+            plantingSeedAction.Execute(
+                new DummyActionContext
+                {
+                    PreviousStates = beforeState,
+                    Signer = SignerAddress(),
+                    Random = random,
+                    Rehearsal = false,
+                    BlockIndex = 1,
+                }
+            );
         });
     }
 
@@ -167,10 +154,7 @@ public class PlantingSeedActionTests : ActionTests
 
         RootState beforeRootState = createRootStatePreset();
 
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
-        );
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
         var beforeSeedGuid = Guid.NewGuid();
 
         PlantingSeedAction plantingSeedAction = new PlantingSeedAction(
@@ -183,14 +167,16 @@ public class PlantingSeedActionTests : ActionTests
 
         Assert.Throws<NotHaveRequiredException>(() =>
         {
-            plantingSeedAction.Execute(new DummyActionContext
-            {
-                PreviousStates = beforeState,
-                Signer = SignerAddress(),
-                Random = random,
-                Rehearsal = false,
-                BlockIndex = 1,
-            });
+            plantingSeedAction.Execute(
+                new DummyActionContext
+                {
+                    PreviousStates = beforeState,
+                    Signer = SignerAddress(),
+                    Random = random,
+                    Rehearsal = false,
+                    BlockIndex = 1,
+                }
+            );
         });
     }
 }
