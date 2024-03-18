@@ -8,10 +8,7 @@ using Savor22b.States;
 
 public class RemovePlantedSeedActionTests : ActionTests
 {
-
-    public RemovePlantedSeedActionTests()
-    {
-    }
+    public RemovePlantedSeedActionTests() { }
 
     [Fact]
     public void Execute_Success_Normal()
@@ -19,37 +16,30 @@ public class RemovePlantedSeedActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         RootState beforeRootState = new RootState(
             new InventoryState(),
-            new DungeonState(),
-            new VillageState(
-                new HouseState(
-                    1, 1, 1, new KitchenState()
-                )
-            )
+            new UserDungeonState(),
+            new VillageState(new HouseState(1, 1, 1, new KitchenState()))
         );
 
-        beforeRootState.VillageState!.UpdateHouseFieldState(0, new HouseFieldState(
-            Guid.NewGuid(),
-            1,
-            1,
-            5
-        ));
-
-        beforeState = beforeState.SetState(
-            SignerAddress(),
-            beforeRootState.Serialize()
+        beforeRootState.VillageState!.UpdateHouseFieldState(
+            0,
+            new HouseFieldState(Guid.NewGuid(), 1, 1, 5)
         );
+
+        beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
         var random = new DummyRandom(1);
         RemovePlantedSeedAction action = new RemovePlantedSeedAction(0);
 
-        IAccountStateDelta state = action.Execute(new DummyActionContext
-        {
-            PreviousStates = beforeState,
-            Signer = SignerAddress(),
-            Random = random,
-            Rehearsal = false,
-            BlockIndex = 1,
-        });
+        IAccountStateDelta state = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = beforeState,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            }
+        );
 
         var rootStateEncoded = state.GetState(SignerAddress());
 

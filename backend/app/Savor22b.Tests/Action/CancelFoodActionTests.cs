@@ -58,7 +58,7 @@ public class CancelFoodActionTests : ActionTests
 
         RootState beforeRootState = new RootState(
             beforeInventoryState,
-            new DungeonState(),
+            new UserDungeonState(),
             new VillageState(new HouseState(1, 1, 1, beforeKitchenState))
         );
 
