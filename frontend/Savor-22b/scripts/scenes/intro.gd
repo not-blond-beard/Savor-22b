@@ -182,6 +182,7 @@ func _query_recipe():
 	var query = GQLQuery.new("recipe").set_props([
 		"id",
 		"name",
+		"requiredBlockCount",
 		GQLQuery.new("ingredientIDList").set_props([
 			"id",
 			"name",
@@ -189,6 +190,14 @@ func _query_recipe():
 		GQLQuery.new("foodIDList").set_props([
 			"id",
 			"name"
+		]),
+		GQLQuery.new("requiredKitchenEquipmentCategoryList").set_props([
+			"id",
+			"name",
+		]),
+		GQLQuery.new("resultFood").set_props([
+			"id",
+			"name",
 		])
 	])
 	print(query.serialize())

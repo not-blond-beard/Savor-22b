@@ -1,7 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://bam215608gpdl"]
+[gd_scene load_steps=4 format=3 uid="uid://cwntcvxk7dsm1"]
 
-[ext_resource type="StyleBox" uid="uid://b2nqsuwp80vsg" path="res://scenes/house/recipebook/recipe_style_box_flat.tres" id="1_8ipq3"]
-[ext_resource type="Script" path="res://scenes/house/recipebook/recipe.gd" id="2_jlc81"]
+[ext_resource type="Script" path="res://scenes/house/recipebook/recipe.gd" id="1_rh6ky"]
+[ext_resource type="StyleBox" uid="uid://b2nqsuwp80vsg" path="res://scenes/house/recipebook/recipe_style_box_flat.tres" id="2_ce356"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jup0i"]
+bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="Recipe" type="Control"]
 custom_minimum_size = Vector2(700, 550)
@@ -10,12 +17,12 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 700.0
 offset_bottom = 550.0
-script = ExtResource("2_jlc81")
+script = ExtResource("1_rh6ky")
 
 [node name="panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(700, 550)
 layout_mode = 0
-theme_override_styles/panel = ExtResource("1_8ipq3")
+theme_override_styles/panel = ExtResource("2_ce356")
 
 [node name="M" type="MarginContainer" parent="panel"]
 layout_mode = 1
@@ -41,6 +48,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "[트러플 짜장면] 레시피"
 
+[node name="insufficient" type="Label" parent="panel/M/V/Title"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "(재료부족)"
+
 [node name="Blockreq" type="Label" parent="panel/M/V"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.541176, 0, 1)
@@ -63,6 +76,24 @@ text = "[조리도구]"
 [node name="Tools" type="HBoxContainer" parent="panel/M/V/Description"]
 layout_mode = 2
 theme_override_constants/separation = 20
+
+[node name="Availabletools" type="Button" parent="panel/M/V/Description/Tools"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[-- -]
+사용 가능"
+
+[node name="Availabletools2" type="Button" parent="panel/M/V/Description/Tools"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[-- -]
+사용 가능"
 
 [node name="T2" type="Label" parent="panel/M/V/Description"]
 layout_mode = 2
