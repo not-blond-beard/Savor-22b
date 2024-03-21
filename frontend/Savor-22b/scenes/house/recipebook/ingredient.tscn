@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://me2nvitswvki"]
 
-[ext_resource type="Script" path="res://scenes/house/recipebook/ingredient_yes.gd" id="1_ictny"]
+[ext_resource type="Script" path="res://scenes/house/recipebook/ingredient.gd" id="1_g877k"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jup0i"]
 bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
@@ -9,13 +9,13 @@ corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
-[node name="ingredient_yes" type="Control"]
+[node name="ingredient" type="Control"]
 custom_minimum_size = Vector2(180, 110)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 180.0
 offset_bottom = 110.0
-script = ExtResource("1_ictny")
+script = ExtResource("1_g877k")
 
 [node name="Ing" type="Button" parent="."]
 custom_minimum_size = Vector2(180, 110)

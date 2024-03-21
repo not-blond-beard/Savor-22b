@@ -6,7 +6,7 @@ const SHOP_DONE_POPUP = preload("res://scenes/shop/done_popup.tscn")
 
 const Gql_query = preload("res://gql/query.gd")
 
-@onready var shoplist = $M/H/C/M/Lists
+@onready var shoplist = $M/H/C/M/S/Lists
 @onready var popup = $Popups
 
 var shopitems = []

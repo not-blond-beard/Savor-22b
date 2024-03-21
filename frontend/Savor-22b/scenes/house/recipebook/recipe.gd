@@ -1,14 +1,16 @@
 extends Control
 
-const ING_YES = preload("res://scenes/house/recipebook/ingredient_yes.tscn")
-const ING_NO = preload("res://scenes/house/recipebook/ingredient_no.tscn")
+const ING = preload("res://scenes/house/recipebook/ingredient.tscn")
 
 @onready var ingredients = $panel/M/V/Description/Ingredients/list
+@onready var tools = $panel/M/V/Description/Tools
+@onready var reqblock = $panel/M/V/Blockreq
 
 var info
-var inventorylist
 
-var name_format = "[%s] 레시피"
+
+var name_format = "[%s] 레시피";
+var block_format = "소요 블록 %s 블록"
 
 func _ready():
 	update_info()
@@ -19,7 +21,6 @@ func set_info(recipe: Dictionary):
 	info = recipe
 
 func update_info():
-	inventorylist = SceneContext.user_state["inventoryState"]
 	
 	# Setting names in UI
 	var name = info.name
@@ -28,36 +29,21 @@ func update_info():
 	
 	# Getting exist
 	for ing in info["ingredientIDList"]:
-		var created = false
-		for inving in inventorylist.refrigeratorStateList:
-			if ing["name"] == inving["name"]:
-				var ing_y = ING_YES.instantiate()
-				ing_y.set_ingname(ing["name"])
-				ingredients.add_child(ing_y)
-				created = true
-				break
+		var ing_ins = ING.instantiate() 
+		ing_ins.set_ingname(ing["name"])
+		ingredients.add_child(ing_ins)
 		
-		if(!created):
-			var ing_n = ING_NO.instantiate()
-			ing_n.set_ingname(ing["name"])
-			ingredients.add_child(ing_n)
-
 	for ing in info["foodIDList"]:
-		var created = false
-		# refrigeratorstatelist에 만들어진 음식이 없는 경우 수정 필요
-		for inving in inventorylist.refrigeratorStateList:
-			if ing["name"] == inving["name"]:
-				var ing_y = ING_YES.instantiate()
-				ing_y.set_ingname(ing["name"])
-				ingredients.add_child(ing_y)
-				created = true
-				break
+		var ing_ins = ING.instantiate() 
+		ing_ins.set_ingname(ing["name"])
+		ingredients.add_child(ing_ins)	
 		
-		if(!created):
-			var ing_n = ING_NO.instantiate()
-			ing_n.set_ingname(ing["name"])
-			ingredients.add_child(ing_n)
+	for tool in info["requiredKitchenEquipmentCategoryList"]:
+		var tool_ins = ING.instantiate() 
+		tool_ins.set_ingname(tool["name"])
+		tools.add_child(tool_ins)	
+
+	set_block_req()
 	
-	
-func insufficient():
-	$panel/M/V/Title/insufficient.visible = true
+func set_block_req():
+	reqblock.text = block_format % [ info["requiredBlockCount"] ]

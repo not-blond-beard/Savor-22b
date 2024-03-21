@@ -75,7 +75,11 @@ func clear_popup():
 
 func _on_recipe_button_button_down():
 	clear_popup()
+	if is_instance_valid(subscene):
+		for scene in subscene.get_children():
+			scene.queue_free()
 	var Recipebookarea = MarginContainer.new()
+	#setting margincontainer constants
 	Recipebookarea.add_theme_constant_override("margin_top", 20)
 	Recipebookarea.add_theme_constant_override("margin_bottom", 20)
 	Recipebookarea.add_theme_constant_override("margin_left", 140)
@@ -98,6 +102,7 @@ func _on_village_button_button_down():
 func _on_refresh_button_button_down():
 	Intro._query_user_state()
 	
+	clear_popup()
 	if is_instance_valid(subscene):
 		for scene in subscene.get_children():
 			scene.queue_free()
