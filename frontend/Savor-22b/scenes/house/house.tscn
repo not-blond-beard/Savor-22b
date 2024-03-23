@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://bpobpaan3tquv"]
+[gd_scene load_steps=3 format=3 uid="uid://bpobpaan3tquv"]
 
 [ext_resource type="Script" path="res://scripts/scenes/house.gd" id="1_suicg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3yrr"]
+bg_color = Color(0.32549, 1, 0.290196, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
 
 [node name="House" type="Control"]
 layout_mode = 3
@@ -85,6 +92,19 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
 text = "  새로고침  "
+
+[node name="M" type="MarginContainer" parent="M/V/menus"]
+layout_mode = 2
+theme_override_constants/margin_left = 250
+
+[node name="CookButton" type="Button" parent="M/V/menus/M"]
+custom_minimum_size = Vector2(380, 2.08165e-12)
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 45
+theme_override_styles/normal = SubResource("StyleBoxFlat_n3yrr")
+text = "+ 음식 조리하기"
 
 [node name="subscene" type="MarginContainer" parent="M/V"]
 layout_mode = 2
