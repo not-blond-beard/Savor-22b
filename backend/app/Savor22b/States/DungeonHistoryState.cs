@@ -3,18 +3,18 @@ namespace Savor22b.States;
 using Bencodex.Types;
 using Libplanet.Headless.Extensions;
 
-public class DungeonKeyHistory : State
+public class DungeonHistoryState : State
 {
     public long BlockIndex { get; private set; }
     public int DungeonId { get; private set; }
 
-    public DungeonKeyHistory(long blockIndex, int dungeonId)
+    public DungeonHistoryState(long blockIndex, int dungeonId)
     {
         BlockIndex = blockIndex;
         DungeonId = dungeonId;
     }
 
-    public DungeonKeyHistory(Dictionary encoded)
+    public DungeonHistoryState(Dictionary encoded)
     {
         BlockIndex = encoded[nameof(BlockIndex)].ToLong();
         DungeonId = encoded[nameof(DungeonId)].ToInteger();
