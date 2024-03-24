@@ -8,29 +8,29 @@ public class UserDungeonState : State
     public static readonly int MaxDungeonKey = 5;
     public static readonly int DungeonKeyChargeIntervalBlock = 12;
 
-    public ImmutableList<DungeonKeyHistory> DungeonKeyHistories { get; private set; }
+    public ImmutableList<DungeonHistoryState> DungeonHistories { get; private set; }
 
     public UserDungeonState()
     {
-        DungeonKeyHistories = ImmutableList<DungeonKeyHistory>.Empty;
+        DungeonHistories = ImmutableList<DungeonHistoryState>.Empty;
     }
 
-    public UserDungeonState(ImmutableList<DungeonKeyHistory> dungeonKeyHistories)
+    public UserDungeonState(ImmutableList<DungeonHistoryState> dungeonKeyHistories)
     {
-        DungeonKeyHistories = dungeonKeyHistories;
+        DungeonHistories = dungeonKeyHistories;
     }
 
     public UserDungeonState(Dictionary encoded)
     {
-        if (encoded.TryGetValue((Text)nameof(DungeonKeyHistories), out var dungeonKeyHistories))
+        if (encoded.TryGetValue((Text)nameof(DungeonHistories), out var dungeonKeyHistories))
         {
-            DungeonKeyHistories = ((List)dungeonKeyHistories)
-                .Select(element => new DungeonKeyHistory((Dictionary)element))
+            DungeonHistories = ((List)dungeonKeyHistories)
+                .Select(element => new DungeonHistoryState((Dictionary)element))
                 .ToImmutableList();
         }
         else
         {
-            DungeonKeyHistories = ImmutableList<DungeonKeyHistory>.Empty;
+            DungeonHistories = ImmutableList<DungeonHistoryState>.Empty;
         }
     }
 
@@ -40,8 +40,8 @@ public class UserDungeonState : State
             new[]
             {
                 new KeyValuePair<IKey, IValue>(
-                    (Text)nameof(DungeonKeyHistories),
-                    new List(DungeonKeyHistories.Select(element => element.Serialize()))
+                    (Text)nameof(DungeonHistories),
+                    new List(DungeonHistories.Select(element => element.Serialize()))
                 ),
             }
         );
@@ -49,17 +49,17 @@ public class UserDungeonState : State
 
     public int GetDungeonKeyCount(long blockIndex)
     {
-        return MaxDungeonKey - GetCurrentDungeonKeyHistories(blockIndex).Count;
+        return MaxDungeonKey - GetCurrentDungeonHistories(blockIndex).Count;
     }
 
-    public ImmutableList<DungeonKeyHistory> GetCurrentDungeonKeyHistories(long blockIndex)
+    public ImmutableList<DungeonHistoryState> GetCurrentDungeonHistories(long blockIndex)
     {
         var lowerBoundIndex = blockIndex - (MaxDungeonKey * DungeonKeyChargeIntervalBlock);
-        var result = new List<DungeonKeyHistory>();
+        var result = new List<DungeonHistoryState>();
 
-        for (int i = DungeonKeyHistories.Count - 1; i >= 0; i--)
+        for (int i = DungeonHistories.Count - 1; i >= 0; i--)
         {
-            var history = DungeonKeyHistories[i];
+            var history = DungeonHistories[i];
 
             if (history.BlockIndex > lowerBoundIndex && history.BlockIndex <= blockIndex)
             {
