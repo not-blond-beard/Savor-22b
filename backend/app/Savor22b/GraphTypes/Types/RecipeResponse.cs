@@ -6,6 +6,8 @@ public class RecipeResponse
         int id,
         string name,
         int requiredBlock,
+        RecipeComponent resultFood,
+        List<RecipeComponent> requiredKitchenEquipmentCategoryList,
         List<RecipeComponent> ingredientList,
         List<RecipeComponent> foodList
     )
@@ -13,6 +15,8 @@ public class RecipeResponse
         Id = id;
         Name = name;
         RequiredBlock = requiredBlock;
+        ResultFood = resultFood;
+        RequiredKitchenEquipmentCategoryList = requiredKitchenEquipmentCategoryList;
         IngredientList = ingredientList;
         FoodList = foodList;
     }
@@ -22,6 +26,10 @@ public class RecipeResponse
     public string Name { get; set; }
 
     public int RequiredBlock { get; set; }
+
+    public RecipeComponent ResultFood { get; set; }
+
+    public List<RecipeComponent> RequiredKitchenEquipmentCategoryList { get; set; }
 
     public List<RecipeComponent> IngredientList { get; set; }
 
