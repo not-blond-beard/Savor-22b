@@ -36,5 +36,18 @@ public class DungeonStateType : ObjectGraphType<Dungeon>
             description: "던전이 위치하는 마을의 id 입니다.",
             resolve: context => context.Source.VillageId
         );
+
+        Field<NonNullGraphType<ListGraphType<StaticSeedStateType>>>(
+            "seeds",
+            description: "던전에서 획득 가능한 씨앗 목록입니다.",
+            resolve: context =>
+            {
+                var seeds = context.Source.RewardSeedIdList.Select(
+                    seedId => CsvDataHelper.GetSeedById(seedId)!
+                );
+
+                return seeds;
+            }
+        );
     }
 }
