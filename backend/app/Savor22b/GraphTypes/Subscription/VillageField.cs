@@ -1,7 +1,9 @@
-namespace Savor22b.GraphTypes.Query;
+namespace Savor22b.GraphTypes.Subscription;
 
 using System.Collections.Immutable;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using Bencodex.Types;
 using GraphQL;
 using GraphQL.Resolvers;
@@ -12,12 +14,18 @@ using Savor22b.GraphTypes.Types;
 using Savor22b.Model;
 using Savor22b.States;
 
-public class VillagesQuery : FieldType
+public class VillageField : FieldType
 {
-    public VillagesQuery(BlockChain blockChain)
+    private readonly BlockChain _blockChain;
+    private readonly Subject<Libplanet.Blocks.BlockHash> _subject;
+
+    public VillageField(BlockChain blockChain, Subject<Libplanet.Blocks.BlockHash> subject)
         : base()
     {
-        Name = "villages";
+        _blockChain = blockChain;
+        _subject = subject;
+
+        Name = "Village";
         Type = typeof(NonNullGraphType<ListGraphType<VillageType>>);
         Description = "Get all villages";
         Resolver = new FuncFieldResolver<ImmutableList<VillageDetail>>(context =>
@@ -38,6 +46,25 @@ public class VillagesQuery : FieldType
                 throw new ExecutionError(e.Message);
             }
         });
+        StreamResolver = new SourceStreamResolver<ImmutableList<VillageDetail>>(
+            (context) =>
+            {
+                try
+                {
+                    var villages = CsvDataHelper.GetVillageCSVData().ToArray();
+
+                    return _subject
+                        .DistinctUntilChanged()
+                        .Select(
+                            _ => GetVillageDetails(villages.ToImmutableList(), context, blockChain)
+                        );
+                }
+                catch (Exception e)
+                {
+                    throw new ExecutionError(e.Message);
+                }
+            }
+        );
     }
 
     public static ImmutableList<VillageDetail> GetVillageDetails(
