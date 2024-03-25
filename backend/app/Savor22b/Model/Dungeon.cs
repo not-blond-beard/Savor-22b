@@ -39,6 +39,6 @@ public class Dungeon
 
         return globalDungeonState.DungeonStatus.TryGetValue(ID.ToString(), out Address address)
             ? address
-            : default;
+            : null;
     }
 }
