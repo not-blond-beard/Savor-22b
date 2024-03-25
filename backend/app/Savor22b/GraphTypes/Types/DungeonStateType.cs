@@ -1,11 +1,14 @@
 namespace Savor22b.GraphTypes.Types;
 
 using GraphQL.Types;
+using Libplanet;
+using Libplanet.Blockchain;
+using Libplanet.Explorer.GraphTypes;
 using Savor22b.Model;
 
 public class DungeonStateType : ObjectGraphType<Dungeon>
 {
-    public DungeonStateType()
+    public DungeonStateType(BlockChain blockChain)
     {
         Field<NonNullGraphType<StringGraphType>>(
             "name",
@@ -48,6 +51,18 @@ public class DungeonStateType : ObjectGraphType<Dungeon>
 
                 return seeds;
             }
+        );
+
+        Field<NonNullGraphType<BooleanGraphType>>(
+            "isConquest",
+            description: "현재 던전이 점령 되었는지의 여부입니다.",
+            resolve: context => context.Source.IsConquest(blockChain)
+        );
+
+        Field<AddressType>(
+            "conquestUserAddress",
+            description: "현재 던전을 점령하고 있는 유저의 Address입니다.",
+            resolve: context => context.Source.CurrentConquestUserAddress(blockChain)
         );
     }
 }

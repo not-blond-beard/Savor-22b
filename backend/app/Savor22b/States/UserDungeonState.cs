@@ -9,15 +9,21 @@ public class UserDungeonState : State
     public static readonly int DungeonKeyChargeIntervalBlock = 12;
 
     public ImmutableList<DungeonHistoryState> DungeonHistories { get; private set; }
+    public ImmutableList<DungeonConquestHistoryState> DungeonConquestHistories { get; private set; }
 
     public UserDungeonState()
     {
         DungeonHistories = ImmutableList<DungeonHistoryState>.Empty;
+        DungeonConquestHistories = ImmutableList<DungeonConquestHistoryState>.Empty;
     }
 
-    public UserDungeonState(ImmutableList<DungeonHistoryState> dungeonKeyHistories)
+    public UserDungeonState(
+        ImmutableList<DungeonHistoryState> dungeonKeyHistories,
+        ImmutableList<DungeonConquestHistoryState> dungeonConquestHistories
+    )
     {
         DungeonHistories = dungeonKeyHistories;
+        DungeonConquestHistories = dungeonConquestHistories;
     }
 
     public UserDungeonState(Dictionary encoded)
@@ -32,6 +38,10 @@ public class UserDungeonState : State
         {
             DungeonHistories = ImmutableList<DungeonHistoryState>.Empty;
         }
+
+        DungeonConquestHistories = ((List)encoded[nameof(DungeonConquestHistories)])
+            .Select(element => new DungeonConquestHistoryState((Dictionary)element))
+            .ToImmutableList();
     }
 
     public IValue Serialize()
@@ -42,6 +52,10 @@ public class UserDungeonState : State
                 new KeyValuePair<IKey, IValue>(
                     (Text)nameof(DungeonHistories),
                     new List(DungeonHistories.Select(element => element.Serialize()))
+                ),
+                new KeyValuePair<IKey, IValue>(
+                    (Text)nameof(DungeonConquestHistories),
+                    new List(DungeonConquestHistories.Select(element => element.Serialize()))
                 ),
             }
         );
