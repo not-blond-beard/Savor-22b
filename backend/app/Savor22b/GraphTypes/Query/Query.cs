@@ -537,6 +537,7 @@ public class Query : ObjectGraphType
     {
         var foodDict = CsvDataHelper.GetFoodCSVData().ToDictionary(x => x.ID);
         var ingredientDict = CsvDataHelper.GetIngredientCSVData().ToDictionary(x => x.ID);
+        var kitchenEquipmentCategoryDict = CsvDataHelper.GetKitchenEquipmentCategoryCSVData().ToDictionary(x => x.ID);
 
         var recipes = new List<RecipeResponse>();
         foreach (var recipe in CsvDataHelper.GetRecipeCSVData())
@@ -550,12 +551,18 @@ public class Query : ObjectGraphType
             var recipeFoodComponents = recipe.FoodIDList
                 .Select(foodID => new RecipeComponent(foodID, foodDict[foodID].Name))
                 .ToList();
+            var requiredKitchenEquipmentCategoryComponents = recipe.RequiredKitchenEquipmentCategoryList
+                .Select(equipment => new RecipeComponent(equipment, kitchenEquipmentCategoryDict[equipment].Name))
+                .ToList();
+            var resultFoodComponent = new RecipeComponent(recipe.ResultFoodID, foodDict[recipe.ResultFoodID].Name);
 
             recipes.Add(
                 new RecipeResponse(
                     recipe.ID,
                     recipe.Name,
                     recipe.RequiredBlock,
+                    resultFoodComponent,
+                    requiredKitchenEquipmentCategoryComponents,
                     recipeIngredientComponents,
                     recipeFoodComponents
                 )
