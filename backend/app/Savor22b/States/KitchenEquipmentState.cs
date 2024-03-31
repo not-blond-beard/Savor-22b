@@ -99,7 +99,9 @@ public class KitchenEquipmentState : State
 
     public long CookingEndBlockIndex()
     {
-        return CookingStartedBlockIndex ?? 0 + CookingDurationBlock ?? 0;
+        var startedBlockIndex = CookingStartedBlockIndex ?? 0;
+        var durationBlock = CookingDurationBlock ?? 0;
+        return startedBlockIndex + durationBlock;
     }
 
     public KitchenEquipmentState StartCooking(
