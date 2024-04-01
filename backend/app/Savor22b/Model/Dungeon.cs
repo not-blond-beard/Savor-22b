@@ -1,6 +1,7 @@
 using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet;
+using Libplanet.Assets;
 using Libplanet.Blockchain;
 using Savor22b.Constants;
 using Savor22b.States;
@@ -15,6 +16,12 @@ public class Dungeon
     public int ID { get; set; }
     public int VillageId { get; set; }
     public ImmutableList<int> RewardSeedIdList { get; set; }
+    public string ReturnDungeonRewardBBG { get; set; }
+
+    public FungibleAssetValue PriceToFungibleAssetValue()
+    {
+        return FungibleAssetValue.Parse(Currencies.KeyCurrency, ReturnDungeonRewardBBG);
+    }
 
     private static GlobalDungeonState GetGlobalDungeonState(BlockChain blockChain)
     {

@@ -1,4 +1,4 @@
-Name,X,Y,ID,VillageId,RewardSeedIdList
-땅콩 던전,0,1,0,1,1;2;3;4;5
-빵 던전,2,3,1,2,5;6;7;8;9
-케이크 던전,2,5,2,3,1;2;3;6;7;8
+Name,X,Y,ID,VillageId,RewardSeedIdList,ReturnDungeonRewardBBG
+땅콩 던전,0,1,0,1,1;2;3;4;5,500
+빵 던전,2,3,1,2,5;6;7;8;9,1000
+케이크 던전,2,5,2,3,1;2;3;6;7;8,700
