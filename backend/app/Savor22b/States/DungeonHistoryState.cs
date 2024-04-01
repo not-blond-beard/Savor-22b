@@ -9,6 +9,8 @@ public class DungeonHistoryState : State
     public long BlockIndex { get; private set; }
     public int DungeonId { get; private set; }
     public int DungeonClearStatus { get; private set; }
+
+    // 0: Not Cleared, 1: Cleared
     public ImmutableList<int> DungeonClearRewardSeedIdList { get; private set; }
 
     public DungeonHistoryState(

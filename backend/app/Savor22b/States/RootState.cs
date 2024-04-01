@@ -94,6 +94,11 @@ public class RootState : State
         RelocationState = relocationState;
     }
 
+    public void SetUserDungeonState(UserDungeonState userDungeonState)
+    {
+        UserDungeonState = userDungeonState;
+    }
+
     public IValue Serialize()
     {
         var pairs = new[]
