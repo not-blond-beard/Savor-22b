@@ -530,6 +530,7 @@ public class Query : ObjectGraphType
 
         AddField(new DungeonExplorationQuery(blockChain, swarm));
         AddField(new CalculateRelocationCostQuery());
+        AddField(new DungeonReturnRewardQuery());
         AddField(new ShopQuery());
     }
 
