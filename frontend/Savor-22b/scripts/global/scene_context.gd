@@ -41,6 +41,7 @@ var villages: Array
 var selected_village_index := 0
 var user_state: Dictionary
 var user_asset: String
+var user_kitchen_state: Dictionary
 
 var shop: Dictionary
 var recipe: Dictionary
@@ -52,9 +53,11 @@ var selected_village_width := 0
 var selected_village_height := 0
 
 var selected_field_index := 0
-
 var selected_item_index := 0
 var selected_item_name : String
+
+
+var block_index : Dictionary
 
 #func _ready():
 	#var json = JSON.new()
@@ -70,6 +73,9 @@ func set_villages(query_data: Dictionary):
 func set_user_state(query_data: Dictionary):
 	user_state = query_data.data.userState
 
+func set_user_kitchen_state(query_data: Dictionary):
+	user_kitchen_state = query_data.data.userState
+
 func set_user_asset(query_data: Dictionary):
 	user_asset = query_data.data.asset
 
@@ -81,3 +87,6 @@ func set_shop(query_data: Dictionary):
 	
 func set_recipe(query_data: Dictionary):
 	recipe = query_data.data
+	
+func get_current_block(query_data: Dictionary):
+	block_index = query_data.data

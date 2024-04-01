@@ -6,13 +6,16 @@ const DONE_POPUP = preload("res://scenes/shop/done_popup.tscn")
 
 const RECIPE = preload("res://scenes/house/recipebook/recipebook.tscn")
 
+const SMALL_COOK = preload("res://scenes/house/Kitchen/cook_slot.tscn")
+const LARGE_COOK = preload("res://scenes/house/Kitchen/big_tool_slot.tscn")
+
 const Gql_query = preload("res://gql/query.gd")
 
 @onready var subscene = $M/V/subscene
 @onready var popup = $Popups
 
 func _ready():
-	pass # Replace with function body.
+	load_kitchen()
 
 
 
@@ -72,6 +75,7 @@ func clear_popup():
 	if is_instance_valid(popup):
 		for pop in popup.get_children():
 			pop.queue_free()
+	load_kitchen()		
 
 func _on_recipe_button_button_down():
 	clear_popup()
@@ -87,11 +91,9 @@ func _on_recipe_button_button_down():
 	subscene.add_child(Recipebookarea)
 
 	var recipebook = RECIPE.instantiate()
+	recipebook.closeall.connect(clear_popup)
 
 	Recipebookarea.add_child(recipebook)
-
-
-
 
 func _on_farm_button_button_down():
 	get_tree().change_scene_to_file("res://scenes/farm.tscn")
@@ -106,3 +108,20 @@ func _on_refresh_button_button_down():
 	if is_instance_valid(subscene):
 		for scene in subscene.get_children():
 			scene.queue_free()
+
+
+func load_kitchen():
+	if is_instance_valid(subscene):
+		for scene in subscene.get_children():
+			scene.queue_free()	
+
+	var Kitchenarea = VBoxContainer.new()
+	Kitchenarea.add_theme_constant_override("separation", 20)
+	subscene.add_child(Kitchenarea)
+	
+	var smallslot = SMALL_COOK.instantiate()
+	Kitchenarea.add_child(smallslot)
+	
+	var largeslot = LARGE_COOK.instantiate()
+	Kitchenarea.add_child(largeslot)
+	

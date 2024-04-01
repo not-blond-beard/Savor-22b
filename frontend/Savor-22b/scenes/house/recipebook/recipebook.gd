@@ -1,5 +1,7 @@
 extends Control
 
+signal closeall
+
 const RECIPE = preload("res://scenes/house/recipebook/recipe.tscn")
 
 @onready var grid = $background/M/V/S/G
@@ -17,3 +19,4 @@ func _ready():
 
 func _on_close_button_down():
 	queue_free()
+	closeall.emit()
