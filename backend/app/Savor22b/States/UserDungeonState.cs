@@ -66,6 +66,16 @@ public class UserDungeonState : State
         return MaxDungeonKey - GetCurrentDungeonHistories(blockIndex).Count;
     }
 
+    public bool CanUseDungeonKey(long blockIndex)
+    {
+        return GetDungeonKeyCount(blockIndex) > 0;
+    }
+
+    public int CalculateDungeonClear(Libplanet.Action.IRandom random)
+    {
+        return random.Next(0, 2) == 1 ? 1 : 0;
+    }
+
     public ImmutableList<DungeonHistoryState> GetCurrentDungeonHistories(long blockIndex)
     {
         var lowerBoundIndex = blockIndex - (MaxDungeonKey * DungeonKeyChargeIntervalBlock);
@@ -86,5 +96,10 @@ public class UserDungeonState : State
         }
 
         return result.ToImmutableList();
+    }
+
+    public UserDungeonState AddDungeonHistory(DungeonHistoryState dungeonHistory)
+    {
+        return new UserDungeonState(DungeonHistories.Add(dungeonHistory), DungeonConquestHistories);
     }
 }
