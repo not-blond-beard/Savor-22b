@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://cs43iommrj00v"]
+[gd_scene load_steps=3 format=3 uid="uid://cs43iommrj00v"]
+
+[ext_resource type="Script" path="res://scenes/house/Kitchen/cook_menu.gd" id="1_tn6pc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6jp5j"]
 bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
@@ -8,12 +10,16 @@ corner_radius_bottom_right = 40
 corner_radius_bottom_left = 40
 
 [node name="CookMenu" type="Control"]
+custom_minimum_size = Vector2(400, 250)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = -1520.0
+offset_bottom = -830.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_tn6pc")
 
 [node name="P" type="Panel" parent="."]
 layout_mode = 0
