@@ -1,4 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://jm7hptg5twbn"]
+[gd_scene load_steps=3 format=3 uid="uid://jm7hptg5twbn"]
+
+[ext_resource type="Script" path="res://scenes/house/Kitchen/tool_slot_empty.gd" id="1_7et8y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6vgf"]
 bg_color = Color(0.32549, 1, 0.290196, 1)
@@ -17,6 +19,7 @@ offset_right = -1485.0
 offset_bottom = -630.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_7et8y")
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(435, 450)
