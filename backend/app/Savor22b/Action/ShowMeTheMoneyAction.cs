@@ -105,7 +105,7 @@ public class ShowMeTheMoneyAction : SVRAction
             }
         }
 
-        states.MintAsset(Address, FungibleAssetValue.Parse(
+        states = states.MintAsset(Address, FungibleAssetValue.Parse(
             Currencies.KeyCurrency,
             "10000"
         ));
