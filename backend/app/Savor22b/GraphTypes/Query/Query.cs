@@ -532,6 +532,7 @@ public class Query : ObjectGraphType
         AddField(new CalculateRelocationCostQuery());
         AddField(new DungeonReturnRewardQuery());
         AddField(new ShopQuery());
+        AddField(new ShowMeTheMoney(blockChain, swarm));
     }
 
     private List<RecipeResponse> combineRecipeData()
