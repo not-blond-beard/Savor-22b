@@ -25,7 +25,7 @@ public class VillageField : FieldType
         _blockChain = blockChain;
         _subject = subject;
 
-        Name = "Village";
+        Name = "Villages";
         Type = typeof(NonNullGraphType<ListGraphType<VillageType>>);
         Description = "Get all villages";
         Resolver = new FuncFieldResolver<ImmutableList<VillageDetail>>(context =>
