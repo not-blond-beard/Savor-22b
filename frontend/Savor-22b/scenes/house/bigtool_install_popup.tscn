@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://78boqlki8lh7"]
+[gd_scene load_steps=4 format=3 uid="uid://78boqlki8lh7"]
+
+[ext_resource type="Script" path="res://scenes/house/bigtool_install_popup.gd" id="1_hncgm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lve77"]
 bg_color = Color(1, 0.541176, 0, 1)
@@ -29,6 +31,7 @@ offset_right = -520.0
 offset_bottom = -480.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_hncgm")
 
 [node name="B" type="Panel" parent="."]
 custom_minimum_size = Vector2(1400, 600)
@@ -72,6 +75,8 @@ horizontal_scroll_mode = 0
 [node name="G" type="GridContainer" parent="B/M/V/S"]
 custom_minimum_size = Vector2(1360, 380)
 layout_mode = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 15
 columns = 4
 
 [node name="H" type="HBoxContainer" parent="B/M/V"]
@@ -93,3 +98,6 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_winqn")
 text = "   선택한 도구 설치하기   "
+
+[connection signal="button_down" from="B/M/V/H/CloseButton" to="." method="_on_close_button_button_down"]
+[connection signal="button_down" from="B/M/V/H/InstallButton" to="." method="_on_install_button_button_down"]

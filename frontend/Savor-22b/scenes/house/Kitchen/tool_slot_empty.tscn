@@ -36,3 +36,5 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_q6vgf")
 text = "비어있음
 
 조리도구 설치 가능"
+
+[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]

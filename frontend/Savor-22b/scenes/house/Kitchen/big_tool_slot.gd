@@ -1,5 +1,7 @@
 extends Control
 
+signal install_signal
+
 const SLOT_EMPTY = preload("res://scenes/house/Kitchen/tool_slot_empty.tscn")
 const SLOT_NOT_USED = preload("res://scenes/house/Kitchen/tool_not_used.tscn")
 const SLOT_USED = preload("res://scenes/house/Kitchen/tool_is_used.tscn")
@@ -8,6 +10,9 @@ const SLOT_USED = preload("res://scenes/house/Kitchen/tool_is_used.tscn")
 
 var largeslots: Dictionary
 var largetools: Array
+var installedId: Array
+
+var selectedSpace: int
 
 func _ready():
 
@@ -17,6 +22,8 @@ func _ready():
 	set_slot("first")
 	set_slot("second")
 	set_slot("third")
+	
+	SceneContext.installed_tool_id = installedId
 
 	
 func load_data():
@@ -32,13 +39,19 @@ func set_slot(name : String):
 	var singleslot = largeslots[loc]
 	if (singleslot.installedKitchenEquipment == null): # not installed
 		var bigslot = SLOT_EMPTY.instantiate()
+		bigslot.install_tools.connect(on_signal_received)
+		bigslot.set_data(singleslot)
 		slot.add_child(bigslot)
 	else: # installed but not used
 		if (!singleslot["installedKitchenEquipment"]["isCooking"]):
 			var bigslot = SLOT_NOT_USED.instantiate()
 			bigslot.set_data(singleslot)
 			slot.add_child(bigslot)
+			installedId.append(singleslot["installedKitchenEquipment"]["stateId"])
 		else: # cooking
 			var bigslot = SLOT_USED.instantiate()
 			bigslot.set_data(singleslot)
 			slot.add_child(bigslot)
+
+func on_signal_received(spaceNumber : int):
+	install_signal.emit(spaceNumber)
