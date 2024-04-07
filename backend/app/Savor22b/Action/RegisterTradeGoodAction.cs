@@ -3,58 +3,46 @@ namespace Savor22b.Action;
 using System;
 using System.Collections.Immutable;
 using Bencodex.Types;
-using Libplanet;
 using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
-using Savor22b.Action.Exceptions;
-using Savor22b.Constants;
-using Savor22b.Helpers;
-using Savor22b.Model;
 using Savor22b.States;
+using Savor22b.States.Trade;
 
-[ActionType(nameof(ListItemInTradeStoreAction))]
-public class ListItemInTradeStoreAction : SVRAction
+[ActionType(nameof(RegisterTradeGoodAction))]
+public class RegisterTradeGoodAction : SVRAction
 {
-    public ListItemInTradeStoreAction() { }
+    public RegisterTradeGoodAction() { }
 
-    public ListItemInTradeStoreAction(Guid tradeItemStateId, RefrigeratorState food, FungibleAssetValue price)
+    public RegisterTradeGoodAction(string goodType, FungibleAssetValue price, RefrigeratorState foodState)
     {
-        TradeItemStateId = tradeItemStateId;
+        GoodType = goodType;
         Price = price;
-        Food = food;
-        Items = null;
+        FoodState = foodState;
+        ItemStates = null;
     }
 
-    public ListItemInTradeStoreAction(Guid tradeItemStateId, List<ItemState> items, FungibleAssetValue price)
-    {
-        TradeItemStateId = tradeItemStateId;
-        Price = price;
-        Food = null;
-        Items = items.ToImmutableList();
-    }
-
-    public Guid TradeItemStateId;
+    public string GoodType;
 
     public FungibleAssetValue Price;
 
-    public RefrigeratorState? Food;
+    public RefrigeratorState? FoodState;
 
-    public ImmutableList<ItemState>? Items;
+    public ImmutableList<ItemState>? ItemStates;
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
-            [nameof(TradeItemStateId)] = TradeItemStateId.Serialize(),
+            [nameof(GoodType)] = GoodType.Serialize(),
             [nameof(Price)] = Price.ToBencodex(),
-            [nameof(Food)] = Food is null ? Null.Value : Food.Serialize(),
-            [nameof(Items)] = Items is null ? Null.Value : (Bencodex.Types.List)Items.Select(i => i.Serialize()),
+            [nameof(FoodState)] = FoodState is null ? Null.Value : FoodState.Serialize(),
+            [nameof(ItemStates)] = ItemStates is null ? Null.Value : (Bencodex.Types.List)ItemStates.Select(i => i.Serialize()),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
-        TradeItemStateId = plainValue[nameof(TradeItemStateId)].ToGuid();
+        GoodType = plainValue[nameof(GoodType)].ToString();
         Price = plainValue[nameof(Price)].ToFungibleAssetValue();
     }
 
