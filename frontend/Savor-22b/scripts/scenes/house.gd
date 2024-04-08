@@ -127,7 +127,6 @@ func load_kitchen():
 	Kitchenarea.add_child(largeslot)
 	
 func on_empty_slot_pressed(spaceNumber : int):
-	reload_subscene()
 	
 	var largeinstaller = LARGE_INSTALLER.instantiate()
 
