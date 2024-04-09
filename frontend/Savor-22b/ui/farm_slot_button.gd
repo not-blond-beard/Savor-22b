@@ -2,7 +2,7 @@ extends ColorRect
 
 signal button_down(child_index: int)
 signal button_down_action
-signal weed_action
+
 
 @onready var button = $V/Button
 
@@ -25,7 +25,7 @@ func _update_button():
 	button.text = format_string % [farm_slot.seedName, "자라는 중", timeleft, "블록 남음"]
 	
 	if (farm_slot.weedRemovalAble):
-		pass
+		$Weed.visible = true
 
 func set_farm_slot(farm_slot: Dictionary):
 	self.farm_slot = farm_slot
@@ -36,7 +36,7 @@ func _on_button_button_down():
 		button_down.emit(get_index())
 	else:
 		button_down.emit(get_index()+5)
-	button_down_action.emit()
+	button_down_action.emit(farm_slot.weedRemovalAble)
 
 
 func im_right():
