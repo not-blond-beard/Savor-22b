@@ -2,6 +2,7 @@ extends ColorRect
 
 signal button_down(child_index: int)
 signal button_down_action
+signal weed_action
 
 @onready var button = $V/Button
 
@@ -18,9 +19,13 @@ func _ready():
 func _update_button():
 	if button == null:
 		return
-
-	button.text = format_string % [farm_slot.seedName, "자라는 중", farm_slot.totalBlock, "블록 남음"]
+		
+	var currenttime = SceneContext.block_index["blockQuery"]["blocks"][0]["index"]
+	var timeleft = (farm_slot.installedBlock + farm_slot.totalBlock) - currenttime
+	button.text = format_string % [farm_slot.seedName, "자라는 중", timeleft, "블록 남음"]
 	
+	if (farm_slot.weedRemovalAble):
+		pass
 
 func set_farm_slot(farm_slot: Dictionary):
 	self.farm_slot = farm_slot
