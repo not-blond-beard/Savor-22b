@@ -47,19 +47,19 @@ public class RegisterTradeGoodActionTests : ActionTests
 
         var afterState = DeriveRootStateFromAccountStateDelta(stateDelta);
 
-        var afterTradeInventoryStateEncoded = stateDelta.GetState(SignerAddress());
+        var afterTradeInventoryStateEncoded = stateDelta.GetState(TradeInventoryState.StateAddress);
         TradeInventoryState afterTradeInventoryState = afterTradeInventoryStateEncoded is Bencodex.Types.Dictionary bdict
             ? new TradeInventoryState(bdict)
             : throw new Exception();
 
-        Assert.Empty(afterState.InventoryState.RefrigeratorStateList);
+        Assert.True(afterState.InventoryState.RefrigeratorStateList.Count == 1);
 
-        var tradeGood = afterTradeInventoryState.TradeGoods.First(item => item.Value.SellerAddress == SignerAddress()).Value;
+        var tradeGood = afterTradeInventoryState.TradeGoods.First(g => g.Value.SellerAddress == SignerAddress()).Value;
 
         if (tradeGood is FoodGoodState foodGoodState)
         {
             Assert.Equal(foodGoodState.Price, FungibleAssetValue.Parse(Currencies.KeyCurrency, "10"));
-            Assert.Equal(foodGoodState.Food?.StateID, beforeFood.StateID);
+            Assert.Equal(foodGoodState.Food.StateID, beforeFood.StateID);
         }
         else
         {
@@ -67,38 +67,55 @@ public class RegisterTradeGoodActionTests : ActionTests
         }
     }
 
-    // [Fact]
-    // public void RegisterTradeGoodActionExecute_Success_Items()
-    // {
+    [Fact]
+    public void RegisterTradeGoodActionExecute_Success_Items()
+    {
+        var stateDelta = CreatePresetStateDelta();
+        var beforeState = DeriveRootStateFromAccountStateDelta(stateDelta);
 
-    //     var stateDelta = CreatePresetStateDelta();
-    //     var beforeState = DeriveRootStateFromAccountStateDelta(stateDelta);
+        var beforeItems = beforeState.InventoryState.ItemStateList;
 
-    //     var beforeItems = beforeState.InventoryState.ItemStateList;
+        var action = new RegisterTradeGoodAction(
+            nameof(ItemsGoodState),
+            FungibleAssetValue.Parse(
+                Currencies.KeyCurrency,
+                "10"
+            ),
+            beforeItems
+        );
 
-    //     var action = new RegisterTradeGoodAction(beforeItems.Select(i => i.StateID).ToList(), 10);
+        stateDelta = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = stateDelta,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            }
+        );
 
-    //     stateDelta = action.Execute(
-    //         new DummyActionContext
-    //         {
-    //             PreviousStates = stateDelta,
-    //             Signer = SignerAddress(),
-    //             Random = random,
-    //             Rehearsal = false,
-    //             BlockIndex = 1,
-    //         }
-    //     );
+        var afterState = DeriveRootStateFromAccountStateDelta(stateDelta);
 
-    //     var afterState = DeriveRootStateFromAccountStateDelta(stateDelta);
-    //     var afterTradeStoreStateEncoded = stateDelta.GetState(SignerAddress());
-    //     TradeStoreState afterTradeStoreState = afterTradeStoreStateEncoded is Bencodex.Types.Dictionary bdict
-    //         ? new TradeStoreState(bdict)
-    //         : throw new Exception();
+        var afterTradeInventoryStateEncoded = stateDelta.GetState(TradeInventoryState.StateAddress);
+        TradeInventoryState afterTradeInventoryState = afterTradeInventoryStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new TradeInventoryState(bdict)
+            : throw new Exception();
 
-    //     Assert.Empty(afterState.InventoryState.ItemStateList);
-    //     Assert.Contains(afterTradeStoreState.ItemList, item => item.Item1 == beforeItems.Select(i => i.StateID).ToList());
-    //     Assert.Equal(afterTradeStoreState.ItemList.First(item => item.Item1 == beforeItems.Select(i => i.StateID).ToList()).Item2, FungibleAssetValue.Parse(Currencies.KeyCurrency, "10"));
-    // }
+        Assert.Empty(afterState.InventoryState.ItemStateList);
+
+        var tradeGood = afterTradeInventoryState.TradeGoods.First(g => g.Value.SellerAddress == SignerAddress()).Value;
+
+        if (tradeGood is ItemsGoodState itemsGoodState)
+        {
+            Assert.Equal(itemsGoodState.Price, FungibleAssetValue.Parse(Currencies.KeyCurrency, "10"));
+            Assert.Equal(itemsGoodState.Items[0].StateID, beforeItems[0].StateID);
+        }
+        else
+        {
+            throw new Exception();
+        }
+    }
 
     private IAccountStateDelta CreatePresetStateDelta()
     {
@@ -112,7 +129,6 @@ public class RegisterTradeGoodActionTests : ActionTests
 
         InventoryState inventoryState = rootState.InventoryState;
 
-        inventoryState = inventoryState.AddItem(new ItemState(Guid.NewGuid(), LifeStoneItemId));
         inventoryState = inventoryState.AddItem(new ItemState(Guid.NewGuid(), LifeStoneItemId));
 
         var food = RefrigeratorState.CreateFood(

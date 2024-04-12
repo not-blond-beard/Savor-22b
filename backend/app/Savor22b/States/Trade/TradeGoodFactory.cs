@@ -11,13 +11,13 @@ public static class TradeGoodFactory
 {
     public static TradeGood CreateInstance(Dictionary serialized)
     {
-        string type = serialized["Type"].ToString();
+        string type = serialized["Type"].ToDotnetString();
 
         switch (type)
         {
             case nameof(FoodGoodState):
                 return CreateFoodGood(serialized);
-            case nameof(ItemGood):
+            case nameof(ItemsGoodState):
                 return CreateItemGood(serialized);
             default:
                 throw new ArgumentException($"Unsupported TradeGood type: {type}");
@@ -30,7 +30,7 @@ public static class TradeGoodFactory
         Guid productId = serialized[nameof(TradeGood.ProductStateId)].ToGuid();
         FungibleAssetValue price = serialized[nameof(TradeGood.Price)].ToFungibleAssetValue();
 
-        var food = new RefrigeratorState((Dictionary)serialized[nameof(FoodGoodState)]);
+        var food = new RefrigeratorState((Dictionary)serialized["Food"]);
 
         return new FoodGoodState(sellerAddress, productId, price, food);
     }
@@ -43,6 +43,6 @@ public static class TradeGoodFactory
 
         var items = ((List)serialized["Items"]).Select(dict => new ItemState((Dictionary)dict)).ToImmutableList();
 
-        return new ItemGood(sellerAddress, productId, price, items);
+        return new ItemsGoodState(sellerAddress, productId, price, items);
     }
 }
