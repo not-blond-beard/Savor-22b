@@ -31,7 +31,7 @@ public class RegisterTradeGoodActionTests : ActionTests
                 Currencies.KeyCurrency,
                 "10"
             ),
-            beforeFood
+            beforeFood.StateID
         );
 
         stateDelta = action.Execute(
@@ -81,7 +81,7 @@ public class RegisterTradeGoodActionTests : ActionTests
                 Currencies.KeyCurrency,
                 "10"
             ),
-            beforeItems
+            beforeItems.Select(i => i.StateID).ToImmutableList()
         );
 
         stateDelta = action.Execute(

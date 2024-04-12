@@ -178,6 +178,11 @@ public class InventoryState : State
         return new InventoryState(SeedStateList, RefrigeratorStateList, stateList, ItemStateList);
     }
 
+    public ItemState? GetItem(Guid stateID)
+    {
+        return ItemStateList.Find(i => i.StateID == stateID);
+    }
+
     public InventoryState AddItem(ItemState item)
     {
         var itemStateList = ItemStateList.Add(item);

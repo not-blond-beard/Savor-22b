@@ -16,46 +16,45 @@ public class RegisterTradeGoodAction : SVRAction
 {
     public RegisterTradeGoodAction() { }
 
-    public RegisterTradeGoodAction(string goodType, FungibleAssetValue price, RefrigeratorState foodState)
+    public RegisterTradeGoodAction(string goodType, FungibleAssetValue price, Guid foodStateId)
     {
         GoodType = goodType;
         Price = price;
-        FoodState = foodState;
-        ItemStates = null;
+        FoodStateId = foodStateId;
+        ItemStateIds = null;
     }
 
-    public RegisterTradeGoodAction(string goodType, FungibleAssetValue price, ImmutableList<ItemState> itemStates)
+    public RegisterTradeGoodAction(string goodType, FungibleAssetValue price, ImmutableList<Guid> itemStateIds)
     {
         GoodType = goodType;
         Price = price;
-        FoodState = null;
-        ItemStates = itemStates;
+        FoodStateId = null;
+        ItemStateIds = itemStateIds;
     }
-
 
     public string GoodType;
 
     public FungibleAssetValue Price;
 
-    public RefrigeratorState? FoodState;
+    public Guid? FoodStateId;
 
-    public ImmutableList<ItemState>? ItemStates;
+    public ImmutableList<Guid>? ItemStateIds;
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
             [nameof(GoodType)] = GoodType.Serialize(),
             [nameof(Price)] = Price.ToBencodex(),
-            [nameof(FoodState)] = FoodState is null ? Null.Value : FoodState.Serialize(),
-            [nameof(ItemStates)] = ItemStates is null ? Null.Value : (Bencodex.Types.List)ItemStates.Select(i => i.Serialize()),
+            [nameof(FoodStateId)] = FoodStateId.Serialize(),
+            [nameof(ItemStateIds)] = ItemStateIds is null ? Null.Value : (List)ItemStateIds.Select(i => i.Serialize()),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
         GoodType = plainValue[nameof(GoodType)].ToString();
         Price = plainValue[nameof(Price)].ToFungibleAssetValue();
-        FoodState = plainValue[nameof(FoodState)] is Null ? null : new RefrigeratorState((Dictionary)plainValue[nameof(FoodState)]);
-        ItemStates = plainValue[nameof(ItemStates)] is Null ? null : ((List)plainValue[nameof(ItemStates)]).Select(e => new ItemState((Dictionary)e)).ToImmutableList();
+        FoodStateId = plainValue[nameof(FoodStateId)].ToGuid();
+        ItemStateIds = plainValue[nameof(ItemStateIds)] is Null ? null : ((List)plainValue[nameof(ItemStateIds)]).Select(e => e.ToGuid()).ToImmutableList();
     }
 
     public override IAccountStateDelta Execute(IActionContext ctx)
@@ -79,26 +78,34 @@ public class RegisterTradeGoodAction : SVRAction
         switch (GoodType)
         {
             case nameof(FoodGoodState):
-                if (FoodState is null)
+                if (FoodStateId is null)
                 {
                     throw new InvalidValueException($"FoodState required");
                 }
 
-                inventoryState = inventoryState.RemoveRefrigeratorItem(FoodState.StateID);
-                var foodGoodState = new FoodGoodState(ctx.Signer, ctx.Random.GenerateRandomGuid(), Price, FoodState);
+                var foodState = inventoryState.GetRefrigeratorItem(FoodStateId.Value);
+                var foodGoodState = new FoodGoodState(ctx.Signer, ctx.Random.GenerateRandomGuid(), Price, foodState);
+                inventoryState = inventoryState.RemoveRefrigeratorItem(FoodStateId.Value);
                 tradeInventoryState = tradeInventoryState.RegisterGood(foodGoodState);
                 break;
             case nameof(ItemsGoodState):
-                if (ItemStates is null)
+                if (ItemStateIds is null)
                 {
                     throw new InvalidValueException($"ItemStates required");
                 }
 
-                foreach (var item in ItemStates)
+                var itemStates = new List<ItemState>();
+                foreach (var itemStateId in ItemStateIds)
                 {
-                    inventoryState = inventoryState.RemoveItem(item.StateID);
+                    itemStates.Add(inventoryState.GetItem(itemStateId));
+                    inventoryState = inventoryState.RemoveItem(itemStateId);
                 }
-                var itemsGoodState = new ItemsGoodState(ctx.Signer, ctx.Random.GenerateRandomGuid(), Price, ItemStates);
+                var itemsGoodState = new ItemsGoodState(
+                    ctx.Signer,
+                    ctx.Random.GenerateRandomGuid(),
+                    Price,
+                    itemStates.ToImmutableList());
+
                 tradeInventoryState = tradeInventoryState.RegisterGood(itemsGoodState);
                 break;
             default:
