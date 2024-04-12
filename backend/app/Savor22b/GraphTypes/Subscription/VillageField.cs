@@ -17,15 +17,15 @@ using Savor22b.States;
 public class VillageField : FieldType
 {
     private readonly BlockChain _blockChain;
-    private readonly Subject<Libplanet.Blocks.BlockHash> _subject;
+    private readonly Subject<Libplanet.Blocks.BlockHash>? _subject;
 
-    public VillageField(BlockChain blockChain, Subject<Libplanet.Blocks.BlockHash> subject)
+    public VillageField(BlockChain blockChain, Subject<Libplanet.Blocks.BlockHash>? subject = null)
         : base()
     {
         _blockChain = blockChain;
         _subject = subject;
 
-        Name = "Village";
+        Name = "Villages";
         Type = typeof(NonNullGraphType<ListGraphType<VillageType>>);
         Description = "Get all villages";
         Resolver = new FuncFieldResolver<ImmutableList<VillageDetail>>(context =>
@@ -53,7 +53,7 @@ public class VillageField : FieldType
                 {
                     var villages = CsvDataHelper.GetVillageCSVData().ToArray();
 
-                    return _subject
+                    return _subject!
                         .DistinctUntilChanged()
                         .Select(
                             _ => GetVillageDetails(villages.ToImmutableList(), context, blockChain)

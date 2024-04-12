@@ -1,5 +1,7 @@
 extends Control
 
+signal install_signal
+
 const SLOT_EMPTY = preload("res://scenes/house/Kitchen/tool_slot_empty.tscn")
 const SLOT_NOT_USED = preload("res://scenes/house/Kitchen/tool_not_used.tscn")
 const SLOT_USED = preload("res://scenes/house/Kitchen/tool_is_used.tscn")
@@ -8,53 +10,20 @@ const SLOT_USED = preload("res://scenes/house/Kitchen/tool_is_used.tscn")
 
 var largeslots: Dictionary
 var largetools: Array
+var installedId: Array
+
+var selectedSpace: int
 
 func _ready():
 
 	load_data()
+
+# Setting Slots
+	set_slot("first")
+	set_slot("second")
+	set_slot("third")
 	
-#slot 1
-	var slot1 = largeslots["firstApplianceSpace"]
-	if (slot1.installedKitchenEquipment == null): # not installed
-		var bigslot = SLOT_EMPTY.instantiate()
-		slot.add_child(bigslot)
-	else: # installed but not used
-		if (!slot1["installedKitchenEquipment"]["isCooking"]):
-			var bigslot = SLOT_NOT_USED.instantiate()
-			bigslot.set_data(slot1)
-			slot.add_child(bigslot)
-		else: # cooking
-			var bigslot = SLOT_USED.instantiate()
-			bigslot.set_data(slot1)
-			slot.add_child(bigslot)
-#slot 2
-	var slot2 = largeslots["secondApplianceSpace"]
-	if (slot2.installedKitchenEquipment == null):
-		var bigslot = SLOT_EMPTY.instantiate()
-		slot.add_child(bigslot)
-	else:
-		if (!slot2["installedKitchenEquipment"]["isCooking"]):
-			var bigslot = SLOT_NOT_USED.instantiate()
-			bigslot.set_data(slot2)
-			slot.add_child(bigslot)
-		else:
-			var bigslot = SLOT_USED.instantiate()
-			bigslot.set_data(slot2)
-			slot.add_child(bigslot)
-#slot 3
-	var slot3 = largeslots["thirdApplianceSpace"]
-	if (slot3.installedKitchenEquipment == null):
-		var bigslot = SLOT_EMPTY.instantiate()
-		slot.add_child(bigslot)
-	else:
-		if (!slot3["installedKitchenEquipment"]["isCooking"]):
-			var bigslot = SLOT_NOT_USED.instantiate()
-			bigslot.set_data(slot3)
-			slot.add_child(bigslot)
-		else:
-			var bigslot = SLOT_USED.instantiate()
-			bigslot.set_data(slot3)
-			slot.add_child(bigslot)
+	SceneContext.installed_tool_id = installedId
 
 	
 func load_data():
@@ -65,3 +34,24 @@ func load_data():
 		if(tool.equipmentCategoryType == "main"):
 			largetools.append(tool)
 
+func set_slot(name : String):
+	var loc = "%s%s" % [name,"ApplianceSpace"]
+	var singleslot = largeslots[loc]
+	if (singleslot.installedKitchenEquipment == null): # not installed
+		var bigslot = SLOT_EMPTY.instantiate()
+		bigslot.install_tools.connect(on_signal_received)
+		bigslot.set_data(singleslot)
+		slot.add_child(bigslot)
+	else: # installed but not used
+		if (!singleslot["installedKitchenEquipment"]["isCooking"]):
+			var bigslot = SLOT_NOT_USED.instantiate()
+			bigslot.set_data(singleslot)
+			slot.add_child(bigslot)
+			installedId.append(singleslot["installedKitchenEquipment"]["stateId"])
+		else: # cooking
+			var bigslot = SLOT_USED.instantiate()
+			bigslot.set_data(singleslot)
+			slot.add_child(bigslot)
+
+func on_signal_received(spaceNumber : int):
+	install_signal.emit(spaceNumber)

@@ -56,6 +56,7 @@ var selected_field_index := 0
 var selected_item_index := 0
 var selected_item_name : String
 
+var installed_tool_id : Array
 
 var block_index : Dictionary
 

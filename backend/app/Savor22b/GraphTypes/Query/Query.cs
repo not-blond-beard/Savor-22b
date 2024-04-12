@@ -11,7 +11,9 @@ using Libplanet.Crypto;
 using Libplanet.Net;
 using Savor22b.Action;
 using Savor22b.GraphTypes.Types;
+using Savor22b.GraphTypes.Subscription;
 using Savor22b.States;
+using System.Reactive.Subjects;
 
 public class Query : ObjectGraphType
 {
@@ -23,7 +25,11 @@ public class Query : ObjectGraphType
     private readonly BlockChain _blockChain;
     private readonly Swarm _swarm;
 
-    public Query(BlockChain blockChain, Swarm? swarm = null)
+    public Query(
+        BlockChain blockChain,
+        Swarm? swarm = null,
+        Subject<Libplanet.Blocks.BlockHash>? subject = null
+    )
     {
         _blockChain = blockChain;
         _swarm = swarm;
@@ -596,6 +602,8 @@ public class Query : ObjectGraphType
         AddField(new CalculateRelocationCostQuery());
         AddField(new DungeonReturnRewardQuery());
         AddField(new ShopQuery());
+        AddField(new VillageField(blockChain, subject));
+        AddField(new ShowMeTheMoney(blockChain, swarm));
     }
 
     private List<RecipeResponse> combineRecipeData()

@@ -62,3 +62,11 @@ var buy_kitchen_equipment_query_format = "query {
 		desiredEquipmentID: {}
 	)
 }"
+
+var install_kitchen_equipment_query_format = "query {
+	createAction_InstallKitchenEquipmentAction(
+		publicKey: {},
+		kitchenEquipmentStateID: {},
+		spaceNumber: {}
+	)
+}"
