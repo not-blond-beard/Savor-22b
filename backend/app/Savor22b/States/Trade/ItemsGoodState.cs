@@ -6,32 +6,31 @@ using Bencodex.Types;
 using Libplanet.Assets;
 using Libplanet;
 
-public class ItemGood : TradeGood
+public class ItemsGoodState : TradeGood
 {
     public ImmutableList<ItemState> Items { get; private set; }
 
-    public ItemGood(
+    public ItemsGoodState(
         Address sellerAddress,
         Guid productId,
         FungibleAssetValue price,
         ImmutableList<ItemState> items)
-       : base(sellerAddress, productId, price, nameof(FoodGoodState))
+       : base(sellerAddress, productId, price, nameof(ItemsGoodState))
     {
         Items = items;
     }
 
-    public ItemGood(Dictionary serialized)
+    public ItemsGoodState(Dictionary serialized)
         : base(serialized)
     {
-        Items = ((List)serialized["Items"]).Select(dict => new ItemState((Dictionary)dict)).ToImmutableList();
+        Items = ((List)serialized[nameof(Items)]).Select(dict => new ItemState((Dictionary)dict)).ToImmutableList();
     }
 
-    public IValue Serialize()
+    public override IValue Serialize()
     {
         var baseSerialized = base.Serialize() as Dictionary;
-        var itemsSerialized = Items.Select(item => item.Serialize()).ToList();
 
-        baseSerialized = baseSerialized.Add((Text)nameof(Items), (List)Items.Select(i => i.Serialize()));
+        baseSerialized = baseSerialized.Add((Text)nameof(Items), new List(Items.Select(item => item.Serialize())));
         return baseSerialized;
     }
 }

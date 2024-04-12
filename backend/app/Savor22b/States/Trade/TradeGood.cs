@@ -36,7 +36,7 @@ public abstract class TradeGood
         Type = serialized[nameof(Type)].ToString();
     }
 
-    public IValue Serialize()
+    public virtual IValue Serialize()
     {
         var pairs = new[]
         {

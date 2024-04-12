@@ -25,7 +25,7 @@ public class FoodGoodState : TradeGood
         Food = new RefrigeratorState((Dictionary)serialized[nameof(Food)]);
     }
 
-    public IValue Serialize()
+    public override IValue Serialize()
     {
         var baseSerialized = base.Serialize() as Dictionary;
         baseSerialized = baseSerialized.Add((Text)nameof(Food), Food.Serialize());
