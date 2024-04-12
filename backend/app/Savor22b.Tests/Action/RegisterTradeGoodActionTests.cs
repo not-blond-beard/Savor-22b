@@ -26,7 +26,6 @@ public class RegisterTradeGoodActionTests : ActionTests
         var beforeFood = beforeState.InventoryState.RefrigeratorStateList[0];
 
         var action = new RegisterTradeGoodAction(
-            nameof(FoodGoodState),
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
                 "10"
@@ -76,7 +75,6 @@ public class RegisterTradeGoodActionTests : ActionTests
         var beforeItems = beforeState.InventoryState.ItemStateList;
 
         var action = new RegisterTradeGoodAction(
-            nameof(ItemsGoodState),
             FungibleAssetValue.Parse(
                 Currencies.KeyCurrency,
                 "10"

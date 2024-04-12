@@ -16,23 +16,19 @@ public class RegisterTradeGoodAction : SVRAction
 {
     public RegisterTradeGoodAction() { }
 
-    public RegisterTradeGoodAction(string goodType, FungibleAssetValue price, Guid foodStateId)
+    public RegisterTradeGoodAction(FungibleAssetValue price, Guid foodStateId)
     {
-        GoodType = goodType;
         Price = price;
         FoodStateId = foodStateId;
         ItemStateIds = null;
     }
 
-    public RegisterTradeGoodAction(string goodType, FungibleAssetValue price, ImmutableList<Guid> itemStateIds)
+    public RegisterTradeGoodAction(FungibleAssetValue price, ImmutableList<Guid> itemStateIds)
     {
-        GoodType = goodType;
         Price = price;
         FoodStateId = null;
         ItemStateIds = itemStateIds;
     }
-
-    public string GoodType;
 
     public FungibleAssetValue Price;
 
@@ -43,7 +39,6 @@ public class RegisterTradeGoodAction : SVRAction
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
-            [nameof(GoodType)] = GoodType.Serialize(),
             [nameof(Price)] = Price.ToBencodex(),
             [nameof(FoodStateId)] = FoodStateId.Serialize(),
             [nameof(ItemStateIds)] = ItemStateIds is null ? Null.Value : (List)ItemStateIds.Select(i => i.Serialize()),
@@ -51,7 +46,6 @@ public class RegisterTradeGoodAction : SVRAction
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
-        GoodType = plainValue[nameof(GoodType)].ToString();
         Price = plainValue[nameof(Price)].ToFungibleAssetValue();
         FoodStateId = plainValue[nameof(FoodStateId)].ToGuid();
         ItemStateIds = plainValue[nameof(ItemStateIds)] is Null ? null : ((List)plainValue[nameof(ItemStateIds)]).Select(e => e.ToGuid()).ToImmutableList();
@@ -75,41 +69,33 @@ public class RegisterTradeGoodAction : SVRAction
 
         var inventoryState = rootState.InventoryState;
 
-        switch (GoodType)
+        if (FoodStateId is not null)
         {
-            case nameof(FoodGoodState):
-                if (FoodStateId is null)
-                {
-                    throw new InvalidValueException($"FoodState required");
-                }
+            var foodState = inventoryState.GetRefrigeratorItem(FoodStateId.Value);
+            var foodGoodState = new FoodGoodState(ctx.Signer, ctx.Random.GenerateRandomGuid(), Price, foodState);
+            inventoryState = inventoryState.RemoveRefrigeratorItem(FoodStateId.Value);
+            tradeInventoryState = tradeInventoryState.RegisterGood(foodGoodState);
+        }
+        else if (ItemStateIds is not null)
+        {
+            var itemStates = new List<ItemState>();
+            foreach (var itemStateId in ItemStateIds)
+            {
+                itemStates.Add(inventoryState.GetItem(itemStateId));
+                inventoryState = inventoryState.RemoveItem(itemStateId);
+            }
 
-                var foodState = inventoryState.GetRefrigeratorItem(FoodStateId.Value);
-                var foodGoodState = new FoodGoodState(ctx.Signer, ctx.Random.GenerateRandomGuid(), Price, foodState);
-                inventoryState = inventoryState.RemoveRefrigeratorItem(FoodStateId.Value);
-                tradeInventoryState = tradeInventoryState.RegisterGood(foodGoodState);
-                break;
-            case nameof(ItemsGoodState):
-                if (ItemStateIds is null)
-                {
-                    throw new InvalidValueException($"ItemStates required");
-                }
+            var itemsGoodState = new ItemsGoodState(
+                ctx.Signer,
+                ctx.Random.GenerateRandomGuid(),
+                Price,
+                itemStates.ToImmutableList());
 
-                var itemStates = new List<ItemState>();
-                foreach (var itemStateId in ItemStateIds)
-                {
-                    itemStates.Add(inventoryState.GetItem(itemStateId));
-                    inventoryState = inventoryState.RemoveItem(itemStateId);
-                }
-                var itemsGoodState = new ItemsGoodState(
-                    ctx.Signer,
-                    ctx.Random.GenerateRandomGuid(),
-                    Price,
-                    itemStates.ToImmutableList());
-
-                tradeInventoryState = tradeInventoryState.RegisterGood(itemsGoodState);
-                break;
-            default:
-                throw new ArgumentException($"Unsupported TradeGood type: {GoodType}");
+            tradeInventoryState = tradeInventoryState.RegisterGood(itemsGoodState);
+        }
+        else
+        {
+            throw new InvalidValueException($"ItemStateIds or FoodStateId required");
         }
 
         rootState.SetInventoryState(inventoryState);
