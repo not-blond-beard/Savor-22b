@@ -546,6 +546,38 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
+            "createAction_SellDungeonConquest",
+            description: "던전점령권 시스템에 판매",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "stateId",
+                    Description = "던전점령권 StateId",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new SellDungeonConquest(context.GetArgument<Guid>("stateId"));
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
             "createAction_CancelRegisteredTradeGoodAction",
             description: "무역상점 상품 등록 취소",
             arguments: new QueryArguments(
