@@ -8,6 +8,10 @@ public class UserDungeonState : State
     public static readonly int MaxDungeonKey = 5;
     public static readonly int DungeonKeyChargeIntervalBlock = 12;
 
+    public static readonly int MaxDungeonConquestKeyCount = 3;
+
+    public static readonly int DungeonConquestKeyChargeIntervalBlock = 100;
+
     public ImmutableList<DungeonHistoryState> DungeonHistories { get; private set; }
     public ImmutableList<DungeonConquestHistoryState> DungeonConquestHistories { get; private set; }
 
@@ -66,12 +70,28 @@ public class UserDungeonState : State
         return MaxDungeonKey - GetCurrentDungeonHistories(blockIndex).Count;
     }
 
+    public int GetDungeonConquestKeyCount(int dungeonId, long blockIndex)
+    {
+        return MaxDungeonConquestKeyCount
+            - GetCurrentDungeonConquestHistories(dungeonId, blockIndex).Count;
+    }
+
     public bool CanUseDungeonKey(long blockIndex)
     {
         return GetDungeonKeyCount(blockIndex) > 0;
     }
 
+    public bool CanUseDungeonConquestKey(int dungeonId, long blockIndex)
+    {
+        return GetDungeonConquestKeyCount(dungeonId, blockIndex) > 0;
+    }
+
     public int CalculateDungeonClear(Libplanet.Action.IRandom random)
+    {
+        return random.Next(0, 2) == 1 ? 1 : 0;
+    }
+
+    public int CalculateDungeonConquest(Libplanet.Action.IRandom random)
     {
         return random.Next(0, 2) == 1 ? 1 : 0;
     }
@@ -98,8 +118,63 @@ public class UserDungeonState : State
         return result.ToImmutableList();
     }
 
+    public ImmutableList<DungeonConquestHistoryState> GetCurrentDungeonConquestHistories(
+        int dungeonID,
+        long blockIndex
+    )
+    {
+        var lowerBoundIndex =
+            blockIndex - (MaxDungeonConquestKeyCount * DungeonConquestKeyChargeIntervalBlock);
+        var result = new List<DungeonConquestHistoryState>();
+
+        for (int i = DungeonConquestHistories.Count - 1; i >= 0; i--)
+        {
+            var history = DungeonConquestHistories[i];
+
+            if (
+                history.BlockIndex > lowerBoundIndex
+                && history.BlockIndex <= blockIndex
+                && dungeonID == history.DungeonId
+            )
+            {
+                result.Add(history);
+            }
+            else if (history.BlockIndex <= lowerBoundIndex)
+            {
+                break;
+            }
+        }
+
+        return result.ToImmutableList();
+    }
+
+    public bool IsDungeonCleared(int dungeonID, long blockIndex)
+    {
+        for (int i = DungeonHistories.Count - 1; i >= 0; i--)
+        {
+            var history = DungeonHistories[i];
+
+            if (dungeonID == history.DungeonId && history.DungeonClearStatus == 1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public UserDungeonState AddDungeonHistory(DungeonHistoryState dungeonHistory)
     {
         return new UserDungeonState(DungeonHistories.Add(dungeonHistory), DungeonConquestHistories);
+    }
+
+    public UserDungeonState AddDungeonConquestHistory(
+        DungeonConquestHistoryState dungeonConquestHistory
+    )
+    {
+        return new UserDungeonState(
+            DungeonHistories,
+            DungeonConquestHistories.Add(dungeonConquestHistory)
+        );
     }
 }

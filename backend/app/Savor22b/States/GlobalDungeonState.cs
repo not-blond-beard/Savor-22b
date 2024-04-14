@@ -50,4 +50,17 @@ public class GlobalDungeonState : State
 
         return new Dictionary(pairs);
     }
+
+    public Address? DungeonConquestAddress(int dungeonId)
+    {
+        return DungeonStatus.TryGetValue(dungeonId.ToString(), out Address address)
+            ? address
+            : null;
+    }
+
+    public GlobalDungeonState SetDungeonConquestAddress(int dungeonId, Address address)
+    {
+        DungeonStatus[dungeonId.ToString()] = address;
+        return new GlobalDungeonState(DungeonStatus);
+    }
 }
