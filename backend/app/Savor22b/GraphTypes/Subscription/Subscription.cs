@@ -44,6 +44,7 @@ public class Subscription : ObjectGraphType
         _subject = new Subject<Libplanet.Blocks.BlockHash>();
 
         AddField(new UserStateField(_blockChain, _subject));
+        AddField(new TradeInventoryStateField(_blockChain, _subject));
         AddField(new VillageField(_blockChain, _subject));
 
         AddField(

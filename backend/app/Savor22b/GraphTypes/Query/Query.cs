@@ -1,5 +1,6 @@
 namespace Savor22b.GraphTypes.Query;
 
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using GraphQL;
 using GraphQL.Types;
@@ -51,6 +52,16 @@ public class Query : ObjectGraphType
                     ? new RootState(bdict)
                     : new RootState();
                 return rootState;
+            }
+        );
+
+        Field<TradeInventoryStateType>(
+            "tradeInventoryState",
+            description: "무역상점 정보 조회",
+            arguments: new QueryArguments(),
+            resolve: context =>
+            {
+                return TradeInventoryStateField.GetTradeInventoryState(blockChain);
             }
         );
 
@@ -531,6 +542,133 @@ public class Query : ObjectGraphType
                     _blockChain,
                     _swarm
                 ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_CancelRegisteredTradeGoodAction",
+            description: "무역상점 상품 등록 취소",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "productId",
+                    Description = "상품 고유 Id",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new CancelRegisteredTradeGoodAction(context.GetArgument<Guid>("productId"));
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_BuyTradeGoodAction",
+            description: "무역상점 구매",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "productId",
+                    Description = "상품 고유 Id",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new BuyTradeGoodAction(context.GetArgument<Guid>("productId"));
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
+            "createAction_RegisterTradeGoodAction",
+            description: "Register Trade Good to Trade Store",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "price",
+                    Description = "Price for good",
+                },
+                new QueryArgument<GuidGraphType>
+                {
+                    Name = "foodStateId",
+                    Description = "Food state Id (Guid)",
+                },
+                new QueryArgument<ListGraphType<GuidGraphType>>
+                {
+                    Name = "itemStateIds",
+                    Description = "Item state Ids (Guid)",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+                var foodStateId = context.GetArgument<Guid?>("foodStateId");
+                var itemStateIds = context.GetArgument<List<Guid>?>("itemStateIds");
+                var price = FungibleAssetValue.Parse(Currencies.KeyCurrency, context.GetArgument<int>("price").ToString());
+
+                if (foodStateId is not null)
+                {
+                    return new GetUnsignedTransactionHex(
+                        new RegisterTradeGoodAction(
+                            price,
+                            foodStateId.Value),
+                        publicKey,
+                        _blockChain,
+                        _swarm
+                    ).UnsignedTransactionHex;
+                }
+                else if (itemStateIds is not null)
+                {
+                    return new GetUnsignedTransactionHex(
+                        new RegisterTradeGoodAction(
+                            price,
+                            itemStateIds.ToImmutableList()),
+                        publicKey,
+                        _blockChain,
+                        _swarm
+                    ).UnsignedTransactionHex;
+                }
+                else
+                {
+                    throw new ArgumentException("foodStateId or itemStateIds required");
+                }
             }
         );
 

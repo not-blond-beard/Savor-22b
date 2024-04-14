@@ -6,7 +6,7 @@ using Libplanet.Crypto;
 using System;
 using Libplanet.State;
 using Savor22b.States;
-
+using Savor22b.States.Trade;
 
 public class ActionTests
 {
@@ -44,5 +44,13 @@ public class ActionTests
             ? new RootState(bdict)
             : throw new Exception();
         return rootState;
+    }
+
+    public TradeInventoryState DeriveTradeInventoryStateDelta(IAccountStateDelta stateDelta) {
+        var tradeInventoryStateEncoded = stateDelta.GetState(TradeInventoryState.StateAddress);
+        TradeInventoryState tradeInventoryState = tradeInventoryStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new TradeInventoryState(bdict)
+            : throw new Exception();
+        return tradeInventoryState;
     }
 }

@@ -19,6 +19,27 @@ public static class BencodexExtensions
         return serialized is Null ? (T?)null : deserializer(serialized);
     }
 
+    public static IValue Serialize<T>(this IEnumerable<T> values)
+        where T : IValue
+    {
+        return new List(values.Cast<IValue>());
+    }
+
+    public static IEnumerable<T> ToEnumerable<T>(this IValue serialized, Func<IValue, T> deserializer)
+    {
+        return ((List)serialized).Select(deserializer);
+    }
+
+    public static T[] ToArray<T>(this IValue serialized, Func<IValue, T> deserializer)
+    {
+        return serialized.ToEnumerable(deserializer).ToArray();
+    }
+
+    public static List<T> ToList<T>(this IValue serialized, Func<IValue, T> deserializer)
+    {
+        return serialized.ToEnumerable(deserializer).ToList();
+    }
+
     public static IValue ToBencodex(this FungibleAssetValue fav) =>
         new List(fav.Currency.Serialize(), (Integer)fav.RawValue);
 
