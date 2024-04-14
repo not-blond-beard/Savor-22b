@@ -6,18 +6,21 @@ using Libplanet.Headless.Extensions;
 
 public class DungeonConquestHistoryState : State
 {
+    public Guid StateId { get; private set; }
     public long BlockIndex { get; private set; }
     public int DungeonId { get; private set; }
     public int DungeonConquestStatus { get; private set; }
     public Address? TargetUserAddress { get; private set; }
 
     public DungeonConquestHistoryState(
+        Guid stateId,
         long blockIndex,
         int dungeonId,
         int dungeonConquestStatus,
         Address? targetUserAddress = null
     )
     {
+        StateId = stateId;
         BlockIndex = blockIndex;
         DungeonId = dungeonId;
         TargetUserAddress = targetUserAddress;
@@ -26,6 +29,7 @@ public class DungeonConquestHistoryState : State
 
     public DungeonConquestHistoryState(Dictionary encoded)
     {
+        StateId = encoded[nameof(StateId)].ToGuid();
         BlockIndex = encoded[nameof(BlockIndex)].ToLong();
         DungeonId = encoded[nameof(DungeonId)].ToInteger();
         DungeonConquestStatus = encoded[nameof(DungeonConquestStatus)].ToInteger();
@@ -44,6 +48,7 @@ public class DungeonConquestHistoryState : State
     {
         var pairs = new[]
         {
+            new KeyValuePair<IKey, IValue>((Text)nameof(StateId), StateId.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(BlockIndex), BlockIndex.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(DungeonId), DungeonId.Serialize()),
             new KeyValuePair<IKey, IValue>(

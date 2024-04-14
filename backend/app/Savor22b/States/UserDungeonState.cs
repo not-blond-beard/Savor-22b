@@ -296,4 +296,14 @@ public class UserDungeonState : State
 
         return result.ToArray();
     }
+
+    public UserDungeonState AddDungeonConquestHistory(DungeonConquestHistoryState dungeonConquestHistory)
+    {
+        return new UserDungeonState(DungeonHistories, DungeonConquestHistories.Add(dungeonConquestHistory));
+    }
+
+    public UserDungeonState RemoveDungeonConquestHistory(DungeonConquestHistoryState dungeonConquestHistory)
+    {
+        return new UserDungeonState(DungeonHistories, DungeonConquestHistories.Remove(dungeonConquestHistory));
+    }
 }
