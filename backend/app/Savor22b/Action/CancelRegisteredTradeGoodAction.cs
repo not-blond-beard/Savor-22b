@@ -4,7 +4,6 @@ using System;
 using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet.Action;
-using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 using Savor22b.States;
