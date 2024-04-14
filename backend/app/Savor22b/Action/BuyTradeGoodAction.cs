@@ -10,12 +10,12 @@ using Savor22b.States;
 using Savor22b.States.Trade;
 using Savor22b.Action.Exceptions;
 
-[ActionType(nameof(BuyTradeGood))]
-public class BuyTradeGood : SVRAction
+[ActionType(nameof(BuyTradeGoodAction))]
+public class BuyTradeGoodAction : SVRAction
 {
-    public BuyTradeGood() { }
+    public BuyTradeGoodAction() { }
 
-    public BuyTradeGood(Guid productId)
+    public BuyTradeGoodAction(Guid productId)
     {
         ProductId = productId;
     }

@@ -23,7 +23,7 @@ public class BuyTradeGoodTests : ActionTests
             FungibleAssetValue.Parse(Currencies.KeyCurrency, "10")
         );
 
-        var action = new BuyTradeGood(
+        var action = new BuyTradeGoodAction(
             productId
         );
 
@@ -50,7 +50,7 @@ public class BuyTradeGoodTests : ActionTests
     {
         var (stateDelta, productId) = CreatePresetStateDelta();
 
-        var action = new BuyTradeGood(
+        var action = new BuyTradeGoodAction(
             productId
         );
 
