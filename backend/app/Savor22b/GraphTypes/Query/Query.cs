@@ -578,6 +578,46 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
+            "createAction_UpdateTradeGoodAction",
+            description: "무역상점 상품 가격 수정",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "productId",
+                    Description = "상품 고유 Id",
+                },
+                new QueryArgument<NonNullGraphType<IntGraphType>>
+                {
+                    Name = "price",
+                    Description = "가격",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+                var price = FungibleAssetValue.Parse(Currencies.KeyCurrency, context.GetArgument<int>("price").ToString());
+
+                var action = new UpdateTradeGoodAction(
+                    context.GetArgument<Guid>("productId"),
+                    price);
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
             "createAction_BuyTradeGoodAction",
             description: "무역상점 구매",
             arguments: new QueryArguments(

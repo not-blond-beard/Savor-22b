@@ -47,4 +47,9 @@ public abstract class TradeGood
         };
         return new Dictionary(pairs);
     }
+
+    public void UpdatePrice(FungibleAssetValue price)
+    {
+        Price = price;
+    }
 }
