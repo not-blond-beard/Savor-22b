@@ -718,6 +718,7 @@ public class Query : ObjectGraphType
         AddField(new ShopQuery());
         AddField(new VillageField(blockChain, subject));
         AddField(new ShowMeTheMoney(blockChain, swarm));
+        AddField(new ConquestDungeonActionQuery(blockChain, swarm));
     }
 
     private List<RecipeResponse> combineRecipeData()

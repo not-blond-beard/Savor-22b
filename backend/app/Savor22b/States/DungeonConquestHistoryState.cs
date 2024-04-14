@@ -8,14 +8,14 @@ public class DungeonConquestHistoryState : State
 {
     public long BlockIndex { get; private set; }
     public int DungeonId { get; private set; }
-    public Address TargetUserAddress { get; private set; }
     public int DungeonConquestStatus { get; private set; }
+    public Address? TargetUserAddress { get; private set; }
 
     public DungeonConquestHistoryState(
         long blockIndex,
         int dungeonId,
-        Address targetUserAddress,
-        int dungeonConquestStatus
+        int dungeonConquestStatus,
+        Address? targetUserAddress = null
     )
     {
         BlockIndex = blockIndex;
@@ -28,8 +28,16 @@ public class DungeonConquestHistoryState : State
     {
         BlockIndex = encoded[nameof(BlockIndex)].ToLong();
         DungeonId = encoded[nameof(DungeonId)].ToInteger();
-        TargetUserAddress = encoded[nameof(TargetUserAddress)].ToAddress();
         DungeonConquestStatus = encoded[nameof(DungeonConquestStatus)].ToInteger();
+
+        if (encoded.TryGetValue((Text)nameof(TargetUserAddress), out var targetUserAddress))
+        {
+            TargetUserAddress = targetUserAddress.ToAddress();
+        }
+        else
+        {
+            TargetUserAddress = null;
+        }
     }
 
     public IValue Serialize()
@@ -39,14 +47,22 @@ public class DungeonConquestHistoryState : State
             new KeyValuePair<IKey, IValue>((Text)nameof(BlockIndex), BlockIndex.Serialize()),
             new KeyValuePair<IKey, IValue>((Text)nameof(DungeonId), DungeonId.Serialize()),
             new KeyValuePair<IKey, IValue>(
-                (Text)nameof(TargetUserAddress),
-                TargetUserAddress.ToBencodex()
-            ),
-            new KeyValuePair<IKey, IValue>(
                 (Text)nameof(DungeonConquestStatus),
                 DungeonConquestStatus.Serialize()
             ),
         };
+
+        if (TargetUserAddress is Address targetUserAddress)
+        {
+            pairs = pairs
+                .Append(
+                    new KeyValuePair<IKey, IValue>(
+                        (Text)nameof(TargetUserAddress),
+                        targetUserAddress.ToBencodex()
+                    )
+                )
+                .ToArray();
+        }
 
         return new Dictionary(pairs);
     }
