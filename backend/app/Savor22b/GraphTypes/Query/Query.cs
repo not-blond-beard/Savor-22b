@@ -55,6 +55,16 @@ public class Query : ObjectGraphType
             }
         );
 
+        Field<TradeInventoryStateType>(
+            "tradeInventoryState",
+            description: "무역상점 정보 조회",
+            arguments: new QueryArguments(),
+            resolve: context =>
+            {
+                return TradeInventoryStateField.GetTradeInventoryState(blockChain);
+            }
+        );
+
         Field<StringGraphType>(
             "asset",
             description: "The specified address's balance in MNT.",

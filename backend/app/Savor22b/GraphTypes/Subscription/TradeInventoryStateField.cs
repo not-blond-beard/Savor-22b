@@ -27,19 +27,19 @@ public class TradeInventoryStateField : FieldType
         Arguments = new QueryArguments();
         Resolver = new FuncFieldResolver<TradeInventoryState>(context =>
         {
-            return GetTradeInventoryState();
+            return GetTradeInventoryState(_blockChain);
         });
         StreamResolver = new SourceStreamResolver<TradeInventoryState>(
             (context) =>
             {
-                return _subject.DistinctUntilChanged().Select(_ => GetTradeInventoryState());
+                return _subject.DistinctUntilChanged().Select(_ => GetTradeInventoryState(_blockChain));
             }
         );
     }
 
-    private TradeInventoryState GetTradeInventoryState()
+    public static TradeInventoryState GetTradeInventoryState(BlockChain blockChain)
     {
-        var tradeInventoryStateEncoded = _blockChain.GetState(TradeInventoryState.StateAddress);
+        var tradeInventoryStateEncoded = blockChain.GetState(TradeInventoryState.StateAddress);
 
         TradeInventoryState tradeInventoryState = tradeInventoryStateEncoded is Dictionary bdict
             ? new TradeInventoryState(bdict)
