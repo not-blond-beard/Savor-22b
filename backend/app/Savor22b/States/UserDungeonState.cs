@@ -12,22 +12,33 @@ public class UserDungeonState : State
 
     public static readonly int DungeonConquestKeyChargeIntervalBlock = 100;
 
+    public static readonly int DungeonConquestPeriodicRewardIntervalBlock = 100;
+
     public ImmutableList<DungeonHistoryState> DungeonHistories { get; private set; }
     public ImmutableList<DungeonConquestHistoryState> DungeonConquestHistories { get; private set; }
+    public ImmutableList<DungeonConquestPeriodicRewardHistoryState> DungeonConquestPeriodicRewardHistories
+    {
+        get;
+        private set;
+    }
 
     public UserDungeonState()
     {
         DungeonHistories = ImmutableList<DungeonHistoryState>.Empty;
         DungeonConquestHistories = ImmutableList<DungeonConquestHistoryState>.Empty;
+        DungeonConquestPeriodicRewardHistories =
+            ImmutableList<DungeonConquestPeriodicRewardHistoryState>.Empty;
     }
 
     public UserDungeonState(
         ImmutableList<DungeonHistoryState> dungeonKeyHistories,
-        ImmutableList<DungeonConquestHistoryState> dungeonConquestHistories
+        ImmutableList<DungeonConquestHistoryState> dungeonConquestHistories,
+        ImmutableList<DungeonConquestPeriodicRewardHistoryState> dungeonConquestPeriodicRewardHistories
     )
     {
         DungeonHistories = dungeonKeyHistories;
         DungeonConquestHistories = dungeonConquestHistories;
+        DungeonConquestPeriodicRewardHistories = dungeonConquestPeriodicRewardHistories;
     }
 
     public UserDungeonState(Dictionary encoded)
@@ -46,6 +57,12 @@ public class UserDungeonState : State
         DungeonConquestHistories = ((List)encoded[nameof(DungeonConquestHistories)])
             .Select(element => new DungeonConquestHistoryState((Dictionary)element))
             .ToImmutableList();
+
+        DungeonConquestPeriodicRewardHistories = (
+            (List)encoded[nameof(DungeonConquestPeriodicRewardHistories)]
+        )
+            .Select(element => new DungeonConquestPeriodicRewardHistoryState((Dictionary)element))
+            .ToImmutableList();
     }
 
     public IValue Serialize()
@@ -60,6 +77,14 @@ public class UserDungeonState : State
                 new KeyValuePair<IKey, IValue>(
                     (Text)nameof(DungeonConquestHistories),
                     new List(DungeonConquestHistories.Select(element => element.Serialize()))
+                ),
+                new KeyValuePair<IKey, IValue>(
+                    (Text)nameof(DungeonConquestPeriodicRewardHistories),
+                    new List(
+                        DungeonConquestPeriodicRewardHistories.Select(
+                            element => element.Serialize()
+                        )
+                    )
                 ),
             }
         );
@@ -118,6 +143,21 @@ public class UserDungeonState : State
         return result.ToImmutableList();
     }
 
+    public DungeonConquestHistoryState? CurrentConquestDungeonHistory(int dungeonId)
+    {
+        for (int i = DungeonConquestHistories.Count - 1; i >= 0; i--)
+        {
+            var history = DungeonConquestHistories[i];
+
+            if (history.DungeonId == dungeonId && history.DungeonConquestStatus == 1)
+            {
+                return history;
+            }
+        }
+
+        return null;
+    }
+
     public ImmutableList<DungeonConquestHistoryState> GetCurrentDungeonConquestHistories(
         int dungeonID,
         long blockIndex
@@ -165,7 +205,11 @@ public class UserDungeonState : State
 
     public UserDungeonState AddDungeonHistory(DungeonHistoryState dungeonHistory)
     {
-        return new UserDungeonState(DungeonHistories.Add(dungeonHistory), DungeonConquestHistories);
+        return new UserDungeonState(
+            DungeonHistories.Add(dungeonHistory),
+            DungeonConquestHistories,
+            DungeonConquestPeriodicRewardHistories
+        );
     }
 
     public UserDungeonState AddDungeonConquestHistory(
@@ -174,7 +218,64 @@ public class UserDungeonState : State
     {
         return new UserDungeonState(
             DungeonHistories,
-            DungeonConquestHistories.Add(dungeonConquestHistory)
+            DungeonConquestHistories.Add(dungeonConquestHistory),
+            DungeonConquestPeriodicRewardHistories
         );
+    }
+
+    public UserDungeonState AddDungeonPeriodicRewardHistory(
+        DungeonConquestPeriodicRewardHistoryState dungeonPeriodicRewardHistory
+    )
+    {
+        return new UserDungeonState(
+            DungeonHistories,
+            DungeonConquestHistories,
+            DungeonConquestPeriodicRewardHistories.Add(dungeonPeriodicRewardHistory)
+        );
+    }
+
+    public int PresentDungeonPeriodicRewardCount(
+        int dungeonId,
+        long startedBlockIndex,
+        long currentBlockIndex
+    )
+    {
+        int maxCount = (int)(
+            (currentBlockIndex - startedBlockIndex) / DungeonConquestPeriodicRewardIntervalBlock
+        );
+        int remainCount =
+            maxCount
+            - TargetConquestDungeonPeriodicRewardHistories(
+                dungeonId,
+                startedBlockIndex,
+                currentBlockIndex
+            ).Length;
+
+        return remainCount;
+    }
+
+    public DungeonConquestPeriodicRewardHistoryState[] TargetConquestDungeonPeriodicRewardHistories(
+        int dungeonId,
+        long startedBlockIndex,
+        long currentBlockIndex
+    )
+    {
+        var result = new List<DungeonConquestPeriodicRewardHistoryState>();
+
+        for (int i = DungeonConquestPeriodicRewardHistories.Count - 1; i >= 0; i--)
+        {
+            var history = DungeonConquestPeriodicRewardHistories[i];
+
+            if (history.DungeonId == dungeonId && history.BlockIndex > startedBlockIndex)
+            {
+                result.Add(history);
+            }
+            else if (history.BlockIndex <= startedBlockIndex)
+            {
+                break;
+            }
+        }
+
+        return result.ToArray();
     }
 }

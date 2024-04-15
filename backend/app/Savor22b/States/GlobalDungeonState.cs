@@ -63,4 +63,10 @@ public class GlobalDungeonState : State
         DungeonStatus[dungeonId.ToString()] = address;
         return new GlobalDungeonState(DungeonStatus);
     }
+
+    public bool IsDungeonConquestAddress(int dungeonId, Address address)
+    {
+        return DungeonStatus.TryGetValue(dungeonId.ToString(), out Address conquestAddress)
+            && conquestAddress == address;
+    }
 }
