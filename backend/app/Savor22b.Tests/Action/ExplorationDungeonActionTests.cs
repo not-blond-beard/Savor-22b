@@ -68,7 +68,11 @@ public class ExplorationDungeonActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         var state = new RootState(
             new InventoryState(),
-            new UserDungeonState(dungeonHistories, ImmutableList<DungeonConquestHistoryState>.Empty)
+            new UserDungeonState(
+                dungeonHistories,
+                ImmutableList<DungeonConquestHistoryState>.Empty,
+                ImmutableList<DungeonConquestPeriodicRewardHistoryState>.Empty
+            )
         );
         beforeState = beforeState.SetState(SignerAddress(), state.Serialize());
 
@@ -123,7 +127,11 @@ public class ExplorationDungeonActionTests : ActionTests
         IAccountStateDelta beforeState = new DummyState();
         var state = new RootState(
             new InventoryState(),
-            new UserDungeonState(dungeonHistories, ImmutableList<DungeonConquestHistoryState>.Empty)
+            new UserDungeonState(
+                dungeonHistories,
+                ImmutableList<DungeonConquestHistoryState>.Empty,
+                ImmutableList<DungeonConquestPeriodicRewardHistoryState>.Empty
+            )
         );
         beforeState = beforeState.SetState(SignerAddress(), state.Serialize());
 
