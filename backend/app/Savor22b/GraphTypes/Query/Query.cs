@@ -566,7 +566,9 @@ public class Query : ObjectGraphType
                     ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
 
-                var action = new CancelRegisteredTradeGoodAction(context.GetArgument<Guid>("productId"));
+                var action = new CancelRegisteredTradeGoodAction(
+                    context.GetArgument<Guid>("productId")
+                );
 
                 return new GetUnsignedTransactionHex(
                     action,
@@ -602,11 +604,15 @@ public class Query : ObjectGraphType
                 var publicKey = new PublicKey(
                     ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
-                var price = FungibleAssetValue.Parse(Currencies.KeyCurrency, context.GetArgument<int>("price").ToString());
+                var price = FungibleAssetValue.Parse(
+                    Currencies.KeyCurrency,
+                    context.GetArgument<int>("price").ToString()
+                );
 
                 var action = new UpdateTradeGoodAction(
                     context.GetArgument<Guid>("productId"),
-                    price);
+                    price
+                );
 
                 return new GetUnsignedTransactionHex(
                     action,
@@ -681,14 +687,15 @@ public class Query : ObjectGraphType
                 );
                 var foodStateId = context.GetArgument<Guid?>("foodStateId");
                 var itemStateIds = context.GetArgument<List<Guid>?>("itemStateIds");
-                var price = FungibleAssetValue.Parse(Currencies.KeyCurrency, context.GetArgument<int>("price").ToString());
+                var price = FungibleAssetValue.Parse(
+                    Currencies.KeyCurrency,
+                    context.GetArgument<int>("price").ToString()
+                );
 
                 if (foodStateId is not null)
                 {
                     return new GetUnsignedTransactionHex(
-                        new RegisterTradeGoodAction(
-                            price,
-                            foodStateId.Value),
+                        new RegisterTradeGoodAction(price, foodStateId.Value),
                         publicKey,
                         _blockChain,
                         _swarm
@@ -697,9 +704,7 @@ public class Query : ObjectGraphType
                 else if (itemStateIds is not null)
                 {
                     return new GetUnsignedTransactionHex(
-                        new RegisterTradeGoodAction(
-                            price,
-                            itemStateIds.ToImmutableList()),
+                        new RegisterTradeGoodAction(price, itemStateIds.ToImmutableList()),
                         publicKey,
                         _blockChain,
                         _swarm
@@ -719,6 +724,7 @@ public class Query : ObjectGraphType
         AddField(new VillageField(blockChain, subject));
         AddField(new ShowMeTheMoney(blockChain, swarm));
         AddField(new ConquestDungeonActionQuery(blockChain, swarm));
+        AddField(new RemoveInstalledKitchenEquipmentActionQuery(blockChain, swarm));
     }
 
     private List<RecipeResponse> combineRecipeData()

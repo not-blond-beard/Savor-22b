@@ -1,6 +1,7 @@
 namespace Savor22b.States;
 
 using Bencodex.Types;
+using Savor22b.Action.Exceptions;
 
 public class KitchenState : State
 {
@@ -77,6 +78,29 @@ public class KitchenState : State
                     "KitchenState have only three appliance space"
                 );
         }
+    }
+
+    public void RemoveInstalledEquipment(Guid stateId)
+    {
+        if (FirstApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
+        {
+            FirstApplianceSpace.UnInstallKitchenEquipment();
+            return;
+        }
+
+        if (SecondApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
+        {
+            SecondApplianceSpace.UnInstallKitchenEquipment();
+            return;
+        }
+
+        if (ThirdApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
+        {
+            ThirdApplianceSpace.UnInstallKitchenEquipment();
+            return;
+        }
+
+        throw new InvalidValueException($"The equipment with the id {stateId} is not installed.");
     }
 
     public ApplianceSpaceState GetApplianceSpaceStateByNumber(int spaceNumber)
