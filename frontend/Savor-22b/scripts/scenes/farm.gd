@@ -182,16 +182,19 @@ func harvest_seed():
 	actionSuccess = true
 	fetch_new()
 
-func action_popup():
+func action_popup(weed : bool):
 	print("행동 팝업")
 	if is_instance_valid(popuparea):
 		for child in popuparea.get_children():
 			child.queue_free()
 	
 	var actionpopup = ACTION_POPUP.instantiate()
+	actionpopup.set_weed_button(weed)
 	popuparea.add_child(actionpopup)
-	actionpopup.set_position(Vector2(700,500))
+	var mousepos = get_local_mouse_position() + Vector2(0, -200)
+	actionpopup.set_position(mousepos)
 	actionpopup.button_down_remove.connect(remove_popup)
+	actionpopup.weed_action_signal.connect(remove_weed)
 	
 func remove_popup():
 	if is_instance_valid(popuparea):
@@ -214,9 +217,9 @@ func remove_done_popup():
 	donepopup.set_position(Vector2(700,500))
 	donepopup.refresh_me.connect(fetch_new)
 
-func control_seed():
+func control_seed(weed : bool):
 	#code here
-	action_popup()
+	action_popup(weed)
 
 func remove_seed():
 	var gql_query = Gql_query.new()
@@ -246,6 +249,7 @@ func remove_seed():
 func fetch_new():
 # fetch datas
 	Intro._query_user_state()
+	Intro.get_current_block()
 	
 	# done popup
 	if(actionSuccess):
@@ -262,10 +266,34 @@ func fetch_new():
 	
 	_ready()
 
-func _on_refresh_button_button_down():
+func remove_weed():
+	var gql_query = Gql_query.new()
+	var query_string = gql_query.remove_weed_query_format.format([
+		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
+		SceneContext.selected_field_index], "{}")
+	print(query_string)
+	
+	var query_executor = SvrGqlClient.raw(query_string)
+	query_executor.graphql_response.connect(func(data):
+		print("gql response: ", data)
+		var unsigned_tx = data["data"]["createAction_RemoveWeed"]
+		print("unsigned tx: ", unsigned_tx)
+		var signature = GlobalSigner.sign(unsigned_tx)
+		print("signed tx: ", signature)
+		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
+		mutation_executor.graphql_response.connect(func(data):
+			print("mutation res: ", data)
+		)
+		add_child(mutation_executor)
+		mutation_executor.run({})
+	)
+	add_child(query_executor)
+	query_executor.run({})
 	fetch_new()
 
 
+func _on_refresh_button_button_down():
+	fetch_new()
 
 func _on_home_button_button_down():
 	get_tree().change_scene_to_file("res://scenes/house/house.tscn")
