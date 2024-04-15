@@ -48,6 +48,14 @@ var remove_seed_query_format = "query {
 	)
 }"
 
+var remove_weed_query_format = "query {
+	createAction_RemoveWeed(
+		publicKey: {},
+		fieldIndex: {}
+	)
+}"
+
+
 
 var buy_shop_item_query_format = "query {
 	createAction_BuyShopItem(
