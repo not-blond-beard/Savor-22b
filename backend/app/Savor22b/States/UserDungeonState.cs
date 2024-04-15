@@ -143,6 +143,24 @@ public class UserDungeonState : State
         return result.ToImmutableList();
     }
 
+    public bool IsDungeonConquestRewardReceivable(
+        int dungeonId,
+        long blockIndex,
+        long currentBlockIndex
+    )
+    {
+        var history = CurrentConquestDungeonHistory(dungeonId);
+
+        if (history is null)
+        {
+            return false;
+        }
+
+        var count = PresentDungeonPeriodicRewardCount(dungeonId, currentBlockIndex, blockIndex);
+
+        return count > 0;
+    }
+
     public DungeonConquestHistoryState? CurrentConquestDungeonHistory(int dungeonId)
     {
         for (int i = DungeonConquestHistories.Count - 1; i >= 0; i--)
