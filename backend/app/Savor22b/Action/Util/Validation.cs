@@ -36,4 +36,14 @@ public static class Validation
 
         return village;
     }
+
+    public static void EnsureDungeonExist(int dungeonId)
+    {
+        Dungeon? dungeon = CsvDataHelper.GetDungeonById(dungeonId);
+
+        if (dungeon == null)
+        {
+            throw new InvalidDungeonException($"Invalid dungeon ID: {dungeonId}");
+        }
+    }
 }

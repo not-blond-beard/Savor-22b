@@ -134,6 +134,17 @@ public class InventoryState : State
         );
     }
 
+    public InventoryState AddSeeds(IEnumerable<SeedState> seedStates)
+    {
+        var seedStateList = SeedStateList.AddRange(seedStates);
+        return new InventoryState(
+            seedStateList,
+            RefrigeratorStateList,
+            KitchenEquipmentStateList,
+            ItemStateList
+        );
+    }
+
     public InventoryState AddRefrigeratorItem(RefrigeratorState item)
     {
         var refrigeratorStateList = RefrigeratorStateList.Add(item);
