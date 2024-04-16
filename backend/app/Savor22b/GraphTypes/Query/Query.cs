@@ -758,6 +758,30 @@ public class Query : ObjectGraphType
         AddField(new ConquestDungeonActionQuery(blockChain, swarm));
         AddField(new RemoveInstalledKitchenEquipmentActionQuery(blockChain, swarm));
         AddField(new PeriodicDungeonRewardActionQuery(blockChain, swarm));
+
+        Field<NonNullGraphType<IntGraphType>>(
+            name: "maxDungeonKeyCount",
+            description: "던전 키의 최대 개수입니다.",
+            resolve: context => UserDungeonState.MaxDungeonKey
+        );
+
+        Field<NonNullGraphType<LongGraphType>>(
+            name: "dungeonKeyChargeIntervalBlock",
+            description: "던전 키의 충전 주기(Block)입니다.",
+            resolve: context => UserDungeonState.DungeonKeyChargeIntervalBlock
+        );
+
+        Field<NonNullGraphType<IntGraphType>>(
+            name: "maxDungeonConquestKeyCount",
+            description: "던전 점령 키(던전마다 할당)의 최대 개수입니다.",
+            resolve: context => UserDungeonState.MaxDungeonConquestKeyCount
+        );
+
+        Field<NonNullGraphType<LongGraphType>>(
+            name: "dungeonConquestKeyChargeIntervalBlock",
+            description: "던전 점령 키(던전마다 할당)의 충전 주기(Block)입니다.",
+            resolve: context => UserDungeonState.DungeonConquestKeyChargeIntervalBlock
+        );
     }
 
     private List<RecipeResponse> combineRecipeData()
