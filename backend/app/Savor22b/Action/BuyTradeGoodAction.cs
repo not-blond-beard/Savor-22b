@@ -48,6 +48,9 @@ public class BuyTradeGoodAction : SVRAction
         TradeInventoryState tradeInventoryState = states.GetState(TradeInventoryState.StateAddress) is Dictionary tradeInventoryStateEncoded
             ? new TradeInventoryState(tradeInventoryStateEncoded)
             : new TradeInventoryState();
+        GlobalDungeonState globalDungeonState = states.GetState(GlobalDungeonState.StateAddress) is Dictionary globalDungeonStateEncoded
+            ? new GlobalDungeonState(globalDungeonStateEncoded)
+            : new GlobalDungeonState();
 
         var inventoryState = rootState.InventoryState;
 
@@ -74,12 +77,21 @@ public class BuyTradeGoodAction : SVRAction
                 }
 
                 break;
+            case DungeonConquestGoodState dungeonConquestGoodState:
+                rootState.SetUserDungeonState(
+                    rootState.UserDungeonState.AddDungeonConquestHistory(
+                        new DungeonConquestHistoryState(ctx.BlockIndex, dungeonConquestGoodState.DungeonId, 1)
+                    )
+                );
+                globalDungeonState.SetDungeonConquestAddress(dungeonConquestGoodState.DungeonId, ctx.Signer);
+                break;
             default:
                 throw new InvalidValueException("Food or Items required");
         }
 
         rootState.SetInventoryState(inventoryState);
         states = states.SetState(TradeInventoryState.StateAddress, tradeInventoryState.Serialize());
+        states = states.SetState(GlobalDungeonState.StateAddress, globalDungeonState.Serialize());
         return states.SetState(ctx.Signer, rootState.Serialize());
     }
 }
