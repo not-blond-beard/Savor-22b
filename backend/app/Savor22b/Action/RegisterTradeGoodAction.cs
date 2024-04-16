@@ -123,8 +123,6 @@ public class RegisterTradeGoodAction : SVRAction
                 throw new PermissionDeniedException("Permission denied");
             }
 
-            globalDungeonState = globalDungeonState.RemoveDungeonConquestAddress(DungeonId.Value);
-
             tradeInventoryState = tradeInventoryState.RegisterGood(dungeonConquestGoodState);
         }
         else
