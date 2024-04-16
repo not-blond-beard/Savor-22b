@@ -55,5 +55,11 @@ public class UserDungeonDetailType : ObjectGraphType<UserDungeonState>
             description: "던전의 탐험 기록(클리어 기록)을 반환합니다.",
             resolve: context => context.Source.DungeonHistories
         );
+
+        Field<NonNullGraphType<ListGraphType<DungeonConquestHistoryStateType>>>(
+            name: "DungeonConquestHistories",
+            description: "던전의 점령 기록을 반환합니다.",
+            resolve: context => context.Source.DungeonConquestHistories
+        );
     }
 }
