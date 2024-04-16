@@ -16,6 +16,16 @@ public class UserDungeonDetailType : ObjectGraphType<UserDungeonState>
         Swarm? swarm = null
     )
     {
+        Field<NonNullGraphType<IntGraphType>>(
+            name: "DungeonConquestKeyCount",
+            description: "해당 던전에 점령 신청 할 수 있는 키의 남은 갯수입니다.",
+            resolve: context =>
+            {
+                int dungeonId = context.GetArgument<int>("dungeonId");
+                return context.Source.GetDungeonConquestKeyCount(dungeonId, blockChain.Count);
+            }
+        );
+
         Field<BooleanGraphType>(
             name: "IsDungeonConquestRewardReceivable",
             description: "점령한 던전의 주기적 보상을 받을 수 있는지 여부를 반환합니다. 점령한 던전이 아니라면 null을 반환합니다.",
