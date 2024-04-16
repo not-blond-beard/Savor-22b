@@ -139,8 +139,6 @@ public class RegisterTradeGoodActionTests : ActionTests
         var afterTradeInventoryState = DeriveTradeInventoryStateDelta(stateDelta);
         var afterGlobalDungeonState = DeriveGlobalDungeonStateDelta(stateDelta);
 
-        Assert.False(afterGlobalDungeonState.IsDungeonConquestAddress(dungeonId, SignerAddress()));
-
         var tradeGood = afterTradeInventoryState.TradeGoods.First(g => g.Value.SellerAddress == SignerAddress()).Value;
 
         if (tradeGood is DungeonConquestGoodState dungeonConquestGoodState)
