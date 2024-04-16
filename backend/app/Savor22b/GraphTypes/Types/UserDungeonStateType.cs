@@ -1,5 +1,6 @@
 namespace Savor22b.GraphTypes.Types;
 
+using System.Collections.Immutable;
 using GraphQL;
 using GraphQL.Types;
 using Libplanet;
@@ -24,34 +25,19 @@ public class UserDungeonStateType : ObjectGraphType<UserDungeonState>
             resolve: context => context.Source.GetDungeonKeyCount(blockChain.Count)
         );
 
-        Field<BooleanGraphType>(
-            name: "IsDungeonConquestRewardReceivable",
-            description: "점령한 던전의 주기적 보상을 받을 수 있는지 여부를 반환합니다. 점령한 던전이 아니라면 null을 반환합니다.",
+        Field<NonNullGraphType<UserDungeonDetailType>>(
+            name: "DungeonDetail",
+            description: "특정 던전에 대한(유저의) 상세 정보입니다.",
             arguments: new QueryArguments(
                 new QueryArgument<NonNullGraphType<IntGraphType>>
                 {
                     Name = "dungeonId",
-                    Description = "보상을 받고자 하는 던전(점령한)의 ID",
+                    Description = "조회할 던전의 ID입니다.",
                 }
             ),
             resolve: context =>
             {
-                int dungeonId = context.GetArgument<int>("dungeonId");
-
-                DungeonConquestHistoryState? history = context.Source.CurrentConquestDungeonHistory(
-                    dungeonId
-                );
-
-                if (history is null)
-                {
-                    return null;
-                }
-
-                return context.Source.IsDungeonConquestRewardReceivable(
-                    dungeonId,
-                    history.BlockIndex,
-                    blockChain.Count
-                );
+                return context.Source;
             }
         );
     }
