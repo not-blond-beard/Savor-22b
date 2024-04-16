@@ -25,18 +25,6 @@ public class UserDungeonStateType : ObjectGraphType<UserDungeonState>
             resolve: context => context.Source.GetDungeonKeyCount(blockChain.Count)
         );
 
-        Field<NonNullGraphType<IntGraphType>>(
-            name: "MaxDungeonKeyCount",
-            description: "던전 키의 최대 개수입니다.",
-            resolve: context => UserDungeonState.MaxDungeonConquestKeyCount
-        );
-
-        Field<NonNullGraphType<LongGraphType>>(
-            name: "DungeonKeyChargeIntervalBlock",
-            description: "던전 키의 충전 주기(Block)입니다.",
-            resolve: context => UserDungeonState.DungeonKeyChargeIntervalBlock
-        );
-
         Field<NonNullGraphType<UserDungeonDetailType>>(
             name: "DungeonDetail",
             description: "특정 던전에 대한(유저의) 상세 정보입니다.",
