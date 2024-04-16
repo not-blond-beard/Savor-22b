@@ -730,7 +730,7 @@ public class Query : ObjectGraphType
         Field<NonNullGraphType<IntGraphType>>(
             name: "maxDungeonKeyCount",
             description: "던전 키의 최대 개수입니다.",
-            resolve: context => UserDungeonState.MaxDungeonConquestKeyCount
+            resolve: context => UserDungeonState.MaxDungeonKey
         );
 
         Field<NonNullGraphType<LongGraphType>>(
