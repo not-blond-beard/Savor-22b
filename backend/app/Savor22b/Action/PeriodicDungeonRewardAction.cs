@@ -12,6 +12,7 @@ using Savor22b.States;
 using Savor22b.Model;
 using Libplanet.Blockchain;
 using Savor22b.Constants;
+using Savor22b.States.Trade;
 
 [ActionType(nameof(PeriodicDungeonRewardAction))]
 public class PeriodicDungeonRewardAction : SVRAction
@@ -66,6 +67,9 @@ public class PeriodicDungeonRewardAction : SVRAction
         RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
+        TradeInventoryState tradeInventoryState = states.GetState(TradeInventoryState.StateAddress) is Dictionary tradeInventoryStateEncoded
+            ? new TradeInventoryState(tradeInventoryStateEncoded)
+            : new TradeInventoryState();
         UserDungeonState userDungeonState = rootState.UserDungeonState;
         InventoryState inventoryState = rootState.InventoryState;
 
@@ -73,6 +77,17 @@ public class PeriodicDungeonRewardAction : SVRAction
         {
             throw new PermissionDeniedException(
                 $"The dungeon {DungeonId} has not been conquered by the signer."
+            );
+        }
+
+        var isRegisteredInTradeStore = tradeInventoryState.TradeGoods
+            .OfType<KeyValuePair<Guid, DungeonConquestGoodState>>()
+            .Any(g => g.Value.DungeonId == DungeonId);
+
+        if (isRegisteredInTradeStore)
+        {
+            throw new PermissionDeniedException(
+                "The dungeon conquest is registered in trade store"
             );
         }
 

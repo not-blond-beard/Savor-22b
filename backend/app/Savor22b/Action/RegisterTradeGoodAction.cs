@@ -21,6 +21,7 @@ public class RegisterTradeGoodAction : SVRAction
         Price = price;
         FoodStateId = foodStateId;
         ItemStateIds = null;
+        DungeonId = null;
     }
 
     public RegisterTradeGoodAction(FungibleAssetValue price, ImmutableList<Guid> itemStateIds)
@@ -28,11 +29,22 @@ public class RegisterTradeGoodAction : SVRAction
         Price = price;
         FoodStateId = null;
         ItemStateIds = itemStateIds;
+        DungeonId = null;
+    }
+
+    public RegisterTradeGoodAction(FungibleAssetValue price, int dungeonId)
+    {
+        Price = price;
+        FoodStateId = null;
+        ItemStateIds = null;
+        DungeonId = dungeonId;
     }
 
     public FungibleAssetValue Price;
 
     public Guid? FoodStateId;
+
+    public int? DungeonId;
 
     public ImmutableList<Guid>? ItemStateIds;
 
@@ -42,6 +54,7 @@ public class RegisterTradeGoodAction : SVRAction
             [nameof(Price)] = Price.ToBencodex(),
             [nameof(FoodStateId)] = FoodStateId.Serialize(),
             [nameof(ItemStateIds)] = ItemStateIds is null ? Null.Value : (List)ItemStateIds.Select(i => i.Serialize()),
+            [nameof(DungeonId)] = DungeonId.Serialize(),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
@@ -49,6 +62,7 @@ public class RegisterTradeGoodAction : SVRAction
         Price = plainValue[nameof(Price)].ToFungibleAssetValue();
         FoodStateId = plainValue[nameof(FoodStateId)].ToGuid();
         ItemStateIds = plainValue[nameof(ItemStateIds)] is Null ? null : ((List)plainValue[nameof(ItemStateIds)]).Select(e => e.ToGuid()).ToImmutableList();
+        DungeonId = plainValue[nameof(DungeonId)].ToInteger();
     }
 
     public override IAccountStateDelta Execute(IActionContext ctx)
@@ -66,6 +80,9 @@ public class RegisterTradeGoodAction : SVRAction
         TradeInventoryState tradeInventoryState = states.GetState(TradeInventoryState.StateAddress) is Dictionary tradeInventoryStateEncoded
             ? new TradeInventoryState(tradeInventoryStateEncoded)
             : new TradeInventoryState();
+        GlobalDungeonState globalDungeonState = states.GetState(GlobalDungeonState.StateAddress) is Dictionary globalDungeonStateEncoded
+            ? new GlobalDungeonState(globalDungeonStateEncoded)
+            : new GlobalDungeonState();
 
         var inventoryState = rootState.InventoryState;
 
@@ -93,12 +110,29 @@ public class RegisterTradeGoodAction : SVRAction
 
             tradeInventoryState = tradeInventoryState.RegisterGood(itemsGoodState);
         }
+        else if (DungeonId is not null)
+        {
+            var dungeonConquestGoodState = new DungeonConquestGoodState(
+                ctx.Signer,
+                ctx.Random.GenerateRandomGuid(),
+                Price,
+                DungeonId.Value);
+
+            if (!globalDungeonState.IsDungeonConquestAddress(DungeonId.Value, ctx.Signer))
+            {
+                throw new PermissionDeniedException("Permission denied");
+            }
+
+            tradeInventoryState = tradeInventoryState.RegisterGood(dungeonConquestGoodState);
+        }
         else
         {
             throw new InvalidValueException($"ItemStateIds or FoodStateId required");
         }
 
         rootState.SetInventoryState(inventoryState);
+
+        states = states.SetState(GlobalDungeonState.StateAddress, globalDungeonState.Serialize());
         states = states.SetState(TradeInventoryState.StateAddress, tradeInventoryState.Serialize());
         return states.SetState(ctx.Signer, rootState.Serialize());
     }
