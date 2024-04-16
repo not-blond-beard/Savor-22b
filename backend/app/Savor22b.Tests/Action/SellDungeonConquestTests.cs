@@ -2,23 +2,22 @@
 namespace Savor22b.Tests.Action;
 
 using Libplanet.State;
-using Libplanet.Assets;
 using Savor22b.Action;
 using Savor22b.States;
 using Xunit;
 
 public class SellDungeonConquestTests : ActionTests
 {
-    public static int TestDungeonId = 0;
+    public static int TestDungeonId = 1;
 
     public SellDungeonConquestTests() { }
 
     [Fact]
     public void Execute_Success_Normal()
     {
-        var (beforeState, conquestStateId) = CreatePresetStateDelta();
+        var beforeState = CreatePresetStateDelta();
 
-        SellDungeonConquest action = new SellDungeonConquest(conquestStateId);
+        SellDungeonConquest action = new SellDungeonConquest(TestDungeonId);
 
         IAccountStateDelta afterState = action.Execute(
             new DummyActionContext
@@ -31,31 +30,21 @@ public class SellDungeonConquestTests : ActionTests
             }
         );
 
-        var afterRootState = DeriveRootStateFromAccountStateDelta(afterState);
-        UserDungeonState userDungeonState = afterRootState.UserDungeonState;
+        var afterGlobalDungeonState = DeriveGlobalDungeonStateDelta(afterState);
 
-        Assert.Empty(userDungeonState.DungeonConquestHistories);
-        Assert.True(
-            FungibleAssetValue.Parse(Currencies.KeyCurrency, "0") < afterState.GetBalance(SignerAddress(), Currencies.KeyCurrency)
-        );
+        Assert.False(afterGlobalDungeonState.IsDungeonConquestAddress(TestDungeonId, SignerAddress()));
     }
 
-    private (IAccountStateDelta, Guid) CreatePresetStateDelta()
+    private IAccountStateDelta CreatePresetStateDelta()
     {
         IAccountStateDelta state = new DummyState();
 
-        var rootStateEncoded = state.GetState(SignerAddress());
-        RootState rootState = rootStateEncoded is Bencodex.Types.Dictionary bdict
-            ? new RootState(bdict)
-            : new RootState();
+        GlobalDungeonState globalDungeonState = state.GetState(GlobalDungeonState.StateAddress) is Bencodex.Types.Dictionary globalDungeonStateEncoded
+            ? new GlobalDungeonState(globalDungeonStateEncoded)
+            : new GlobalDungeonState();
 
-        UserDungeonState userDungeonState = rootState.UserDungeonState;
+        globalDungeonState = globalDungeonState.SetDungeonConquestAddress(TestDungeonId, SignerAddress());
 
-        var conquestStateId = Guid.NewGuid();
-        userDungeonState = userDungeonState.AddDungeonConquestHistory(
-            new DungeonConquestHistoryState(conquestStateId, 1, 1, SignerAddress(), 1));
-
-        rootState.SetUserDungeonState(userDungeonState);
-        return (state.SetState(SignerAddress(), rootState.Serialize()), conquestStateId);
+        return state.SetState(GlobalDungeonState.StateAddress, globalDungeonState.Serialize());
     }
 }

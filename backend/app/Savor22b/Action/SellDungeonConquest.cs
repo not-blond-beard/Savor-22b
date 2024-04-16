@@ -1,39 +1,36 @@
 namespace Savor22b.Action;
 
-using System;
 using System.Collections.Immutable;
 using Bencodex.Types;
 using Libplanet.Action;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
-using Savor22b.Action.Util;
 using Savor22b.Action.Exceptions;
 using Savor22b.States;
 using Savor22b.Model;
-using Libplanet.Blockchain;
 using Libplanet.Assets;
 
 [ActionType(nameof(SellDungeonConquest))]
 public class SellDungeonConquest : SVRAction
 {
-    public Guid DungeonConquestHistoryStateId { get; private set; }
+    public int DungeonId { get; private set; }
 
     public SellDungeonConquest() { }
 
-    public SellDungeonConquest(Guid dungeonConquestHistoryStateId)
+    public SellDungeonConquest(int dungeonId)
     {
-        DungeonConquestHistoryStateId = dungeonConquestHistoryStateId;
+        DungeonId = dungeonId;
     }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
-            [nameof(DungeonConquestHistoryStateId)] = DungeonConquestHistoryStateId.Serialize(),
+            [nameof(DungeonId)] = DungeonId.Serialize(),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
-        DungeonConquestHistoryStateId = plainValue[nameof(DungeonConquestHistoryStateId)].ToGuid();
+        DungeonId = plainValue[nameof(DungeonId)].ToInteger();
     }
 
     private Dungeon GetDungeonInCsv(int dungeonId)
@@ -57,26 +54,20 @@ public class SellDungeonConquest : SVRAction
 
         IAccountStateDelta states = ctx.PreviousStates;
 
-        RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
-            ? new RootState(rootStateEncoded)
-            : new RootState();
-        UserDungeonState userDungeonState = rootState.UserDungeonState;
+        GlobalDungeonState globalDungeonState = states.GetState(GlobalDungeonState.StateAddress) is Dictionary globalDungeonStateEncoded
+            ? new GlobalDungeonState(globalDungeonStateEncoded)
+            : new GlobalDungeonState();
 
-        var dungeonConquestHistory = userDungeonState.DungeonConquestHistories.FirstOrDefault(d => d.StateId == DungeonConquestHistoryStateId);
-
-        if (dungeonConquestHistory == null)
+        if (!globalDungeonState.IsDungeonConquestAddress(DungeonId, ctx.Signer))
         {
-            throw new InvalidValueException($"Invalid state ID: {DungeonConquestHistoryStateId}");
+            throw new InvalidValueException($"Invalid dungeon ID: {DungeonId}");
         }
 
-        Dungeon dungeon = GetDungeonInCsv(dungeonConquestHistory.DungeonId);
+        Dungeon dungeon = GetDungeonInCsv(DungeonId);
+
+        globalDungeonState = globalDungeonState.RemoveDungeonConquestAddress(DungeonId);
 
         states = states.MintAsset(ctx.Signer, FungibleAssetValue.Parse(Currencies.KeyCurrency, dungeon.ReturnDungeonRewardBBG));
-
-        userDungeonState = userDungeonState.RemoveDungeonConquestHistory(dungeonConquestHistory);
-
-        rootState.SetUserDungeonState(userDungeonState);
-
-        return states.SetState(ctx.Signer, rootState.Serialize());
+        return states.SetState(GlobalDungeonState.StateAddress, globalDungeonState.Serialize());
     }
 }
