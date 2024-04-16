@@ -556,8 +556,8 @@ public class Query : ObjectGraphType
                 },
                 new QueryArgument<NonNullGraphType<GuidGraphType>>
                 {
-                    Name = "stateId",
-                    Description = "던전점령권 StateId",
+                    Name = "dungeonId",
+                    Description = "던전 Id",
                 }
             ),
             resolve: context =>
@@ -566,7 +566,7 @@ public class Query : ObjectGraphType
                     ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
 
-                var action = new SellDungeonConquest(context.GetArgument<Guid>("stateId"));
+                var action = new SellDungeonConquest(context.GetArgument<int>("dungeonId"));
 
                 return new GetUnsignedTransactionHex(
                     action,
