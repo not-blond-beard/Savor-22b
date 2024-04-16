@@ -6,6 +6,7 @@ using Libplanet;
 using Libplanet.Assets;
 using Libplanet.State;
 using Savor22b.Action;
+using Savor22b.Model;
 using Savor22b.States;
 using Savor22b.States.Trade;
 using Xunit;
@@ -45,11 +46,7 @@ public class RegisterTradeGoodActionTests : ActionTests
         );
 
         var afterState = DeriveRootStateFromAccountStateDelta(stateDelta);
-
-        var afterTradeInventoryStateEncoded = stateDelta.GetState(TradeInventoryState.StateAddress);
-        TradeInventoryState afterTradeInventoryState = afterTradeInventoryStateEncoded is Bencodex.Types.Dictionary bdict
-            ? new TradeInventoryState(bdict)
-            : throw new Exception();
+        var afterTradeInventoryState = DeriveTradeInventoryStateDelta(stateDelta);
 
         Assert.True(afterState.InventoryState.RefrigeratorStateList.Count == 1);
 
@@ -94,11 +91,7 @@ public class RegisterTradeGoodActionTests : ActionTests
         );
 
         var afterState = DeriveRootStateFromAccountStateDelta(stateDelta);
-
-        var afterTradeInventoryStateEncoded = stateDelta.GetState(TradeInventoryState.StateAddress);
-        TradeInventoryState afterTradeInventoryState = afterTradeInventoryStateEncoded is Bencodex.Types.Dictionary bdict
-            ? new TradeInventoryState(bdict)
-            : throw new Exception();
+        var afterTradeInventoryState = DeriveTradeInventoryStateDelta(stateDelta);
 
         Assert.Empty(afterState.InventoryState.ItemStateList);
 
@@ -108,6 +101,52 @@ public class RegisterTradeGoodActionTests : ActionTests
         {
             Assert.Equal(itemsGoodState.Price, FungibleAssetValue.Parse(Currencies.KeyCurrency, "10"));
             Assert.Equal(itemsGoodState.Items[0].StateID, beforeItems[0].StateID);
+        }
+        else
+        {
+            throw new Exception();
+        }
+    }
+
+    [Fact]
+    public void RegisterTradeGoodActionExecute_Success_DungeonConquest()
+    {
+        var stateDelta = CreatePresetStateDelta();
+        var beforeState = DeriveRootStateFromAccountStateDelta(stateDelta);
+
+        var dungeonId = beforeState.UserDungeonState.DungeonConquestHistories[0].DungeonId;
+
+        var action = new RegisterTradeGoodAction(
+            FungibleAssetValue.Parse(
+                Currencies.KeyCurrency,
+                "10"
+            ),
+            dungeonId
+        );
+
+        stateDelta = action.Execute(
+            new DummyActionContext
+            {
+                PreviousStates = stateDelta,
+                Signer = SignerAddress(),
+                Random = random,
+                Rehearsal = false,
+                BlockIndex = 1,
+            }
+        );
+
+        var afterRootState = DeriveRootStateFromAccountStateDelta(stateDelta);
+        var afterTradeInventoryState = DeriveTradeInventoryStateDelta(stateDelta);
+        var afterGlobalDungeonState = DeriveGlobalDungeonStateDelta(stateDelta);
+
+        Assert.False(afterGlobalDungeonState.IsDungeonConquestAddress(dungeonId, SignerAddress()));
+
+        var tradeGood = afterTradeInventoryState.TradeGoods.First(g => g.Value.SellerAddress == SignerAddress()).Value;
+
+        if (tradeGood is DungeonConquestGoodState dungeonConquestGoodState)
+        {
+            Assert.Equal(dungeonConquestGoodState.Price, FungibleAssetValue.Parse(Currencies.KeyCurrency, "10"));
+            Assert.Equal(dungeonConquestGoodState.DungeonId, dungeonId);
         }
         else
         {
@@ -154,6 +193,15 @@ public class RegisterTradeGoodActionTests : ActionTests
 
         rootState.SetInventoryState(inventoryState);
 
+        rootState.SetUserDungeonState(
+            rootState.UserDungeonState.AddDungeonConquestHistory(
+                new DungeonConquestHistoryState(1, 1, 1)
+            )
+        );
+        var globalDungeonState = new GlobalDungeonState();
+        globalDungeonState = globalDungeonState.SetDungeonConquestAddress(1, SignerAddress());
+
+        state = state.SetState(GlobalDungeonState.StateAddress, globalDungeonState.Serialize());
         return state.SetState(signerAddress, rootState.Serialize());
     }
 }

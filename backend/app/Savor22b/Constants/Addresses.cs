@@ -17,8 +17,8 @@ public static class Addresses
     );
 
     public static readonly Address TradeStoreAddress = new Address(
-        "0000000000000000000000000000000000000002");
+        "0000000000000000000000000000000000000003");
 
     public static readonly Address TradeStoreVaultAddress = new Address(
-        "0000000000000000000000000000000000000003");
+        "0000000000000000000000000000000000000004");
 }

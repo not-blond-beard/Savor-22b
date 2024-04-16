@@ -4,9 +4,12 @@ using Libplanet.Headless.Extensions;
 
 using Bencodex.Types;
 using Libplanet;
+using Savor22b.Constants;
 
 public class GlobalDungeonState : State
 {
+    public static readonly Address StateAddress = Addresses.DungeonDataAddress;
+
     public Dictionary<string, Address> DungeonStatus { get; private set; }
 
     public GlobalDungeonState()
@@ -61,6 +64,12 @@ public class GlobalDungeonState : State
     public GlobalDungeonState SetDungeonConquestAddress(int dungeonId, Address address)
     {
         DungeonStatus[dungeonId.ToString()] = address;
+        return new GlobalDungeonState(DungeonStatus);
+    }
+
+    public GlobalDungeonState RemoveDungeonConquestAddress(int dungeonId)
+    {
+        DungeonStatus.Remove(dungeonId.ToString());
         return new GlobalDungeonState(DungeonStatus);
     }
 
