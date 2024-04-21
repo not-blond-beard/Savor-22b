@@ -2,9 +2,11 @@ extends Control
 
 const SELECT_HOUSE_BUTTON = preload("res://ui/house_slot_button.tscn")
 const SLOT_IS_FULL = preload("res://ui/notice_popup.tscn")
+const ConfirmPopupResource = preload("res://ui/confirm_popup.tscn")
 const Gql_query = preload("res://gql/query.gd")
 
 @onready var noticepopup = $MarginContainer/Background/Noticepopup
+@onready var confirmPopup = $MarginContainer/Background/ConfirmPopup
 @onready var gridcontainer = $MarginContainer/Background/MarginContainer/ScrollContainer/HomeGridContainer
 
 var houses = []
@@ -72,9 +74,37 @@ func _on_build_button_button_down():
 	if (SceneContext.selected_house_location["owner"] != "none"):
 		print_notice()
 	else:
-		build_house()
+		var isHouseOwner = false
+		var villageState = SceneContext.user_state["villageState"]
+		if(villageState != null):
+			isHouseOwner = true
+		print(isHouseOwner)
+		
+		if (isHouseOwner):
+			_query_relocation_cost_and_open()
+		else:
+			build_house()
 
 
+func _query_relocation_cost_and_open():
+	var gql_query = Gql_query.new()
+	gql_query.calculate_relocation_cost_query.graphql_response.connect(
+		func(data):
+			var confirmPopupResource = ConfirmPopupResource.instantiate()
+			
+			confirmPopupResource.set_label("%s 블록이 소요되며 %sBBG 가 필요합니다." % [
+				str(data.data.calculateRelocationCost.durationBlocks),
+				str(data.data.calculateRelocationCost.price)
+			])
+			confirmPopupResource.ok_button_clicked_signal.connect(build_house)
+			confirmPopup.add_child(confirmPopupResource)
+	)
+	add_child(gql_query.calculate_relocation_cost_query)
+	gql_query.calculate_relocation_cost_query.run({
+		"villageId": SceneContext.user_state["villageState"]["houseState"]["villageId"],
+		"relocationVillageId": SceneContext.get_selected_village()["id"]
+	})
+	
 	
 func print_notice():
 	var box = SLOT_IS_FULL.instantiate()

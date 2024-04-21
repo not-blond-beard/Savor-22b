@@ -127,6 +127,9 @@ func _query_user_state():
 			]),
 		]),
 		GQLQuery.new("villageState").set_props([
+			GQLQuery.new("houseState").set_props([
+				"villageId",
+			]),
 			GQLQuery.new("houseFieldStates").set_props([
 				"installedSeedGuid",
 				"seedID",
