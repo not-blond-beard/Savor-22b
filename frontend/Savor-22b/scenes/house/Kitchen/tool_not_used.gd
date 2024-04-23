@@ -2,6 +2,8 @@ extends Control
 
 @onready var button = $Button
 
+signal uninstall_big_tool_button_pressed
+
 var data: Dictionary
 
 var format_string = "[%s] 도구 설치됨
@@ -23,4 +25,7 @@ func update_text():
 func set_data(info: Dictionary):
 	data = info
 	
+
+func _on_uninstall_button_pressed():
+	uninstall_big_tool_button_pressed.emit(data.spaceNumber)
 

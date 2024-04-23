@@ -37,3 +37,5 @@ text = "[-- -] 도구 설치됨
 
 식재료 사용 시
 요리 조리 가능"
+
+[connection signal="pressed" from="Button" to="." method="_on_uninstall_button_pressed"]

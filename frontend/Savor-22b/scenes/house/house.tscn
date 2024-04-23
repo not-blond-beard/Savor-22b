@@ -122,6 +122,14 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="ConfirmPopup" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 600.0
+offset_top = 300.0
+offset_right = 640.0
+offset_bottom = 340.0
+
 [connection signal="button_down" from="M/V/menus/V/FarmButton" to="." method="_on_farm_button_button_down"]
 [connection signal="button_down" from="M/V/menus/V/VillageButton" to="." method="_on_village_button_button_down"]
 [connection signal="button_down" from="M/V/menus/V/RecipeButton" to="." method="_on_recipe_button_button_down"]
