@@ -8,12 +8,12 @@ using Libplanet.Crypto;
 using Libplanet.Net;
 using Savor22b.Action;
 
-public class RemoveInstalledKitchenEquipmentActionQuery : FieldType
+public class UninstalledKitchenEquipmentActionQuery : FieldType
 {
-    public RemoveInstalledKitchenEquipmentActionQuery(BlockChain blockChain, Swarm swarm)
+    public UninstalledKitchenEquipmentActionQuery(BlockChain blockChain, Swarm swarm)
         : base()
     {
-        Name = "createAction_RemoveInstalledKitchenEquipmentActionQuery";
+        Name = "createAction_UninstalledKitchenEquipmentActionQuery";
         Type = typeof(NonNullGraphType<StringGraphType>);
         Description = "설치된 큰 조리도구를 설치 제거합니다.";
         Arguments = new QueryArguments(
@@ -24,8 +24,8 @@ public class RemoveInstalledKitchenEquipmentActionQuery : FieldType
             },
             new QueryArgument<NonNullGraphType<GuidGraphType>>
             {
-                Name = "installedEquipmentStateId",
-                Description = "제거하려는 설치된 큰 조리도구의 State Id(Guid) 입니다.",
+                Name = "spaceNumber",
+                Description = "제거하려는 설치된 큰 조리도구의 설치공간 번호 입니다.",
             }
         );
         Resolver = new FuncFieldResolver<string>(context =>
@@ -36,8 +36,8 @@ public class RemoveInstalledKitchenEquipmentActionQuery : FieldType
                     Libplanet.ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
 
-                var action = new RemoveInstalledKitchenEquipmentAction(
-                    context.GetArgument<Guid>("installedEquipmentStateId")
+                var action = new UninstalledKitchenEquipmentAction(
+                    context.GetArgument<int>("spaceNumber")
                 );
 
                 return new GetUnsignedTransactionHex(
