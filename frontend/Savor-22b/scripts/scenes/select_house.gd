@@ -78,7 +78,6 @@ func _on_build_button_button_down():
 		var villageState = SceneContext.user_state["villageState"]
 		if(villageState != null):
 			isHouseOwner = true
-		print(isHouseOwner)
 		
 		if (isHouseOwner):
 			_query_relocation_cost_and_open()
