@@ -2,6 +2,7 @@ extends Control
 
 const KITCHEN_TOOLS = preload("res://scenes/house/kitchentools.tscn")
 const KITCHEN_SHOP = preload("res://scenes/house/kitchenshop.tscn")
+const REFRIGERATOR = preload("res://scenes/house/refrigerator.tscn")
 
 @onready var panel = $M/V/Panel/C
 
@@ -38,3 +39,10 @@ func closetab():
 
 func popup():
 	buysignal.emit()
+
+
+func _on_ings_button_down():
+	clear_popup()
+	var refrigerator = REFRIGERATOR.instantiate()
+	refrigerator.closetab.connect(closetab)
+	panel.add_child(refrigerator)

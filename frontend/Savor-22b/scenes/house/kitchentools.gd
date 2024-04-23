@@ -2,7 +2,7 @@ extends Control
 
 const TOOL = preload("res://scenes/house/tool.tscn")
 
-@onready var grid = $M/V/Items/G
+@onready var grid = $M/V/Items/S/G
 
 signal closetab
 
