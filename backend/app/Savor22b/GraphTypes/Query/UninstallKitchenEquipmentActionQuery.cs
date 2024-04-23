@@ -8,12 +8,12 @@ using Libplanet.Crypto;
 using Libplanet.Net;
 using Savor22b.Action;
 
-public class UninstalledKitchenEquipmentActionQuery : FieldType
+public class UninstallKitchenEquipmentActionQuery : FieldType
 {
-    public UninstalledKitchenEquipmentActionQuery(BlockChain blockChain, Swarm swarm)
+    public UninstallKitchenEquipmentActionQuery(BlockChain blockChain, Swarm swarm)
         : base()
     {
-        Name = "createAction_UninstalledKitchenEquipmentActionQuery";
+        Name = "createAction_UninstallKitchenEquipmentActionQuery";
         Type = typeof(NonNullGraphType<StringGraphType>);
         Description = "설치된 큰 조리도구를 설치 제거합니다.";
         Arguments = new QueryArguments(
@@ -22,7 +22,7 @@ public class UninstalledKitchenEquipmentActionQuery : FieldType
                 Name = "publicKey",
                 Description = "대상 유저의 40-hex 형태의 address 입니다.",
             },
-            new QueryArgument<NonNullGraphType<GuidGraphType>>
+            new QueryArgument<NonNullGraphType<IntGraphType>>
             {
                 Name = "spaceNumber",
                 Description = "제거하려는 설치된 큰 조리도구의 설치공간 번호 입니다.",
@@ -36,7 +36,7 @@ public class UninstalledKitchenEquipmentActionQuery : FieldType
                     Libplanet.ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
                 );
 
-                var action = new UninstalledKitchenEquipmentAction(
+                var action = new UninstallKitchenEquipmentAction(
                     context.GetArgument<int>("spaceNumber")
                 );
 

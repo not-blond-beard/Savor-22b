@@ -756,7 +756,7 @@ public class Query : ObjectGraphType
         AddField(new VillageField(blockChain, subject));
         AddField(new ShowMeTheMoney(blockChain, swarm));
         AddField(new ConquestDungeonActionQuery(blockChain, swarm));
-        AddField(new UninstalledKitchenEquipmentActionQuery(blockChain, swarm));
+        AddField(new UninstallKitchenEquipmentActionQuery(blockChain, swarm));
         AddField(new PeriodicDungeonRewardActionQuery(blockChain, swarm));
 
         Field<NonNullGraphType<IntGraphType>>(

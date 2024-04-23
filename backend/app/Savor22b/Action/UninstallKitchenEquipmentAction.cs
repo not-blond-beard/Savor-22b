@@ -8,12 +8,12 @@ using Bencodex.Types;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 
-[ActionType(nameof(UninstalledKitchenEquipmentAction))]
-public class UninstalledKitchenEquipmentAction : SVRAction
+[ActionType(nameof(UninstallKitchenEquipmentAction))]
+public class UninstallKitchenEquipmentAction : SVRAction
 {
-    public UninstalledKitchenEquipmentAction() { }
+    public UninstallKitchenEquipmentAction() { }
 
-    public UninstalledKitchenEquipmentAction(int spaceNumber)
+    public UninstallKitchenEquipmentAction(int spaceNumber)
     {
         SpaceNumber = spaceNumber;
     }

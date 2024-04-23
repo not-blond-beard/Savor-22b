@@ -9,9 +9,9 @@ using Savor22b.Model;
 using Savor22b.States;
 using Xunit;
 
-public class UninstalledKitchenEquipmentActionTests : ActionTests
+public class UninstallKitchenEquipmentActionTests : ActionTests
 {
-    public UninstalledKitchenEquipmentActionTests() { }
+    public UninstallKitchenEquipmentActionTests() { }
 
     private readonly Guid EquipmentStateId = new();
 
@@ -38,7 +38,7 @@ public class UninstalledKitchenEquipmentActionTests : ActionTests
 
         beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
-        var action = new UninstalledKitchenEquipmentAction(
+        var action = new UninstallKitchenEquipmentAction(
             1
         );
 
@@ -87,7 +87,7 @@ public class UninstalledKitchenEquipmentActionTests : ActionTests
 
         beforeState = beforeState.SetState(SignerAddress(), beforeRootState.Serialize());
 
-        var action = new UninstalledKitchenEquipmentAction(1);
+        var action = new UninstallKitchenEquipmentAction(1);
 
         Assert.Throws<InvalidValueException>(() =>
         {
