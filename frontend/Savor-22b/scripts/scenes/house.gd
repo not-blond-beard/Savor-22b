@@ -11,6 +11,9 @@ const LARGE_COOK = preload("res://scenes/house/Kitchen/big_tool_slot.tscn")
 
 const LARGE_INSTALLER = preload("res://scenes/house/bigtool_install_popup.tscn")
 
+const COOK_BOOK = preload("res://scenes/house/Cook/cook_book.tscn")
+const COOK_START_POPUP = preload("res://scenes/house/Cook/cook_started_popup.tscn")
+
 const Gql_query = preload("res://gql/query.gd")
 
 @onready var subscene = $M/V/subscene
@@ -167,3 +170,32 @@ func install_tool(stateId : String):
 	)
 	add_child(query_executor)
 	query_executor.run({})
+
+
+var cook_book
+
+func _on_cook_button_button_down():
+	var Cookbookarea = MarginContainer.new()
+	#setting margincontainer constants
+	Cookbookarea.add_theme_constant_override("margin_top", 20)
+	Cookbookarea.add_theme_constant_override("margin_bottom", 20)
+	Cookbookarea.add_theme_constant_override("margin_left", 140)
+	Cookbookarea.add_theme_constant_override("margin_right", 140)
+	subscene.add_child(Cookbookarea)
+
+	cook_book = COOK_BOOK.instantiate()
+	cook_book.closeall.connect(clear_popup)
+	cook_book.reload_signal.connect(reload_cookbook)
+	cook_book.cook_started.connect(cook_started_popup)
+
+	Cookbookarea.add_child(cook_book)
+
+func reload_cookbook():
+	clear_popup()
+	_on_cook_button_button_down()
+	
+func cook_started_popup():
+	var start_popup = COOK_START_POPUP.instantiate()
+	start_popup.close_book.connect(_on_refresh_button_button_down)
+	start_popup.set_position(Vector2(900,600))
+	subscene.add_child(start_popup)

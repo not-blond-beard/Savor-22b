@@ -14,5 +14,7 @@ func _ready():
 func set_ingname(name: String):
 	ingname = name
 
+
+
 func update_info():
 	button.text = format_string % [ingname]

@@ -11,6 +11,8 @@ const SLOT_USED = preload("res://scenes/house/Kitchen/tool_is_used.tscn")
 var largeslots: Dictionary
 var largetools: Array
 var installedId: Array
+var installedName: Array
+var installedToolsInfo: Array
 
 var selectedSpace: int
 
@@ -24,6 +26,8 @@ func _ready():
 	set_slot("third")
 	
 	SceneContext.installed_tool_id = installedId
+	SceneContext.installed_tool_name = installedName
+	SceneContext.installed_tool_info = installedToolsInfo
 
 	
 func load_data():
@@ -48,6 +52,12 @@ func set_slot(name : String):
 			bigslot.set_data(singleslot)
 			slot.add_child(bigslot)
 			installedId.append(singleslot["installedKitchenEquipment"]["stateId"])
+			installedName.append(singleslot["installedKitchenEquipment"]["equipmentName"])
+			var dict = { "name" : singleslot["installedKitchenEquipment"]["equipmentName"],
+				"stateId" : singleslot["installedKitchenEquipment"]["stateId"],
+			"isCooking" : singleslot["installedKitchenEquipment"]["isCooking"]}
+			
+			installedToolsInfo.append(dict)
 		else: # cooking
 			var bigslot = SLOT_USED.instantiate()
 			bigslot.set_data(singleslot)

@@ -38,7 +38,7 @@ func _query_villages():
 			"owner",
 		]),
 	])
-	print(query.serialize())
+	#print(query.serialize())
 	var query_executor = SvrGqlClient.query('query', {}, query)
 	query_executor.graphql_response.connect(
 		func(data):
@@ -51,7 +51,7 @@ func _query_assets():
 	var query = GQLQuery.new("asset").set_args({
 		"signer_address": "address",
 	})
-	print(query.serialize())
+	#print(query.serialize())
 	var query_executor = SvrGqlClient.query(
 		'query',
 		{
@@ -68,7 +68,7 @@ func _query_assets():
 	})
 
 func _query_user_state():
-	print("signer address: %s" % GlobalSigner.signer_address)
+	#print("signer address: %s" % GlobalSigner.signer_address)
 	var query = GQLQuery.new("userState").set_args({
 		"signer_address": "address",
 	}).set_props([
@@ -140,7 +140,7 @@ func _query_user_state():
 			])
 		])
 	])
-	print(query.serialize())
+	#print(query.serialize())
 	var query_executor = SvrGqlClient.query(
 		'query',
 		{
@@ -173,7 +173,7 @@ func _query_shop():
 			"price"
 		])
 	])
-	print(query.serialize())
+	#print(query.serialize())
 	var query_executor = SvrGqlClient.query(
 		'query',{}, query)
 		
@@ -206,7 +206,7 @@ func _query_recipe():
 			"name",
 		])
 	])
-	print(query.serialize())
+	#print(query.serialize())
 	var query_executor = SvrGqlClient.query(
 		'query',{}, query)
 		
@@ -218,7 +218,7 @@ func _query_recipe():
 	query_executor.run({})
 
 func _query_kitchen_slot_state():
-	print("signer address: %s" % GlobalSigner.signer_address)
+	#print("signer address: %s" % GlobalSigner.signer_address)
 	
 	var query = GQLQuery.new("userState").set_args({
 		"signer_address": "address",
@@ -315,7 +315,7 @@ func _query_kitchen_slot_state():
 		]),
 	])
 	
-	print(query.serialize())
+	#print(query.serialize())
 	
 	var query_executor = SvrGqlClient.query(
 		'query',
@@ -327,7 +327,7 @@ func _query_kitchen_slot_state():
 	
 	query_executor.graphql_response.connect(
 		func(data):
-			print(data)
+			#print(data)
 			SceneContext.set_user_kitchen_state(data)
 	)
 	
@@ -349,7 +349,7 @@ func get_current_block():
 		}
 	}"
 
-	print(query_string)
+	#print(query_string)
 	
 	var query_executor = SvrGqlClient2.raw(query_string)
 	query_executor.graphql_response.connect(func(data):

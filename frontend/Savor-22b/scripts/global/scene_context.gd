@@ -56,7 +56,13 @@ var selected_field_index := 0
 var selected_item_index := 0
 var selected_item_name : String
 
+var selected_recipe_index := 0
+var selected_ingredients : Array
+var selected_tools : Array
+
 var installed_tool_id : Array
+var installed_tool_name : Array
+var installed_tool_info : Array
 
 var block_index : Dictionary
 
