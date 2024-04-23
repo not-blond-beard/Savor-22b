@@ -55,13 +55,20 @@ func set_slot(name : String):
 			installedName.append(singleslot["installedKitchenEquipment"]["equipmentName"])
 			var dict = { "name" : singleslot["installedKitchenEquipment"]["equipmentName"],
 				"stateId" : singleslot["installedKitchenEquipment"]["stateId"],
-			"isCooking" : singleslot["installedKitchenEquipment"]["isCooking"]}
+			"isCooking" : singleslot["installedKitchenEquipment"]["isCooking"],
+			"foodId" : null}
 			
 			installedToolsInfo.append(dict)
 		else: # cooking
 			var bigslot = SLOT_USED.instantiate()
 			bigslot.set_data(singleslot)
 			slot.add_child(bigslot)
-
+			var dict = { "name" : singleslot["installedKitchenEquipment"]["equipmentName"],
+				"stateId" : singleslot["installedKitchenEquipment"]["stateId"],
+			"isCooking" : singleslot["installedKitchenEquipment"]["isCooking"],
+			"foodId" : singleslot["installedKitchenEquipment"]["cookingFood"]["stateId"]}
+			
+			installedToolsInfo.append(dict)
+			
 func on_signal_received(spaceNumber : int):
 	install_signal.emit(spaceNumber)
