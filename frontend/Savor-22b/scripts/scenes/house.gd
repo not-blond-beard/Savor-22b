@@ -11,10 +11,13 @@ const LARGE_COOK = preload("res://scenes/house/Kitchen/big_tool_slot.tscn")
 
 const LARGE_INSTALLER = preload("res://scenes/house/bigtool_install_popup.tscn")
 
+const CONFIRM_POPUP_RESOURCE = preload("res://ui/confirm_popup.tscn")
+
 const Gql_query = preload("res://gql/query.gd")
 
 @onready var subscene = $M/V/subscene
 @onready var popup = $Popups
+@onready var confirmPopup = $ConfirmPopup
 
 var selectedSpace
 
@@ -124,6 +127,7 @@ func load_kitchen():
 	
 	var largeslot = LARGE_COOK.instantiate()
 	largeslot.install_signal.connect(on_empty_slot_pressed)
+	largeslot.uninstall_signal.connect(on_uninstall_slot_pressed)
 	Kitchenarea.add_child(largeslot)
 	
 func on_empty_slot_pressed(spaceNumber : int):
@@ -167,3 +171,35 @@ func install_tool(stateId : String):
 	)
 	add_child(query_executor)
 	query_executor.run({})
+
+func on_uninstall_slot_pressed(spaceNumber: int):
+	var confirmPopupResource = CONFIRM_POPUP_RESOURCE.instantiate()
+	
+	confirmPopupResource.set_label("설치된 조리도구를 제거하시겠습니까?")
+	confirmPopupResource.ok_button_clicked_signal.connect(uninsatll_big_tool.bind(spaceNumber))
+	confirmPopup.add_child(confirmPopupResource)
+
+func uninsatll_big_tool(spaceNumber: int):
+	var gql_query = Gql_query.new()
+	var query_string = gql_query.uninstall_kitchen_equipment_query_format.format([
+		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
+		"%s" % spaceNumber], "{}")
+	print(query_string)
+	
+	var query_executor = SvrGqlClient.raw(query_string)
+	query_executor.graphql_response.connect(func(data):
+		print("gql response: ", data)
+		var unsigned_tx = data["data"]["createAction_UninstallKitchenEquipmentActionQuery"]
+		print("unsigned tx: ", unsigned_tx)
+		var signature = GlobalSigner.sign(unsigned_tx)
+		print("signed tx: ", signature)
+		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
+		mutation_executor.graphql_response.connect(func(data):
+			print("mutation res: ", data)
+		)
+		add_child(mutation_executor)
+		mutation_executor.run({})
+	)
+	add_child(query_executor)
+	query_executor.run({})
+	

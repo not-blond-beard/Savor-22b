@@ -79,6 +79,13 @@ var install_kitchen_equipment_query_format = "query {
 	)
 }"
 
+var uninstall_kitchen_equipment_query_format = "query {
+	createAction_UninstallKitchenEquipmentActionQuery(
+		publicKey: {},
+		spaceNumber: {},
+	)
+}"
+
 var calculate_relocation_cost_query_template = GQLQuery.new("calculateRelocationCost").set_args({
 	"villageId": "villageId",
 	"relocationVillageId": "relocationVillageId",
