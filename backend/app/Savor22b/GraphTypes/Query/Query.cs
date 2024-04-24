@@ -546,6 +546,38 @@ public class Query : ObjectGraphType
         );
 
         Field<NonNullGraphType<StringGraphType>>(
+            "createAction_SellDungeonConquest",
+            description: "던전점령권 시스템에 판매",
+            arguments: new QueryArguments(
+                new QueryArgument<NonNullGraphType<StringGraphType>>
+                {
+                    Name = "publicKey",
+                    Description = "The base64-encoded public key for Transaction.",
+                },
+                new QueryArgument<NonNullGraphType<GuidGraphType>>
+                {
+                    Name = "dungeonId",
+                    Description = "던전 Id",
+                }
+            ),
+            resolve: context =>
+            {
+                var publicKey = new PublicKey(
+                    ByteUtil.ParseHex(context.GetArgument<string>("publicKey"))
+                );
+
+                var action = new SellDungeonConquest(context.GetArgument<int>("dungeonId"));
+
+                return new GetUnsignedTransactionHex(
+                    action,
+                    publicKey,
+                    _blockChain,
+                    _swarm
+                ).UnsignedTransactionHex;
+            }
+        );
+
+        Field<NonNullGraphType<StringGraphType>>(
             "createAction_CancelRegisteredTradeGoodAction",
             description: "무역상점 상품 등록 취소",
             arguments: new QueryArguments(
@@ -725,6 +757,31 @@ public class Query : ObjectGraphType
         AddField(new ShowMeTheMoney(blockChain, swarm));
         AddField(new ConquestDungeonActionQuery(blockChain, swarm));
         AddField(new RemoveInstalledKitchenEquipmentActionQuery(blockChain, swarm));
+        AddField(new PeriodicDungeonRewardActionQuery(blockChain, swarm));
+
+        Field<NonNullGraphType<IntGraphType>>(
+            name: "maxDungeonKeyCount",
+            description: "던전 키의 최대 개수입니다.",
+            resolve: context => UserDungeonState.MaxDungeonKey
+        );
+
+        Field<NonNullGraphType<LongGraphType>>(
+            name: "dungeonKeyChargeIntervalBlock",
+            description: "던전 키의 충전 주기(Block)입니다.",
+            resolve: context => UserDungeonState.DungeonKeyChargeIntervalBlock
+        );
+
+        Field<NonNullGraphType<IntGraphType>>(
+            name: "maxDungeonConquestKeyCount",
+            description: "던전 점령 키(던전마다 할당)의 최대 개수입니다.",
+            resolve: context => UserDungeonState.MaxDungeonConquestKeyCount
+        );
+
+        Field<NonNullGraphType<LongGraphType>>(
+            name: "dungeonConquestKeyChargeIntervalBlock",
+            description: "던전 점령 키(던전마다 할당)의 충전 주기(Block)입니다.",
+            resolve: context => UserDungeonState.DungeonConquestKeyChargeIntervalBlock
+        );
     }
 
     private List<RecipeResponse> combineRecipeData()

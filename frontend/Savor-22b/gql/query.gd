@@ -87,3 +87,26 @@ var create_food_query_format = "query {
 		kitchenEquipmentStateIdsToUse: {}
 	)
 }"
+
+var uninstall_kitchen_equipment_query_format = "query {
+	createAction_UninstallKitchenEquipmentActionQuery(
+		publicKey: {},
+		spaceNumber: {},
+	)
+}"
+
+var calculate_relocation_cost_query_template = GQLQuery.new("calculateRelocationCost").set_args({
+	"villageId": "villageId",
+	"relocationVillageId": "relocationVillageId",
+}).set_props([
+	"durationBlocks",
+	"price",
+])
+
+var calculate_relocation_cost_query = SvrGqlClient.query(
+	'CalculateRelocationCost',
+	{
+		"villageId": "Int!",
+		"relocationVillageId": "Int!",
+	},
+	calculate_relocation_cost_query_template)

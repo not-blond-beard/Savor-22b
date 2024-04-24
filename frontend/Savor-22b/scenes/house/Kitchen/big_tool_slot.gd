@@ -1,6 +1,7 @@
 extends Control
 
 signal install_signal
+signal uninstall_signal
 
 const SLOT_EMPTY = preload("res://scenes/house/Kitchen/tool_slot_empty.tscn")
 const SLOT_NOT_USED = preload("res://scenes/house/Kitchen/tool_not_used.tscn")
@@ -51,6 +52,7 @@ func set_slot(name : String):
 			var bigslot = SLOT_NOT_USED.instantiate()
 			bigslot.set_data(singleslot)
 			slot.add_child(bigslot)
+			bigslot.uninstall_big_tool_button_pressed.connect(on_uninstall_signal_recived)
 			installedId.append(singleslot["installedKitchenEquipment"]["stateId"])
 			installedName.append(singleslot["installedKitchenEquipment"]["equipmentName"])
 			var dict = { "name" : singleslot["installedKitchenEquipment"]["equipmentName"],
@@ -72,3 +74,6 @@ func set_slot(name : String):
 			
 func on_signal_received(spaceNumber : int):
 	install_signal.emit(spaceNumber)
+
+func on_uninstall_signal_recived(spaceNumber : int):
+	uninstall_signal.emit(spaceNumber)

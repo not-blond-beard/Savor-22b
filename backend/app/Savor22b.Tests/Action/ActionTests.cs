@@ -53,4 +53,12 @@ public class ActionTests
             : throw new Exception();
         return tradeInventoryState;
     }
+
+    public GlobalDungeonState DeriveGlobalDungeonStateDelta(IAccountStateDelta stateDelta) {
+        var globalDungeonStateEncoded = stateDelta.GetState(GlobalDungeonState.StateAddress);
+        GlobalDungeonState globalDungeonState = globalDungeonStateEncoded is Bencodex.Types.Dictionary bdict
+            ? new GlobalDungeonState(bdict)
+            : throw new Exception();
+        return globalDungeonState;
+    }
 }
