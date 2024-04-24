@@ -30,10 +30,10 @@ var actionSuccess = false
 func _ready():
 	print("farm scene ready")
 	
-	print(SceneContext.user_state["villageState"]["houseFieldStates"])
+	#print(SceneContext.user_state["villageState"]["houseFieldStates"])
 	farms = SceneContext.user_state["villageState"]["houseFieldStates"]
 	
-	print(SceneContext.user_state["inventoryState"]["itemStateList"])
+	#print(SceneContext.user_state["inventoryState"]["itemStateList"])
 	itemStateIds = SceneContext.user_state["inventoryState"]["itemStateList"]
 	
 	#create blank slots
@@ -104,7 +104,7 @@ func plant_popup():
 			child.queue_free()
 	
 	var amount = itemStateIds.size()
-	print(amount)
+	#print(amount)
 	var mousepos = get_local_mouse_position() + Vector2(0, -200)
 	var installpopup = INSTALL_POPUP.instantiate()
 	installpopup.set_amount(amount)
@@ -123,11 +123,11 @@ func plant_seed():
 	
 	var query_executor = SvrGqlClient.raw(query_string)
 	query_executor.graphql_response.connect(func(data):
-		print("gql response: ", data)
+		#print("gql response: ", data)
 		var unsigned_tx = data["data"]["createAction_PlantingSeed"]
-		print("unsigned tx: ", unsigned_tx)
+		#print("unsigned tx: ", unsigned_tx)
 		var signature = GlobalSigner.sign(unsigned_tx)
-		print("signed tx: ", signature)
+		#print("signed tx: ", signature)
 		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
 		mutation_executor.graphql_response.connect(func(data):
 			print("mutation res: ", data)
@@ -140,7 +140,7 @@ func plant_seed():
 
 func harvested_name(seedName):
 	harvestedName = seedName
-	print(seedName)
+
 
 func done_popup():
 	print("알림 출력")
@@ -165,11 +165,11 @@ func harvest_seed():
 	
 	var query_executor = SvrGqlClient.raw(query_string)
 	query_executor.graphql_response.connect(func(data):
-		print("gql response: ", data)
+		#print("gql response: ", data)
 		var unsigned_tx = data["data"]["createAction_HarvestingSeed"]
-		print("unsigned tx: ", unsigned_tx)
+		#print("unsigned tx: ", unsigned_tx)
 		var signature = GlobalSigner.sign(unsigned_tx)
-		print("signed tx: ", signature)
+		#print("signed tx: ", signature)
 		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
 		mutation_executor.graphql_response.connect(func(data):
 			print("mutation res: ", data)
@@ -230,11 +230,11 @@ func remove_seed():
 	
 	var query_executor = SvrGqlClient.raw(query_string)
 	query_executor.graphql_response.connect(func(data):
-		print("gql response: ", data)
+		#print("gql response: ", data)
 		var unsigned_tx = data["data"]["createAction_RemovePlantedSeed"]
-		print("unsigned tx: ", unsigned_tx)
+		#print("unsigned tx: ", unsigned_tx)
 		var signature = GlobalSigner.sign(unsigned_tx)
-		print("signed tx: ", signature)
+		#print("signed tx: ", signature)
 		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
 		mutation_executor.graphql_response.connect(func(data):
 			print("mutation res: ", data)
@@ -275,11 +275,11 @@ func remove_weed():
 	
 	var query_executor = SvrGqlClient.raw(query_string)
 	query_executor.graphql_response.connect(func(data):
-		print("gql response: ", data)
+		#print("gql response: ", data)
 		var unsigned_tx = data["data"]["createAction_RemoveWeed"]
-		print("unsigned tx: ", unsigned_tx)
+		#print("unsigned tx: ", unsigned_tx)
 		var signature = GlobalSigner.sign(unsigned_tx)
-		print("signed tx: ", signature)
+		#print("signed tx: ", signature)
 		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
 		mutation_executor.graphql_response.connect(func(data):
 			print("mutation res: ", data)

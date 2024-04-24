@@ -1,28 +1,62 @@
-[gd_scene load_steps=4 format=3 uid="uid://cwntcvxk7dsm1"]
+[gd_scene load_steps=6 format=3 uid="uid://3in2bhd5bnpb"]
 
-[ext_resource type="Script" path="res://scenes/house/recipebook/recipe.gd" id="1_rh6ky"]
-[ext_resource type="StyleBox" uid="uid://b2nqsuwp80vsg" path="res://scenes/house/recipebook/recipe_style_box_flat.tres" id="2_ce356"]
+[ext_resource type="Script" path="res://scenes/house/Cook/recipe_available.gd" id="1_1f486"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jup0i"]
-bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kmgu8"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
 
-[node name="Recipe" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r5rn7"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 15
+border_width_top = 15
+border_width_right = 15
+border_width_bottom = 15
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryq3m"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dc6dg"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="RecipeAvailable" type="Control"]
 custom_minimum_size = Vector2(700, 550)
 layout_direction = 1
 layout_mode = 3
 anchors_preset = 0
 offset_right = 700.0
 offset_bottom = 550.0
-script = ExtResource("1_rh6ky")
+script = ExtResource("1_1f486")
 
-[node name="panel" type="Panel" parent="."]
+[node name="panel" type="Button" parent="."]
 custom_minimum_size = Vector2(700, 550)
 layout_mode = 0
-theme_override_styles/panel = ExtResource("2_ce356")
+theme_override_styles/normal = SubResource("StyleBoxFlat_kmgu8")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r5rn7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ryq3m")
+theme_override_styles/focus = SubResource("StyleBoxFlat_dc6dg")
+toggle_mode = true
 
 [node name="M" type="MarginContainer" parent="panel"]
 layout_mode = 1
@@ -48,12 +82,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 40
 text = "[트러플 짜장면] 레시피"
 
-[node name="insufficient" type="Label" parent="panel/M/V/Title"]
-visible = false
-layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "(재료부족)"
-
 [node name="Blockreq" type="Label" parent="panel/M/V"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.541176, 0, 1)
@@ -77,24 +105,6 @@ text = "[조리도구]"
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Availabletools" type="Button" parent="panel/M/V/Description/Tools"]
-custom_minimum_size = Vector2(180, 110)
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
-text = "[-- -]
-사용 가능"
-
-[node name="Availabletools2" type="Button" parent="panel/M/V/Description/Tools"]
-custom_minimum_size = Vector2(180, 110)
-layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
-text = "[-- -]
-사용 가능"
-
 [node name="T2" type="Label" parent="panel/M/V/Description"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 35
@@ -106,3 +116,10 @@ vertical_scroll_mode = 0
 
 [node name="list" type="HBoxContainer" parent="panel/M/V/Description/Ingredients"]
 layout_mode = 2
+
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="button_down" from="panel" to="." method="_on_panel_button_down"]

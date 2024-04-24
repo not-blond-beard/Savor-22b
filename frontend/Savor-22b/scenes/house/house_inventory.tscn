@@ -55,6 +55,15 @@ button_pressed = true
 button_group = ExtResource("2_rutrm")
 text = " 조리 도구 "
 
+[node name="ings" type="Button" parent="M/V/submenu/H"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_dth2p")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_bi312")
+toggle_mode = true
+button_group = ExtResource("2_rutrm")
+text = " 재료/음식 "
+
 [node name="shop" type="Button" parent="M/V/submenu/H"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 40
@@ -78,4 +87,5 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [connection signal="button_down" from="M/V/submenu/H/tools" to="." method="_on_tools_button_down"]
+[connection signal="button_down" from="M/V/submenu/H/ings" to="." method="_on_ings_button_down"]
 [connection signal="button_down" from="M/V/submenu/H/shop" to="." method="_on_shop_button_down"]

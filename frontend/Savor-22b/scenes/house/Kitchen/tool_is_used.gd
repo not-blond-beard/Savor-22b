@@ -7,7 +7,7 @@ var requiredtime
 var menuname
 var stateid
 
-var format_string = "현재 [%s] 조리 중
+var format_string = "[%s] 조리 중
 
 남은 조리 블록 %s 블록
 [%s]"
