@@ -79,6 +79,15 @@ var install_kitchen_equipment_query_format = "query {
 	)
 }"
 
+var create_food_query_format = "query {
+	createAction_CreateFood(
+		publicKey: {},
+		recipeID: {},
+		refrigeratorStateIdsToUse: {},
+		kitchenEquipmentStateIdsToUse: {}
+	)
+}"
+
 var uninstall_kitchen_equipment_query_format = "query {
 	createAction_UninstallKitchenEquipmentActionQuery(
 		publicKey: {},

@@ -35,6 +35,7 @@ grow_vertical = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_jwjl7")
-text = "현재 [-- -] 조리 중
+text = "[-- -] 조리 중
 
 남은 조리 블록 N 블록"
+text_overrun_behavior = 1

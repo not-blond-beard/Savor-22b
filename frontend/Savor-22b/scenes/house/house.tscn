@@ -135,3 +135,4 @@ offset_bottom = 340.0
 [connection signal="button_down" from="M/V/menus/V/RecipeButton" to="." method="_on_recipe_button_button_down"]
 [connection signal="button_down" from="M/V/menus/V/InventoryButton" to="." method="_on_inventory_button_button_down"]
 [connection signal="button_down" from="M/V/menus/V/RefreshButton" to="." method="_on_refresh_button_button_down"]
+[connection signal="button_down" from="M/V/menus/M/CookButton" to="." method="_on_cook_button_button_down"]
