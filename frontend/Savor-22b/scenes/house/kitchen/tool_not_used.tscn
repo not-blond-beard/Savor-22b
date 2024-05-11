@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://bg4tb16c7n00g"]
+
+[ext_resource type="Script" path="res://scenes/house/kitchen/tool_not_used.gd" id="1_s4ktm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pjjvv"]
+bg_color = Color(0.32549, 1, 0.290196, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="ToolNotUsed" type="Control"]
+custom_minimum_size = Vector2(435, 450)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1485.0
+offset_bottom = -630.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_s4ktm")
+
+[node name="Button" type="Button" parent="."]
+custom_minimum_size = Vector2(435, 450)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_pjjvv")
+text = "[-- -] 도구 설치됨
+
+식재료 사용 시
+요리 조리 가능"
+
+[connection signal="pressed" from="Button" to="." method="_on_uninstall_button_pressed"]

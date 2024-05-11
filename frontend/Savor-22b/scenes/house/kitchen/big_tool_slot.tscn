@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://bo1s5xygod4cl"]
+
+[ext_resource type="Script" path="res://scenes/house/kitchen/big_tool_slot.gd" id="1_4yu3x"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mt11v"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="BigToolSlot" type="Control"]
+custom_minimum_size = Vector2(1400, 550)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -520.0
+offset_bottom = -530.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = ExtResource("1_4yu3x")
+
+[node name="P" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 1400.0
+offset_bottom = 550.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mt11v")
+
+[node name="M" type="MarginContainer" parent="P"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 15
+
+[node name="V" type="VBoxContainer" parent="P/M"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="P/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 50
+text = "큰 조리도구 사용 슬롯"
+
+[node name="Slot" type="HBoxContainer" parent="P/M/V"]
+layout_mode = 2
+theme_override_constants/separation = 20

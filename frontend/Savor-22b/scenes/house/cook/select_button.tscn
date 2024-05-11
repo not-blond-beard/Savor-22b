@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://b30crxtayccx0"]
+
+[ext_resource type="Script" path="res://scenes/house/cook/select_button.gd" id="1_bebb3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pvlfv"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="SelectButton" type="Button"]
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_pvlfv")
+toggle_mode = true
+text = "S 등급 [6개]"
+script = ExtResource("1_bebb3")
+
+[connection signal="button_down" from="." to="." method="_on_button_down"]
