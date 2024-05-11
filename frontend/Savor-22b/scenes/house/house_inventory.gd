@@ -1,31 +1,28 @@
 extends Control
 
-const KITCHEN_TOOLS = preload("res://scenes/house/kitchentools.tscn")
-const KITCHEN_SHOP = preload("res://scenes/house/kitchenshop.tscn")
-const REFRIGERATOR = preload("res://scenes/house/refrigerator.tscn")
+const KitchenToolsScn = preload("res://scenes/house/kitchen_tools.tscn")
+const KitchenShopScn = preload("res://scenes/house/kitchen_shop.tscn")
+const Refrigerator = preload("res://scenes/house/refrigerator.tscn")
 
 @onready var panel = $M/V/Panel/C
 
-signal buysignal
-signal closeall
+signal buy_signal
+signal close_all
 
 func _ready():
 	_on_tools_button_down()
 
-
-
-
 func _on_tools_button_down():
 	clear_popup()
-	var kitchens = KITCHEN_TOOLS.instantiate()
-	kitchens.closetab.connect(closetab)
+	var kitchens = KitchenToolsScn.instantiate()
+	kitchens.close_tab.connect(close_tab)
 	panel.add_child(kitchens)
 
 func _on_shop_button_down():
 	clear_popup()
-	var kitchens = KITCHEN_SHOP.instantiate()
-	kitchens.closetab.connect(closetab)
-	kitchens.buysignal.connect(popup)
+	var kitchens = KitchenShopScn.instantiate()
+	kitchens.close_tab.connect(close_tab)
+	kitchens.buy_signal.connect(popup)
 	panel.add_child(kitchens)
 	
 func clear_popup():
@@ -33,16 +30,15 @@ func clear_popup():
 		for pop in panel.get_children():
 			pop.queue_free()
 
-func closetab():
-	closeall.emit()
+func close_tab():
+	close_all.emit()
 	queue_free()
 
 func popup():
-	buysignal.emit()
+	buy_signal.emit()
 
-
-func _on_ings_button_down():
+func _on_ingredients_button_down():
 	clear_popup()
-	var refrigerator = REFRIGERATOR.instantiate()
-	refrigerator.closetab.connect(closetab)
+	var refrigerator = Refrigerator.instantiate()
+	refrigerator.close_tab.connect(close_tab)
 	panel.add_child(refrigerator)

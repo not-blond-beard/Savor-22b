@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://bf6be56dhvlws"]
+
+[ext_resource type="Script" path="res://scenes/farm/farm_slot_empty.gd" id="1_qsptk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1e62"]
+bg_color = Color(0.243137, 1, 0.215686, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_esont"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
+
+[node name="FarmSlotEmpty" type="ColorRect"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1420.0
+offset_bottom = -780.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+script = ExtResource("1_qsptk")
+
+[node name="V" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="V"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_b1e62")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_esont")
+text = "[비어있음]
+종자 심기"
+
+[connection signal="button_down" from="V/Button" to="." method="_on_button_down"]

@@ -1,0 +1,109 @@
+[gd_scene load_steps=2 format=3 uid="uid://cl8vvgnebwyi1"]
+
+[ext_resource type="Script" path="res://scenes/village/select_village.gd" id="1_uohty"]
+
+[node name="SelectVillage" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_uohty")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftMarginContainer" type="MarginContainer" parent="."]
+custom_minimum_size = Vector2(810, 2.08165e-12)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 810.0
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Background" type="ColorRect" parent="LeftMarginContainer"]
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="VillagesVBoxContainer" type="VBoxContainer" parent="LeftMarginContainer"]
+layout_mode = 2
+
+[node name="RightMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1100.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Background" type="ColorRect" parent="RightMarginContainer"]
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="RightMarginContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ColorRect" type="ColorRect" parent="RightMarginContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RightMarginContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="VillageInfoMarginContainer" type="MarginContainer" parent="RightMarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="RightMarginContainer/MarginContainer/VBoxContainer/VillageInfoMarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="RightMarginContainer/MarginContainer/VBoxContainer/VillageInfoMarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "This village's name is \"평범한 도시 1\".
+ID: 1
+World Position: 5, 1
+Size: 3 x 11
+House Count: 1"
+
+[node name="StartButtonMarginContainer" type="MarginContainer" parent="RightMarginContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="StartButton" type="Button" parent="RightMarginContainer/MarginContainer/VBoxContainer/StartButtonMarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+text = "Start"
+
+[connection signal="button_down" from="RightMarginContainer/MarginContainer/VBoxContainer/StartButtonMarginContainer/StartButton" to="." method="_on_start_button_down"]

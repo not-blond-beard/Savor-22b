@@ -1,13 +1,13 @@
 extends Panel
 
-@onready var toolname = $M/V/Name
-@onready var tooldesc = $M/V/Desc
-@onready var buybutton = $M/V/Buy
+@onready var tool_name = $M/V/Name
+@onready var tool_description = $M/V/Desc
+@onready var buy_button = $M/V/Buy
 
-signal buysignal
+signal buy_signal
 
 var info
-var isshop: bool = false
+var is_shop: bool = false
 
 var desc_format_string = "%s : %s
 %s : %s %s"
@@ -15,29 +15,26 @@ var desc_format_string = "%s : %s
 func _ready():
 	_update_info()
 
-
 func _update_info():
-	if toolname == null:
+	if tool_name == null:
 		return
 	
-	if (isshop):
-		toolname.text = info.name
-		tooldesc.text = desc_format_string % [info.categoryType, info.categoryLabel, "Price", info.price, "BBG"]
-		buybutton.visible = true
+	if (is_shop):
+		tool_name.text = info.name
+		tool_description.text = desc_format_string % [info.categoryType, info.categoryLabel, "Price", info.price, "BBG"]
+		buy_button.visible = true
 	else:
-		toolname.text = info.equipmentName
-		tooldesc.text = info.stateId
+		tool_name.text = info.equipmentName
+		tool_description.text = info.stateId
 
 func set_info(info: Dictionary):
 	self.info = info
 	
-func set_slottype():
-	self.isshop = true
+func set_slot_type():
+	self.is_shop = true
 	_update_info()
 	
-
-
 func _on_buy_button_down():
 	SceneContext.selected_item_index = info.id
 	SceneContext.selected_item_name = info.name
-	buysignal.emit()
+	buy_signal.emit()

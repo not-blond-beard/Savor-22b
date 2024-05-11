@@ -1,0 +1,88 @@
+[gd_scene load_steps=5 format=3 uid="uid://bqf2y10ecg1vu"]
+
+[ext_resource type="PackedScene" uid="uid://co4t4p5pawylr" path="res://scenes/common/prefabs/asset.tscn" id="1_mqe47"]
+[ext_resource type="Script" path="res://scenes/shop/system_shop.gd" id="1_oxfr7"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kwjar"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pm0cc"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="Shop" type="Panel"]
+offset_right = 720.0
+offset_bottom = 900.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_kwjar")
+script = ExtResource("1_oxfr7")
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 20
+
+[node name="H" type="VBoxContainer" parent="M"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="M/H"]
+layout_mode = 2
+theme_override_constants/separation = 480
+
+[node name="Title" type="Label" parent="M/H/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 70
+text = "상점"
+
+[node name="Close" type="Button" parent="M/H/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_pm0cc")
+text = "  X  "
+
+[node name="Asset" parent="M/H" instance=ExtResource("1_mqe47")]
+layout_mode = 2
+
+[node name="C" type="ColorRect" parent="M/H"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0, 0, 0, 1)
+
+[node name="M" type="MarginContainer" parent="M/H/C"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="S" type="ScrollContainer" parent="M/H/C/M"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="Lists" type="VBoxContainer" parent="M/H/C/M/S"]
+layout_mode = 2
+
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="button_down" from="M/H/HBoxContainer/Close" to="." method="_on_close_button_down"]

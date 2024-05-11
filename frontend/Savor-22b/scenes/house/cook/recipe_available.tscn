@@ -1,0 +1,125 @@
+[gd_scene load_steps=6 format=3 uid="uid://3in2bhd5bnpb"]
+
+[ext_resource type="Script" path="res://scenes/house/cook/recipe_available.gd" id="1_1f486"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kmgu8"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r5rn7"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 15
+border_width_top = 15
+border_width_right = 15
+border_width_bottom = 15
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ryq3m"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dc6dg"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="RecipeAvailable" type="Control"]
+custom_minimum_size = Vector2(700, 550)
+layout_direction = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 700.0
+offset_bottom = 550.0
+script = ExtResource("1_1f486")
+
+[node name="panel" type="Button" parent="."]
+custom_minimum_size = Vector2(700, 550)
+layout_mode = 0
+theme_override_styles/normal = SubResource("StyleBoxFlat_kmgu8")
+theme_override_styles/hover = SubResource("StyleBoxFlat_r5rn7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ryq3m")
+theme_override_styles/focus = SubResource("StyleBoxFlat_dc6dg")
+toggle_mode = true
+
+[node name="M" type="MarginContainer" parent="panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 10
+
+[node name="V" type="VBoxContainer" parent="panel/M"]
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="panel/M/V"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Name" type="Label" parent="panel/M/V/Title"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "[트러플 짜장면] 레시피"
+
+[node name="Blockreq" type="Label" parent="panel/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.541176, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "소요 블록 N 블록"
+
+[node name="Space" type="MarginContainer" parent="panel/M/V"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+
+[node name="Description" type="VBoxContainer" parent="panel/M/V"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="T1" type="Label" parent="panel/M/V/Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "[조리도구]"
+
+[node name="Tools" type="HBoxContainer" parent="panel/M/V/Description"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="T2" type="Label" parent="panel/M/V/Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "[식재료]"
+
+[node name="Ingredients" type="ScrollContainer" parent="panel/M/V/Description"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="list" type="HBoxContainer" parent="panel/M/V/Description/Ingredients"]
+layout_mode = 2
+
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="button_down" from="panel" to="." method="_on_panel_button_down"]

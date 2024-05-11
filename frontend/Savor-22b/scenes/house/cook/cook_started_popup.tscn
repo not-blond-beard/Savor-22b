@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://dyxrqvghkcb0x"]
+
+[ext_resource type="Script" path="res://scenes/house/cook/cook_started_popup.gd" id="1_4u6i2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e6j35"]
+bg_color = Color(0.313726, 0.313726, 0.313726, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="cook_started_popup" type="Control"]
+custom_minimum_size = Vector2(500, 250)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4u6i2")
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(500, 250)
+layout_mode = 0
+offset_left = 600.0
+offset_top = 400.0
+offset_right = 1100.0
+offset_bottom = 650.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_e6j35")
+
+[node name="M" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_top = 50
+
+[node name="V" type="VBoxContainer" parent="Panel/M"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Label" type="Label" parent="Panel/M/V"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "조리를 시작합니다."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="Panel/M/V"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 40
+text = "  확인  "
+
+[connection signal="pressed" from="Panel/M/V/Button" to="." method="_on_button_pressed"]

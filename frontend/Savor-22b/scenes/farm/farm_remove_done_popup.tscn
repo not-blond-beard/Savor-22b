@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://c48jlsophfki6"]
+
+[ext_resource type="Script" path="res://scenes/farm/farm_remove_done_popup.gd" id="1_6dq0m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eamck"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="RemoveDonePopup" type="ColorRect"]
+offset_right = 700.0
+offset_bottom = 160.0
+color = Color(0.866667, 0.498039, 0.215686, 1)
+script = ExtResource("1_6dq0m")
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_right = 50
+
+[node name="V" type="VBoxContainer" parent="M"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="Label" parent="M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "종자가 제거되었습니다."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="M/V"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_eamck")
+text = "      확인      "
+
+[connection signal="button_down" from="M/V/Button" to="." method="_on_button_down"]

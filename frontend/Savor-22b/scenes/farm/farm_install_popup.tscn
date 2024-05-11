@@ -1,0 +1,76 @@
+[gd_scene load_steps=4 format=3 uid="uid://kttsr2bn7o31"]
+
+[ext_resource type="Script" path="res://scenes/farm/farm_install_popup.gd" id="1_nl4pl"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1w3ox"]
+bg_color = Color(0.866667, 0.498039, 0.215686, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6tw4s"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="ColorRect" type="Panel"]
+offset_right = 400.0
+offset_bottom = 300.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1w3ox")
+script = ExtResource("1_nl4pl")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "   종자 심기"
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="Text" type="Label" parent="VBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 35
+text = "랜덤 종자 하나를 소모해서
+종자를 심기 (n개 남음)"
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_direction = 3
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Blank" type="HBoxContainer" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Accept" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_6tw4s")
+text = "  확인  "
+
+[node name="Cancel" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_6tw4s")
+text = "  취소  "
+
+[node name="Blank" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[connection signal="button_down" from="VBoxContainer/HBoxContainer/Accept" to="." method="_on_accept_button_down"]
+[connection signal="button_down" from="VBoxContainer/HBoxContainer/Cancel" to="." method="_on_cancel_button_down"]

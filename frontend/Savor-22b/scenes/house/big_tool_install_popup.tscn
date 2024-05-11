@@ -1,0 +1,103 @@
+[gd_scene load_steps=4 format=3 uid="uid://78boqlki8lh7"]
+
+[ext_resource type="Script" path="res://scenes/house/big_tool_install_popup.gd" id="1_hncgm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lve77"]
+bg_color = Color(1, 0.541176, 0, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_winqn"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="BigtoolInstallPopup" type="Control"]
+custom_minimum_size = Vector2(1400, 600)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -520.0
+offset_bottom = -480.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_hncgm")
+
+[node name="B" type="Panel" parent="."]
+custom_minimum_size = Vector2(1400, 600)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_lve77")
+
+[node name="M" type="MarginContainer" parent="B"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="V" type="VBoxContainer" parent="B/M"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Title" type="Label" parent="B/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "설치 가능한 조리도구"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="S" type="ScrollContainer" parent="B/M/V"]
+custom_minimum_size = Vector2(1360, 380)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="G" type="GridContainer" parent="B/M/V/S"]
+custom_minimum_size = Vector2(1360, 380)
+layout_mode = 2
+theme_override_constants/h_separation = 30
+theme_override_constants/v_separation = 15
+columns = 4
+
+[node name="H" type="HBoxContainer" parent="B/M/V"]
+layout_mode = 2
+theme_override_constants/separation = 800
+alignment = 1
+
+[node name="CloseButton" type="Button" parent="B/M/V/H"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_winqn")
+text = "   닫기   "
+
+[node name="InstallButton" type="Button" parent="B/M/V/H"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_winqn")
+text = "   선택한 도구 설치하기   "
+
+[connection signal="button_down" from="B/M/V/H/CloseButton" to="." method="_on_close_button_down"]
+[connection signal="button_down" from="B/M/V/H/InstallButton" to="." method="_on_install_button_down"]
