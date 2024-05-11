@@ -1,15 +1,14 @@
 extends Control
 
-signal closeall
+signal close_all
 signal reload_signal
 signal cook_started
 
-const RECIPE = preload("res://scenes/house/Cook/recipe_available.tscn")
+const RecipeAvailableScn = preload("res://scenes/house/cook/recipe_available.tscn")
+const GqlQuery = preload("res://gql/query.gd")
 
 @onready var grid = $background/M/V/S/G
 @onready var installed_tool = $background/M/V/Description/ToolList
-
-const Gql_query = preload("res://gql/query.gd")
 
 var recipe_list = SceneContext.recipe["recipe"]
 var installed_list = SceneContext.installed_tool_name
@@ -24,13 +23,11 @@ func _ready():
 	filter_recipe()
 
 	for recipe_data in recipe_list:
-		print("recipe")
-		print(recipe_data)
 		for name in available_tool_list:
 			for tool in recipe_data["requiredKitchenEquipmentCategoryList"]:
 				if name == tool.name:
 					available_recipe_list.append(recipe_data)
-					var recipe = RECIPE.instantiate()
+					var recipe = RecipeAvailableScn.instantiate()
 					recipe.set_info(recipe_data)
 					recipe.select_signal.connect(recipe_selected)
 					grid.add_child(recipe)
@@ -46,7 +43,6 @@ func filter_recipe():
 	available_tool_list.append_array(small_tool_name)
 	available_tool_list.append_array(installed_list)
 	
-	
 func remove_duplicates(array):
 	var unique_elements = []
 	for item in array:
@@ -55,61 +51,46 @@ func remove_duplicates(array):
 
 	return unique_elements
 
-
 func recipe_selected(recipe_index):
-	SceneContext.selected_recipe_index = recipe_index
+	SceneContext.selected_recipe_index = recipe_index + 1
 	
 	# Visual toggle
 	for recipe in grid.get_children():
 		if(recipe.get_index() != recipe_index):
 			recipe.disable_button_selected()
 
-
-	
-
-
 func _on_close_button_down():
 	queue_free()
-	closeall.emit()
-
+	close_all.emit()
 
 func _on_cook_button_down():
-	var ingarr = SceneContext.selected_ingredients
-	var toolarr = SceneContext.selected_tools
-	var ingstr
-	var toolstr
+	var ingredient_arr = SceneContext.selected_ingredients
+	var tool_arr = SceneContext.selected_tools
+	var ingredient_str
+	var tool_str
 	
-	if ingarr.size() > 1 :
-		ingstr = "\", \"".join(ingarr)
+	if ingredient_arr.size() > 1 :
+		ingredient_str = "\", \"".join(ingredient_arr)
 	else:
-		ingstr = ingarr[0]
-	if toolarr.size() > 1 :
-		toolstr = "\", \"".join(toolarr)
+		ingredient_str = ingredient_arr[0]
+	if tool_arr.size() > 1 :
+		tool_str = "\", \"".join(tool_arr)
 	else:
-		toolstr = toolarr[0]
-	print(ingstr)
-	print(toolstr)
+		tool_str = tool_arr[0]
 	
-	var gql_query = Gql_query.new()
+	var gql_query = GqlQuery.new()
 	var query_string = gql_query.create_food_query_format.format([
 		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
 		SceneContext.selected_recipe_index,
 		#need to be fixed
-		"[\"%s\"]" % ingstr,
-		"[\"%s\"]" % toolstr], "{}")
-	print(query_string)
+		"[\"%s\"]" % ingredient_str,
+		"[\"%s\"]" % tool_str], "{}")
 	
 	var query_executor = SvrGqlClient.raw(query_string)
 	query_executor.graphql_response.connect(func(data):
-		print("gql response: ", data)
 		var unsigned_tx = data["data"]["createAction_CreateFood"]
-		print("unsigned tx: ", unsigned_tx)
 		var signature = GlobalSigner.sign(unsigned_tx)
-		print("signed tx: ", signature)
 		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-		mutation_executor.graphql_response.connect(func(data):
-			print("mutation res: ", data)
-		)
 		add_child(mutation_executor)
 		mutation_executor.run({})
 	)

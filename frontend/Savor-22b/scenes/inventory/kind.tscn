@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bjmiaawy6ktrp"]
 
-[ext_resource type="Script" path="res://scenes/inventory/Kind.gd" id="1_y1brs"]
+[ext_resource type="Script" path="res://scenes/inventory/kind.gd" id="1_y1brs"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4vsh2"]
 

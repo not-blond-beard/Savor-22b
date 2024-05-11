@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cdj3ppg7fw3ee"]
 
-[ext_resource type="Script" path="res://scenes/house/Cook/select_popup.gd" id="1_g7ytm"]
+[ext_resource type="Script" path="res://scenes/house/cook/select_popup.gd" id="1_g7ytm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7oiq"]
 bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
@@ -82,4 +82,4 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_61pm2")
 text = "선택한 등급으로 설정"
 
 [connection signal="pressed" from="Panel" to="." method="_on_panel_pressed"]
-[connection signal="button_down" from="Panel/M/V/Button" to="." method="_on_button_button_down"]
+[connection signal="button_down" from="Panel/M/V/Button" to="." method="_on_button_down"]

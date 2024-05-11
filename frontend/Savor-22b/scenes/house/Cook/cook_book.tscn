@@ -1,6 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://bb0hth2o7k30q"]
 
-[ext_resource type="Script" path="res://scenes/house/Cook/cook_book.gd" id="1_q1ejr"]
+[ext_resource type="Script" path="res://scenes/house/cook/cook_book.gd" id="1_q1ejr"]
+[ext_resource type="Script" path="res://scenes/house/recipe_book/recipe_book.gd" id="1_2wc5e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvose"]
 bg_color = Color(0.94902, 0.694118, 0.0784314, 1)

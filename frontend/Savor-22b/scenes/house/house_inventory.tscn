@@ -87,5 +87,5 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [connection signal="button_down" from="M/V/submenu/H/tools" to="." method="_on_tools_button_down"]
-[connection signal="button_down" from="M/V/submenu/H/ings" to="." method="_on_ings_button_down"]
+[connection signal="button_down" from="M/V/submenu/H/ings" to="." method="_on_ingredients_button_down"]
 [connection signal="button_down" from="M/V/submenu/H/shop" to="." method="_on_shop_button_down"]

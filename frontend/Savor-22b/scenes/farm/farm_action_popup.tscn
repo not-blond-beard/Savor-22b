@@ -1,0 +1,53 @@
+[gd_scene load_steps=3 format=3 uid="uid://brn1piu848fxo"]
+
+[ext_resource type="Script" path="res://scenes/farm/farm_action_popup.gd" id="1_ma8qk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yesvl"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="ActionPopup" type="ColorRect"]
+custom_minimum_size = Vector2(400, 200)
+offset_right = 400.0
+offset_bottom = 300.0
+color = Color(0.866667, 0.498039, 0.215686, 1)
+script = ExtResource("1_ma8qk")
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+
+[node name="V" type="VBoxContainer" parent="M"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Remove" type="Button" parent="M/V"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_yesvl")
+text = "종자 제거하기"
+
+[node name="Weed" type="Button" parent="M/V"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_yesvl")
+text = "잡초 제거하기"
+
+[node name="Cancel" type="Button" parent="M/V"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_yesvl")
+text = "행동 취소"
+
+[connection signal="button_down" from="M/V/Remove" to="." method="_on_remove_button_down"]
+[connection signal="button_down" from="M/V/Weed" to="." method="_on_weed_button_down"]
+[connection signal="button_down" from="M/V/Cancel" to="." method="_on_cancel_button_down"]

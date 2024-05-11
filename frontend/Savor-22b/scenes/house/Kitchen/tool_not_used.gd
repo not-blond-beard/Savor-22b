@@ -14,18 +14,14 @@ var format_string = "[%s] 도구 설치됨
 func _ready():
 	update_text()
 
-
 func update_text():
 	if button == null:
 		return
 
 	button.text = format_string % [data["installedKitchenEquipment"]["equipmentName"]]
 
-
 func set_data(info: Dictionary):
 	data = info
 	
-
 func _on_uninstall_button_pressed():
 	uninstall_big_tool_button_pressed.emit(data.spaceNumber)
-

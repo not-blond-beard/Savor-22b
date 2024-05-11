@@ -1,0 +1,178 @@
+[gd_scene load_steps=4 format=3 uid="uid://dy1e0tpo1lsby"]
+
+[ext_resource type="Script" path="res://scenes/village/select_house.gd" id="1_012c4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cba5k"]
+bg_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epcma"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="SelectHouse" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_012c4")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopMenuMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 140.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 20
+
+[node name="Title" type="Label" parent="TopMenuMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 60
+text = " 집 짓기 화면"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopMenuMarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 2
+
+[node name="HomeButton" type="Button" parent="TopMenuMarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+theme_override_styles/normal = SubResource("StyleBoxFlat_cba5k")
+text = " 마을 선택으로 "
+
+[node name="BackButton" type="Button" parent="TopMenuMarginContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 70
+theme_override_styles/normal = SubResource("StyleBoxFlat_epcma")
+text = " 마을 전체 보기 "
+
+[node name="BottomMenuMarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_top = 940.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="Control" type="Control" parent="BottomMenuMarginContainer"]
+layout_mode = 2
+
+[node name="BuildButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 570.0
+offset_top = -50.0
+offset_right = 930.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="BuildButton" type="Button" parent="BottomMenuMarginContainer/Control/BuildButtonContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 70
+text = "집 짓기"
+
+[node name="RefreshButtonContainer" type="ColorRect" parent="BottomMenuMarginContainer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 70.0
+offset_top = -50.0
+offset_right = 430.0
+offset_bottom = 50.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="RefreshButton" type="Button" parent="BottomMenuMarginContainer/Control/RefreshButtonContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 70
+text = "새로고침"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_top = 140.0
+offset_right = 1920.0
+offset_bottom = 940.0
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 20
+
+[node name="Background" type="ColorRect" parent="MarginContainer"]
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/Background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/Background/MarginContainer"]
+layout_mode = 2
+
+[node name="HomeGridContainer" type="GridContainer" parent="MarginContainer/Background/MarginContainer/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 100
+theme_override_constants/v_separation = 50
+columns = 5
+
+[node name="Noticepopup" type="Control" parent="MarginContainer/Background"]
+anchors_preset = 0
+offset_left = 600.0
+offset_top = 300.0
+offset_right = 640.0
+offset_bottom = 340.0
+
+[node name="ConfirmPopup" type="Control" parent="MarginContainer/Background"]
+anchors_preset = 0
+offset_left = 600.0
+offset_top = 300.0
+offset_right = 640.0
+offset_bottom = 340.0
+
+[connection signal="pressed" from="TopMenuMarginContainer/HBoxContainer/HomeButton" to="." method="_on_button_pressed"]
+[connection signal="button_down" from="TopMenuMarginContainer/HBoxContainer/BackButton" to="." method="_on_back_button_down"]
+[connection signal="button_down" from="BottomMenuMarginContainer/Control/BuildButtonContainer/BuildButton" to="." method="_on_build_button_down"]
+[connection signal="button_down" from="BottomMenuMarginContainer/Control/RefreshButtonContainer/RefreshButton" to="." method="_on_refresh_button_down"]

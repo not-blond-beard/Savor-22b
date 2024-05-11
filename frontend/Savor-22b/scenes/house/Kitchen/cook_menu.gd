@@ -1,10 +1,10 @@
 extends Control
 
-@onready var Desc = $P/Desc
+@onready var description = $P/Desc
 
 var data
-var requiredtime
-var foodname
+var required_time
+var food_name
 
 var format_string = "[%s] 요리 조리중
 [%s 블록 남음]"
@@ -12,20 +12,18 @@ var format_string = "[%s] 요리 조리중
 func _ready():
 	update_label()
 
-
-
 func update_label():
-	if Desc == null:
+	if description == null:
 		return
 	
-	Desc.text = format_string % [foodname, requiredtime]
+	description.text = format_string % [food_name, required_time]
 
 func set_data(info: Dictionary):
 	data = info
 	
 	# set end times
-	var endtime = data["cookingEndBlockIndex"]
-	var currenttime = SceneContext.block_index["blockQuery"]["blocks"][0]["index"]
-	requiredtime = endtime - currenttime
+	var end_time = data["cookingEndBlockIndex"]
+	var current_time = SceneContext.block_index["blockQuery"]["blocks"][0]["index"]
+	required_time = end_time - current_time
 	
-	foodname = data["cookingFood"]["name"]
+	food_name = data["cookingFood"]["name"]

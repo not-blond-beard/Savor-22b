@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cn67b2nj61lc1"]
 
-[ext_resource type="Script" path="res://scenes/house/Cook/select_tool_button.gd" id="1_hw7e6"]
+[ext_resource type="Script" path="res://scenes/house/cook/select_tool_button.gd" id="1_hw7e6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pvlfv"]
 bg_color = Color(0, 0, 0, 1)

@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b7f85oe54slb5"]
 
-[ext_resource type="Script" path="res://scenes/house/Kitchen/tool_is_used.gd" id="1_fyt0q"]
+[ext_resource type="Script" path="res://scenes/house/kitchen/tool_is_used.gd" id="1_fyt0q"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jwjl7"]
 bg_color = Color(0.94902, 0.694118, 0.0784314, 1)

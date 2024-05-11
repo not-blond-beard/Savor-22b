@@ -3,22 +3,20 @@ extends Control
 signal install_signal
 signal uninstall_signal
 
-const SLOT_EMPTY = preload("res://scenes/house/Kitchen/tool_slot_empty.tscn")
-const SLOT_NOT_USED = preload("res://scenes/house/Kitchen/tool_not_used.tscn")
-const SLOT_USED = preload("res://scenes/house/Kitchen/tool_is_used.tscn")
+const ToolSlotEmptyScn = preload("res://scenes/house/kitchen/tool_slot_empty.tscn")
+const ToolNotUsedScn = preload("res://scenes/house/kitchen/tool_not_used.tscn")
+const ToolIsUsedScn = preload("res://scenes/house/kitchen/tool_is_used.tscn")
 
 @onready var slot = $P/M/V/Slot
 
-var largeslots: Dictionary
-var largetools: Array
-var installedId: Array
-var installedName: Array
-var installedToolsInfo: Array
-
-var selectedSpace: int
+var large_slots: Dictionary
+var large_tools: Array
+var installed_id: Array
+var installed_name: Array
+var installed_tools_info: Array
+var selected_space: int
 
 func _ready():
-
 	load_data()
 
 # Setting Slots
@@ -26,54 +24,53 @@ func _ready():
 	set_slot("second")
 	set_slot("third")
 	
-	SceneContext.installed_tool_id = installedId
-	SceneContext.installed_tool_name = installedName
-	SceneContext.installed_tool_info = installedToolsInfo
+	SceneContext.installed_tool_id = installed_id
+	SceneContext.installed_tool_name = installed_name
+	SceneContext.installed_tool_info = installed_tools_info
 
-	
 func load_data():
-	largeslots = SceneContext.user_kitchen_state["villageState"]["houseState"]["kitchenState"]
+	large_slots = SceneContext.user_kitchen_state["villageState"]["houseState"]["kitchenState"]
 	
 	var tools = SceneContext.user_state["inventoryState"]["kitchenEquipmentStateList"]
 	for tool in tools:
 		if(tool.equipmentCategoryType == "main"):
-			largetools.append(tool)
+			large_tools.append(tool)
 
 func set_slot(name : String):
 	var loc = "%s%s" % [name,"ApplianceSpace"]
-	var singleslot = largeslots[loc]
-	if (singleslot.installedKitchenEquipment == null): # not installed
-		var bigslot = SLOT_EMPTY.instantiate()
-		bigslot.install_tools.connect(on_signal_received)
-		bigslot.set_data(singleslot)
-		slot.add_child(bigslot)
+	var single_slot = large_slots[loc]
+	if (single_slot.installedKitchenEquipment == null): # not installed
+		var big_slot = ToolSlotEmptyScn.instantiate()
+		big_slot.install_tools.connect(on_signal_received)
+		big_slot.set_data(single_slot)
+		slot.add_child(big_slot)
 	else: # installed but not used
-		if (!singleslot["installedKitchenEquipment"]["isCooking"]):
-			var bigslot = SLOT_NOT_USED.instantiate()
-			bigslot.set_data(singleslot)
-			slot.add_child(bigslot)
-			bigslot.uninstall_big_tool_button_pressed.connect(on_uninstall_signal_recived)
-			installedId.append(singleslot["installedKitchenEquipment"]["stateId"])
-			installedName.append(singleslot["installedKitchenEquipment"]["equipmentName"])
-			var dict = { "name" : singleslot["installedKitchenEquipment"]["equipmentName"],
-				"stateId" : singleslot["installedKitchenEquipment"]["stateId"],
-			"isCooking" : singleslot["installedKitchenEquipment"]["isCooking"],
+		if (!single_slot["installedKitchenEquipment"]["isCooking"]):
+			var big_slot = ToolNotUsedScn.instantiate()
+			big_slot.set_data(single_slot)
+			slot.add_child(big_slot)
+			big_slot.uninstall_big_tool_button_pressed.connect(on_uninstall_signal_received)
+			installed_id.append(single_slot["installedKitchenEquipment"]["stateId"])
+			installed_name.append(single_slot["installedKitchenEquipment"]["equipmentName"])
+			var dict = { "name" : single_slot["installedKitchenEquipment"]["equipmentName"],
+				"stateId" : single_slot["installedKitchenEquipment"]["stateId"],
+			"isCooking" : single_slot["installedKitchenEquipment"]["isCooking"],
 			"foodId" : null}
 			
-			installedToolsInfo.append(dict)
+			installed_tools_info.append(dict)
 		else: # cooking
-			var bigslot = SLOT_USED.instantiate()
-			bigslot.set_data(singleslot)
-			slot.add_child(bigslot)
-			var dict = { "name" : singleslot["installedKitchenEquipment"]["equipmentName"],
-				"stateId" : singleslot["installedKitchenEquipment"]["stateId"],
-			"isCooking" : singleslot["installedKitchenEquipment"]["isCooking"],
-			"foodId" : singleslot["installedKitchenEquipment"]["cookingFood"]["stateId"]}
+			var big_slot = ToolIsUsedScn.instantiate()
+			big_slot.set_data(single_slot)
+			slot.add_child(big_slot)
+			var dict = { "name" : single_slot["installedKitchenEquipment"]["equipmentName"],
+				"stateId" : single_slot["installedKitchenEquipment"]["stateId"],
+			"isCooking" : single_slot["installedKitchenEquipment"]["isCooking"],
+			"foodId" : single_slot["installedKitchenEquipment"]["cookingFood"]["stateId"]}
 			
-			installedToolsInfo.append(dict)
+			installed_tools_info.append(dict)
 			
 func on_signal_received(spaceNumber : int):
 	install_signal.emit(spaceNumber)
 
-func on_uninstall_signal_recived(spaceNumber : int):
+func on_uninstall_signal_received(spaceNumber : int):
 	uninstall_signal.emit(spaceNumber)

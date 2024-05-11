@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://jm7hptg5twbn"]
 
-[ext_resource type="Script" path="res://scenes/house/Kitchen/tool_slot_empty.gd" id="1_7et8y"]
+[ext_resource type="Script" path="res://scenes/house/kitchen/tool_slot_empty.gd" id="1_7et8y"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6vgf"]
 bg_color = Color(0.32549, 1, 0.290196, 1)
@@ -37,4 +37,4 @@ text = "비어있음
 
 조리도구 설치 가능"
 
-[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
+[connection signal="button_down" from="Button" to="." method="_on_button_down"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://3in2bhd5bnpb"]
 
-[ext_resource type="Script" path="res://scenes/house/Cook/recipe_available.gd" id="1_1f486"]
+[ext_resource type="Script" path="res://scenes/house/cook/recipe_available.gd" id="1_1f486"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kmgu8"]
 bg_color = Color(0, 0, 0, 1)
