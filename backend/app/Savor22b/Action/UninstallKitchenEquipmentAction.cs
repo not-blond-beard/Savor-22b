@@ -8,27 +8,27 @@ using Bencodex.Types;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
 
-[ActionType(nameof(RemoveInstalledKitchenEquipmentAction))]
-public class RemoveInstalledKitchenEquipmentAction : SVRAction
+[ActionType(nameof(UninstallKitchenEquipmentAction))]
+public class UninstallKitchenEquipmentAction : SVRAction
 {
-    public RemoveInstalledKitchenEquipmentAction() { }
+    public UninstallKitchenEquipmentAction() { }
 
-    public RemoveInstalledKitchenEquipmentAction(Guid installedEquipmentStateId)
+    public UninstallKitchenEquipmentAction(int spaceNumber)
     {
-        InstalledEquipmentStateId = installedEquipmentStateId;
+        SpaceNumber = spaceNumber;
     }
 
-    public Guid InstalledEquipmentStateId { get; private set; }
+    public int SpaceNumber { get; private set; }
 
     protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
         new Dictionary<string, IValue>()
         {
-            [nameof(InstalledEquipmentStateId)] = InstalledEquipmentStateId.Serialize(),
+            [nameof(SpaceNumber)] = SpaceNumber.Serialize(),
         }.ToImmutableDictionary();
 
     protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
     {
-        InstalledEquipmentStateId = plainValue[nameof(InstalledEquipmentStateId)].ToGuid();
+        SpaceNumber = plainValue[nameof(SpaceNumber)].ToInteger();
     }
 
     public override IAccountStateDelta Execute(IActionContext ctx)
@@ -49,7 +49,7 @@ public class RemoveInstalledKitchenEquipmentAction : SVRAction
 
         KitchenState kitchenState = rootState.VillageState!.HouseState.KitchenState;
 
-        kitchenState.RemoveInstalledEquipment(InstalledEquipmentStateId);
+        kitchenState.UninstalledEquipment(SpaceNumber);
 
         return states.SetState(ctx.Signer, rootState.Serialize());
     }

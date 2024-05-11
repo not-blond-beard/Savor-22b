@@ -80,27 +80,15 @@ public class KitchenState : State
         }
     }
 
-    public void RemoveInstalledEquipment(Guid stateId)
+    public void UninstalledEquipment(int spaceNumber)
     {
-        if (FirstApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
+        var applianceSpace = GetApplianceSpaceStateByNumber(spaceNumber);
+        if (applianceSpace.InstalledKitchenEquipmentStateId is null)
         {
-            FirstApplianceSpace.UnInstallKitchenEquipment();
-            return;
+            throw new InvalidValueException($"The space {spaceNumber} is not installed any kitchen equipment.");
         }
 
-        if (SecondApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
-        {
-            SecondApplianceSpace.UnInstallKitchenEquipment();
-            return;
-        }
-
-        if (ThirdApplianceSpace.InstalledKitchenEquipmentStateId == stateId)
-        {
-            ThirdApplianceSpace.UnInstallKitchenEquipment();
-            return;
-        }
-
-        throw new InvalidValueException($"The equipment with the id {stateId} is not installed.");
+        applianceSpace.UnInstallKitchenEquipment();
     }
 
     public ApplianceSpaceState GetApplianceSpaceStateByNumber(int spaceNumber)
