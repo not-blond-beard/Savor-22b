@@ -5,7 +5,6 @@ signal reload_signal
 signal cook_started
 
 const RecipeAvailableScn = preload("res://scenes/house/cook/recipe_available.tscn")
-const GqlQuery = preload("res://gql/query.gd")
 
 @onready var grid = $background/M/V/S/G
 @onready var installed_tool = $background/M/V/Description/ToolList
@@ -15,7 +14,16 @@ var installed_list = SceneContext.installed_tool_name
 var available_tool_list : Array
 var available_recipe_list : Array
 
+var query_executor = QueryExecutor.new()
+var create_food_query_executor
+var stage_tx_mutation_executor
+
 func _ready():
+	create_food_query_executor = query_executor.create_food_query_executor
+	stage_tx_mutation_executor = query_executor.stage_tx_mutation_executor
+	add_child(create_food_query_executor)
+	add_child(stage_tx_mutation_executor)
+
 	var format_string = "[%s]"
 	var unique_list = remove_duplicates(installed_list)
 	installed_tool.text = format_string % [", ".join(unique_list)]
@@ -78,24 +86,16 @@ func _on_cook_button_down():
 	else:
 		tool_str = tool_arr[0]
 	
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.create_food_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		SceneContext.selected_recipe_index,
-		#need to be fixed
-		"[\"%s\"]" % ingredient_str,
-		"[\"%s\"]" % tool_str], "{}")
-	
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(func(data):
-		var unsigned_tx = data["data"]["createAction_CreateFood"]
-		var signature = GlobalSigner.sign(unsigned_tx)
-		var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-		add_child(mutation_executor)
-		mutation_executor.run({})
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"recipeID": SceneContext.selected_recipe_index,
+			"refrigeratorStateIdsToUse": ingredient_str,
+			"kitchenEquipmentStateIdsToUse": tool_str
+		},
+		create_food_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
 
 	# Init past selected infos
 	SceneContext.selected_ingredients = []

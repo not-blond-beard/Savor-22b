@@ -4,14 +4,23 @@ const ShopItemScn = preload("res://scenes/shop/shop_item.tscn")
 const AskPopupScn = preload("res://scenes/shop/ask_popup.tscn")
 const DonePopupScn = preload("res://scenes/shop/done_popup.tscn")
 
-const GqlQuery = preload("res://gql/query.gd")
+const GqlQueryExecutor = preload("res://gql/query_executor.gd")
 
 @onready var shop_list = $M/H/C/M/S/Lists
 @onready var popup = $Popups
 
 var shop_items = []
 
+var query_executor = QueryExecutor.new()
+var buy_shop_item_query_executor
+var stage_tx_mutation_executor
+
 func _ready():
+	buy_shop_item_query_executor = query_executor.buy_shop_item_query_executor
+	stage_tx_mutation_executor = query_executor.stage_tx_mutation_executor
+	add_child(buy_shop_item_query_executor)
+	add_child(stage_tx_mutation_executor)
+
 	shop_items = SceneContext.shop
 	var size = shop_items.size()
 	
@@ -29,22 +38,15 @@ func buy_item():
 
 func buy_query():
 	var item_num = SceneContext.selected_item_index
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.buy_shop_item_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		item_num], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_BuyShopItem"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"desiredShopItemID": item_num,
+		},
+		buy_shop_item_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
 	
 func print_done_popup():
 	clear_popup()
