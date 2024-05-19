@@ -1,8 +1,12 @@
 name: "godot-ci export"
-on: pull_request:
-  branches:
-    - main
-
+on: 
+  push:
+    tags: ["*"]
+  pull_request:
+    types: [ready_for_review, opened, reopened, auto_merge_enabled]
+  merge_group:
+    types: [checks_requested]
+    
 env:
   GODOT_VERSION: 4.2.1
   EXPORT_NAME: Savor-22b
@@ -19,6 +23,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           lfs: true
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Add safe.directory configuration
+        run: |
+          REPO_PATH=$(pwd)
+          echo "Repository path is $REPO_PATH"
+          git config --global --add safe.directory $REPO_PATH
+      - name: Initialize submodules
+        run: |
+          git submodule sync
+          git submodule update --init --recursive
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
@@ -34,6 +50,7 @@ jobs:
           name: windows
           path: build/windows
 
+
   export-mac:
     name: Mac Export
     runs-on: ubuntu-20.04
@@ -44,6 +61,18 @@ jobs:
         uses: actions/checkout@v2
         with:
           lfs: true
+          submodules: recursive
+          fetch-depth: 1
+
+      - name: Add safe.directory configuration
+        run: |
+          REPO_PATH=$(pwd)
+          echo "Repository path is $REPO_PATH"
+          git config --global --add safe.directory $REPO_PATH
+      - name: Initialize submodules
+        run: |
+          git submodule sync
+          git submodule update --init --recursive
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/export_templates/
