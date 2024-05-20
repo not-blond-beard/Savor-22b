@@ -10,7 +10,6 @@ const BigToolInstallPopupScn = preload("res://scenes/house/big_tool_install_popu
 const CookBookScn = preload("res://scenes/house/Cook/cook_book.tscn")
 const CookStartedPopup = preload("res://scenes/house/Cook/cook_started_popup.tscn")
 const ConfirmPopupScn = preload("res://scenes/common/prefabs/confirm_popup.tscn")
-const GqlQuery = preload("res://gql/query.gd")
 
 @onready var sub_scene = $M/V/sub_scene
 @onready var popup = $Popups
@@ -19,7 +18,22 @@ const GqlQuery = preload("res://gql/query.gd")
 var selected_space
 var cook_book
 
+var query_executor = QueryExecutor.new()
+var buy_kitchen_equipment_query_executor
+var install_kitchen_equipment_query_executor
+var uninstall_kitchen_equipment_query_executor
+var stage_tx_mutation_executor
+
 func _ready():
+	buy_kitchen_equipment_query_executor = query_executor.buy_kitchen_equipment_query_executor
+	install_kitchen_equipment_query_executor = query_executor.install_kitchen_equipment_query_executor
+	uninstall_kitchen_equipment_query_executor = query_executor.uninstall_kitchen_equipment_query_executor
+	stage_tx_mutation_executor = query_executor.stage_tx_mutation_executor
+	add_child(buy_kitchen_equipment_query_executor)
+	add_child(install_kitchen_equipment_query_executor)
+	add_child(uninstall_kitchen_equipment_query_executor)
+	add_child(stage_tx_mutation_executor)
+
 	load_kitchen()
 
 func _on_inventory_button_down():
@@ -47,23 +61,16 @@ func buy_action():
 	popup.add_child(done_popup)
 
 func buy_tool():
-	var item_num = SceneContext.selected_item_index
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.buy_kitchen_equipment_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		item_num], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_BuyKitchenEquipment"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	var item_num = SceneContext.selected_item_index	
+	
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"desiredEquipmentID": item_num,
+		},
+		buy_kitchen_equipment_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
 
 func clear_popup():
 	if is_instance_valid(popup):
@@ -137,22 +144,15 @@ func on_empty_slot_pressed(spaceNumber : int):
 	selected_space = spaceNumber
 
 func install_tool(stateId : String):
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.install_kitchen_equipment_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		"\"%s\"" % stateId, selected_space], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_InstallKitchenEquipmentAction"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"kitchenEquipmentStateID": stateId,
+			"spaceNumber": selected_space,
+		},
+		install_kitchen_equipment_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
 
 func _on_cook_button_down():
 	var cook_book_area = MarginContainer.new()
@@ -188,20 +188,11 @@ func on_uninstall_slot_pressed(spaceNumber: int):
 	confirmPopup.add_child(confirmPopupResource)
 
 func uninsatll_big_tool(spaceNumber: int):
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.uninstall_kitchen_equipment_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		"%s" % spaceNumber], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_UninstallKitchenEquipmentActionQuery"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"spaceNumber": spaceNumber,
+		},
+		uninstall_kitchen_equipment_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
-	

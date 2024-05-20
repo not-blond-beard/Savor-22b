@@ -3,7 +3,6 @@ extends Control
 const HouseSlotButtonScn = preload("res://scenes/village/house_slot_button.tscn")
 const NoticePopupScn = preload("res://scenes/common/prefabs/notice_popup.tscn")
 const ConfirmPopupScn = preload("res://scenes/common/prefabs/confirm_popup.tscn")
-const GqlQuery = preload("res://gql/query.gd")
 
 @onready var notice_popup = $MarginContainer/Background/Noticepopup
 @onready var confirm_popup = $MarginContainer/Background/ConfirmPopup
@@ -11,8 +10,16 @@ const GqlQuery = preload("res://gql/query.gd")
 
 var houses = []
 var exist_houses = SceneContext.get_selected_village()["houses"]
+var query_executor = QueryExecutor.new()
+var place_house_query_executor
+var stage_tx_mutation_executor
 
 func _ready():
+	place_house_query_executor = query_executor.place_house_query_executor
+	stage_tx_mutation_executor = query_executor.stage_tx_mutation_executor
+	add_child(place_house_query_executor)
+	add_child(stage_tx_mutation_executor)
+
 	var size = SceneContext.selected_village_capacity
 	
 	grid_container.columns = SceneContext.selected_village_width
@@ -72,8 +79,8 @@ func _on_build_button_down():
 			build_house()
 
 func _query_relocation_cost_and_open():
-	var gql_query = GqlQuery.new()
-	gql_query.calculate_relocation_cost_query.graphql_response.connect(
+	var cost_query_executor = query_executor.calculate_relocation_cost_query_executor
+	cost_query_executor.graphql_response.connect(
 		func(data):
 			var confirm_popup_scn = ConfirmPopupScn.instantiate()
 			
@@ -84,8 +91,8 @@ func _query_relocation_cost_and_open():
 			confirm_popup_scn.ok_button_clicked_signal.connect(build_house)
 			confirm_popup.add_child(confirm_popup_scn)
 	)
-	add_child(gql_query.calculate_relocation_cost_query)
-	gql_query.calculate_relocation_cost_query.run({
+	add_child(cost_query_executor)
+	cost_query_executor.run({
 		"villageId": SceneContext.user_state["villageState"]["houseState"]["villageId"],
 		"relocationVillageId": SceneContext.get_selected_village()["id"]
 	})
@@ -95,25 +102,16 @@ func print_notice():
 	notice_popup.add_child(box)
 	
 func build_house():
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.place_house_query_format.format([
-			"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-			SceneContext.get_selected_village()["id"],
-			SceneContext.selected_house_location.x,
-			SceneContext.selected_house_location.y], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(func(data):
-		var unsigned_tx = data["data"]["createAction_PlaceUserHouse"]
-		var signature = GlobalSigner.sign(unsigned_tx)
-		var mutation_executor = SvrGqlClient.raw_mutation(
-			gql_query.stage_tx_query_format % [unsigned_tx, signature]
-		)
-		add_child(mutation_executor)
-		mutation_executor.run({})
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"villageId": SceneContext.get_selected_village()["id"],
+			"x": SceneContext.selected_house_location.x,
+			"y": SceneContext.selected_house_location.y,
+		},
+		place_house_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
 
 func _on_refresh_button_down():
 	Intro._query_villages()

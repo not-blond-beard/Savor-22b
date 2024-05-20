@@ -10,7 +10,6 @@ const FarmActionPopupScn = preload("res://scenes/farm/farm_action_popup.tscn")
 const FarmAskRemovePopupScn = preload("res://scenes/farm/farm_ask_remove_popup.tscn")
 const FarmRemoveDonePopupScn = preload("res://scenes/farm/farm_remove_done_popup.tscn")
 
-const GqlQuery = preload("res://gql/query.gd")
 
 @onready var left_farm = $MC/HC/CR/MC/HC/Left
 @onready var right_farm = $MC/HC/CR/MC/HC/Right
@@ -22,7 +21,25 @@ var item_state_Id_to_use
 var harvested_name
 var action_success = false
 
+var query_executor = QueryExecutor.new()
+var remove_seed_query_executor
+var remove_weed_query_executor
+var plant_seed_query_executor
+var harvest_seed_query_executor
+var stage_tx_mutation_executor
+
 func _ready():
+	remove_seed_query_executor = query_executor.remove_seed_query_executor
+	remove_weed_query_executor = query_executor.remove_weed_query_executor
+	plant_seed_query_executor = query_executor.plant_seed_query_executor
+	harvest_seed_query_executor = query_executor.harvest_seed_query_executor
+	stage_tx_mutation_executor = query_executor.stage_tx_mutation_executor
+	add_child(remove_seed_query_executor)
+	add_child(remove_weed_query_executor)
+	add_child(plant_seed_query_executor)
+	add_child(harvest_seed_query_executor)
+	add_child(stage_tx_mutation_executor)
+
 	farms = SceneContext.user_state["villageState"]["houseFieldStates"]
 
 	item_state_ids = SceneContext.user_state["inventoryState"]["itemStateList"]
@@ -103,23 +120,15 @@ func plant_popup():
 
 
 func plant_seed():
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.plant_seed_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		SceneContext.selected_field_index,
-		"\"%s\"" % item_state_ids[0]["stateID"]], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_PlantingSeed"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"fieldIndex": SceneContext.selected_field_index,
+			"itemStateIdToUse": item_state_ids[0]["stateID"],
+		},
+		plant_seed_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
 
 func set_harvested_name(seed_name):
 	harvested_name = seed_name
@@ -137,24 +146,15 @@ func done_popup():
 
 func harvest_seed():
 	action_success = false
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.harvest_seed_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		SceneContext.selected_field_index], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_HarvestingSeed"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"fieldIndex": SceneContext.selected_field_index,
+		},
+		harvest_seed_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
-	action_success = true
-	fetch_new()
 
 func action_popup(weed : bool):
 	if is_instance_valid(popup_area):
@@ -195,22 +195,15 @@ func control_seed(weed : bool):
 	action_popup(weed)
 
 func remove_seed():
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.remove_seed_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		SceneContext.selected_field_index], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_RemovePlantedSeed"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"fieldIndex": SceneContext.selected_field_index,
+		},
+		remove_seed_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
+	
 	fetch_new()
 
 func fetch_new():
@@ -234,23 +227,14 @@ func fetch_new():
 	_ready()
 
 func remove_weed():
-	var gql_query = GqlQuery.new()
-	var query_string = gql_query.remove_weed_query_format.format([
-		"\"%s\"" % GlobalSigner.signer.GetPublicKey(),
-		SceneContext.selected_field_index], "{}")
-		
-	var query_executor = SvrGqlClient.raw(query_string)
-	query_executor.graphql_response.connect(
-		func(data):
-			var unsigned_tx = data["data"]["createAction_RemoveWeed"]
-			var signature = GlobalSigner.sign(unsigned_tx)
-			var mutation_executor = SvrGqlClient.raw_mutation(gql_query.stage_tx_query_format % [unsigned_tx, signature])
-			add_child(mutation_executor)
-			mutation_executor.run({})
+	query_executor.stage_action(
+		{
+			"publicKey": GlobalSigner.signer.GetPublicKey(),
+			"fieldIndex": SceneContext.selected_field_index,
+		},
+		remove_weed_query_executor,
+		stage_tx_mutation_executor
 	)
-	add_child(query_executor)
-	query_executor.run({})
-	fetch_new()
 
 func _on_refresh_button_down():
 	fetch_new()
