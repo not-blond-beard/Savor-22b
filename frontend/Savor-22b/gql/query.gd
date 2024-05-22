@@ -75,3 +75,10 @@ var uninstall_kitchen_equipment_query = GQLQuery.new("createAction_UninstallKitc
 	"publicKey": "publicKey",
 	"spaceNumber": "spaceNumber"
 });
+
+var register_trade_good_query = GQLQuery.new("createAction_RegisterTradeGoodAction").set_args({
+	"publicKey": "publicKey",
+	"price": "price",
+	"foodStateId": "foodStateId",
+	"itemStateIds": "itemStateIds"
+});

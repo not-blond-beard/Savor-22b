@@ -66,6 +66,10 @@ func _on_enter_button_down():
 func _on_farm_button_down():
 	get_tree().change_scene_to_file("res://scenes/farm/farm.tscn")
 
+func _on_market_button_down():
+	get_tree().change_scene_to_file("res://scenes/market/market.tscn")
+
+
 #open shop with S input
 func _input(event):
 	if event is InputEventKey and event.pressed:
@@ -73,3 +77,5 @@ func _input(event):
 			var shop = SystemShopScn.instantiate()
 			popups.add_child(shop)
 			shop.set_position(Vector2(400, 150))
+
+

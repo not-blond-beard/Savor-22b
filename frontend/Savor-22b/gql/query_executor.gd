@@ -125,6 +125,18 @@ var uninstall_kitchen_equipment_query_executor = SvrGqlClient.query(
 	gql_query.uninstall_kitchen_equipment_query
 );
 
+
+var register_trade_good_query_executor = SvrGqlClient.query(
+	'RegisterTradeGood',
+	{
+		"publicKey": "String!",
+		"price": "Int!",
+		"foodStateId": "Int!",
+		"itemStateIds": "Int!"
+	},
+	gql_query.uninstall_kitchen_equipment_query
+);
+
 func stage_action(params, query_executor, mutation_executor):
 	query_executor.graphql_response.connect(
 		func(data):

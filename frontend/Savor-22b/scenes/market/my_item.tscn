@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7yghm5bsqwif"]
+
+[ext_resource type="Script" path="res://scenes/market/my_item.gd" id="1_5wh4n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_21if1"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="MyItem" type="Control"]
+custom_minimum_size = Vector2(310, 200)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1610.0
+offset_bottom = -880.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5wh4n")
+
+[node name="ItemSelectButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_21if1")
+text = "아이템 정보"
+text_overrun_behavior = 1
+
+[connection signal="button_down" from="ItemSelectButton" to="." method="_on_item_select_button_down"]
