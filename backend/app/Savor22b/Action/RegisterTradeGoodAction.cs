@@ -7,9 +7,9 @@ using Libplanet.Action;
 using Libplanet.Assets;
 using Libplanet.Headless.Extensions;
 using Libplanet.State;
+using Savor22b.Action.Exceptions;
 using Savor22b.States;
 using Savor22b.States.Trade;
-using Savor22b.Action.Exceptions;
 
 [ActionType(nameof(RegisterTradeGoodAction))]
 public class RegisterTradeGoodAction : SVRAction
@@ -53,7 +53,9 @@ public class RegisterTradeGoodAction : SVRAction
         {
             [nameof(Price)] = Price.ToBencodex(),
             [nameof(FoodStateId)] = FoodStateId.Serialize(),
-            [nameof(ItemStateIds)] = ItemStateIds is null ? Null.Value : (List)ItemStateIds.Select(i => i.Serialize()),
+            [nameof(ItemStateIds)] = ItemStateIds is null
+                ? Null.Value
+                : (List)ItemStateIds.Select(i => i.Serialize()),
             [nameof(DungeonId)] = DungeonId.Serialize(),
         }.ToImmutableDictionary();
 
@@ -61,8 +63,13 @@ public class RegisterTradeGoodAction : SVRAction
     {
         Price = plainValue[nameof(Price)].ToFungibleAssetValue();
         FoodStateId = plainValue[nameof(FoodStateId)].ToGuid();
-        ItemStateIds = plainValue[nameof(ItemStateIds)] is Null ? null : ((List)plainValue[nameof(ItemStateIds)]).Select(e => e.ToGuid()).ToImmutableList();
-        DungeonId = plainValue[nameof(DungeonId)].ToInteger();
+        ItemStateIds =
+            plainValue[nameof(ItemStateIds)] is Null
+                ? null
+                : ((List)plainValue[nameof(ItemStateIds)])
+                    .Select(e => e.ToGuid())
+                    .ToImmutableList();
+        DungeonId = plainValue[nameof(DungeonId)].ToNullableInteger();
     }
 
     public override IAccountStateDelta Execute(IActionContext ctx)
@@ -77,10 +84,12 @@ public class RegisterTradeGoodAction : SVRAction
         RootState rootState = states.GetState(ctx.Signer) is Dictionary rootStateEncoded
             ? new RootState(rootStateEncoded)
             : new RootState();
-        TradeInventoryState tradeInventoryState = states.GetState(TradeInventoryState.StateAddress) is Dictionary tradeInventoryStateEncoded
+        TradeInventoryState tradeInventoryState = states.GetState(TradeInventoryState.StateAddress)
+            is Dictionary tradeInventoryStateEncoded
             ? new TradeInventoryState(tradeInventoryStateEncoded)
             : new TradeInventoryState();
-        GlobalDungeonState globalDungeonState = states.GetState(GlobalDungeonState.StateAddress) is Dictionary globalDungeonStateEncoded
+        GlobalDungeonState globalDungeonState = states.GetState(GlobalDungeonState.StateAddress)
+            is Dictionary globalDungeonStateEncoded
             ? new GlobalDungeonState(globalDungeonStateEncoded)
             : new GlobalDungeonState();
 
@@ -89,7 +98,12 @@ public class RegisterTradeGoodAction : SVRAction
         if (FoodStateId is not null)
         {
             var foodState = inventoryState.GetRefrigeratorItem(FoodStateId.Value);
-            var foodGoodState = new FoodGoodState(ctx.Signer, ctx.Random.GenerateRandomGuid(), Price, foodState);
+            var foodGoodState = new FoodGoodState(
+                ctx.Signer,
+                ctx.Random.GenerateRandomGuid(),
+                Price,
+                foodState
+            );
             inventoryState = inventoryState.RemoveRefrigeratorItem(FoodStateId.Value);
             tradeInventoryState = tradeInventoryState.RegisterGood(foodGoodState);
         }
@@ -106,7 +120,8 @@ public class RegisterTradeGoodAction : SVRAction
                 ctx.Signer,
                 ctx.Random.GenerateRandomGuid(),
                 Price,
-                itemStates.ToImmutableList());
+                itemStates.ToImmutableList()
+            );
 
             tradeInventoryState = tradeInventoryState.RegisterGood(itemsGoodState);
         }
@@ -116,7 +131,8 @@ public class RegisterTradeGoodAction : SVRAction
                 ctx.Signer,
                 ctx.Random.GenerateRandomGuid(),
                 Price,
-                DungeonId.Value);
+                DungeonId.Value
+            );
 
             if (!globalDungeonState.IsDungeonConquestAddress(DungeonId.Value, ctx.Signer))
             {
