@@ -74,9 +74,6 @@ size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
 text = "    마을로    "
 
-[node name="TestButton" type="Button" parent="VBoxContainer/MarginContainer2/TopMenuHBoxContainer"]
-layout_mode = 2
-
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(1920, 950)
 layout_mode = 2
@@ -101,4 +98,3 @@ theme_override_constants/margin_right = 50
 theme_override_constants/margin_bottom = 50
 
 [connection signal="button_down" from="VBoxContainer/MarginContainer2/TopMenuHBoxContainer/VillageButton" to="." method="_on_village_button_down"]
-[connection signal="button_down" from="VBoxContainer/MarginContainer2/TopMenuHBoxContainer/TestButton" to="." method="_on_test_button_down"]

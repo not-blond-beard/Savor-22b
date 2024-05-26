@@ -147,7 +147,6 @@ var trade_inventory_state_executor = SvrGqlClient.query(
 func stage_action(params, query_executor, mutation_executor):
 	query_executor.graphql_response.connect(
 		func(data):
-			print(data) # 지워야함
 			var unsigned_tx = data["data"][data["data"].keys()[0]]
 			var signature = GlobalSigner.sign(unsigned_tx)
 			mutation_executor.run({

@@ -1,8 +1,5 @@
 extends Control
 
-#@onready var food_name = $M/V/Name
-#@onready var food_description = $M/V/Desc
-
 @onready var item_button = $ItemSelectButton
 
 var info
@@ -18,10 +15,8 @@ func _update_info():
 		return
 	item_button.text = desc_format_string % [info.name, "등급", info.grade, "stateId", info.stateId]
 
-
 func set_info(info: Dictionary):
 	self.info = info
-	
 
 func _on_item_select_button_down():
-	print(info)
+	pass # 물건 올리기 기능이 들어갈 예정
