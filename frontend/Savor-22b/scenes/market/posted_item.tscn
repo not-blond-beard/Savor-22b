@@ -1,4 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://crw3yutudcodf"]
+[gd_scene load_steps=4 format=3 uid="uid://crw3yutudcodf"]
+
+[ext_resource type="Script" path="res://scenes/market/posted_item.gd" id="1_3mj4d"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3bs65"]
 bg_color = Color(0, 0, 0, 1)
@@ -20,7 +22,7 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
 [node name="PostedItem" type="Control"]
-custom_minimum_size = Vector2(380, 410)
+custom_minimum_size = Vector2(410, 410)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -29,6 +31,7 @@ offset_right = -1540.0
 offset_bottom = -670.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_3mj4d")
 
 [node name="BackgroundPanel" type="Panel" parent="."]
 layout_mode = 1
@@ -60,8 +63,10 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 40
 text = "품목명 : 참치
+가격 : 10
 게시자 : 맛도리 해적단
-게시 마을 : 외로운 섬"
+"
+text_overrun_behavior = 1
 
 [node name="BuyButton" type="Button" parent="BackgroundPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2

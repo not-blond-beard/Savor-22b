@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://bu43d13qwmtcr"]
+[gd_scene load_steps=7 format=3 uid="uid://bu43d13qwmtcr"]
 
+[ext_resource type="Script" path="res://scenes/market/sell_list.gd" id="1_n5ek1"]
 [ext_resource type="ButtonGroup" uid="uid://di66p0jb8cdpk" path="res://scenes/market/sell_list_button_group.tres" id="1_vyf2b"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4l2s6"]
@@ -29,6 +30,7 @@ offset_right = -700.0
 offset_bottom = -130.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_n5ek1")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -83,5 +85,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/ListPanel/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ListPanel/ScrollContainer"]
 layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/ListPanel/ScrollContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/ListPanel/ScrollContainer/MarginContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 50
+columns = 2
+
+[connection signal="button_down" from="MarginContainer/VBoxContainer/HBoxContainer/WholeSellListButton" to="." method="_on_whole_sell_list_button_down"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/HBoxContainer/MySellListButton" to="." method="_on_my_sell_list_button_down"]
