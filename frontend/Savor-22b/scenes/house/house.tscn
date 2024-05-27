@@ -77,7 +77,7 @@ custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 45
-text = " 무역하러 가기 "
+text = " 무역 상점 "
 
 [node name="RecipeButton" type="Button" parent="M/V/menus/V"]
 custom_minimum_size = Vector2(200, 2.08165e-12)
