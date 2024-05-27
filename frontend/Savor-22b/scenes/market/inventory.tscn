@@ -3,9 +3,7 @@
 [ext_resource type="Script" path="res://scenes/market/inventory.gd" id="1_xk4wq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8vjfi"]
-bg_color = Color(0.94902, 0.694118, 0.243137, 1)
-corner_radius_top_left = 25
-corner_radius_top_right = 25
+bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_as0cg"]
 bg_color = Color(0.94902, 0.694118, 0.243137, 1)
@@ -31,7 +29,7 @@ grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = -1
+theme_override_constants/separation = 3
 
 [node name="TitlePanel" type="Panel" parent="MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(200, 70)

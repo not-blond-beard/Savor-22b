@@ -98,7 +98,7 @@ text = "부엌으로"
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
-text = "무역으로"
+text = "무역하러 가기"
 
 [node name="InventoryButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
