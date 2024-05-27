@@ -42,6 +42,7 @@ grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+theme_override_constants/separation = -1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -51,10 +52,10 @@ theme_override_constants/separation = 20
 custom_minimum_size = Vector2(200, 70)
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_4l2s6")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_vqa0t")
+theme_override_styles/focus = SubResource("StyleBoxFlat_vqa0t")
 toggle_mode = true
 button_pressed = true
 button_group = ExtResource("2_68j2i")
@@ -68,6 +69,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxFlat_4l2s6")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_af182")
+theme_override_styles/focus = SubResource("StyleBoxFlat_af182")
 toggle_mode = true
 button_group = ExtResource("2_68j2i")
 text = "내 판매목록"

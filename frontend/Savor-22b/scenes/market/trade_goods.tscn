@@ -22,12 +22,13 @@ corner_radius_bottom_right = 15
 corner_radius_bottom_left = 15
 
 [node name="TradeGoods" type="Control"]
-custom_minimum_size = Vector2(410, 410)
+custom_minimum_size = Vector2(500, 430)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_right = -1540.0
+offset_left = -25.0
+offset_right = -1445.0
 offset_bottom = -670.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -61,12 +62,13 @@ layout_mode = 2
 custom_minimum_size = Vector2(2.08165e-12, 280)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 30
 text = "품목명 : 참치
+foodstateId : ~~
 가격 : 10
 게시자 : 맛도리 해적단
 "
-text_overrun_behavior = 1
+autowrap_mode = 1
 
 [node name="BuyButton" type="Button" parent="BackgroundPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2

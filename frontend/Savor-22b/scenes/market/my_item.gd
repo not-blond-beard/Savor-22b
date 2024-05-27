@@ -1,11 +1,11 @@
 extends Control
 
 @onready var item_button = $ItemSelectButton
+@onready var item_name_label = $ItemSelectButton/MarginContainer/VBoxContainer/HBoxContainer/NameLabel
+@onready var item_grade_label = $ItemSelectButton/MarginContainer/VBoxContainer/HBoxContainer/GradeLabel
+@onready var item_stateid_label = $ItemSelectButton/MarginContainer/VBoxContainer/StateIdLabel
 
 var info
-var desc_format_string = "%s
-%s : %s
-%s : %s"
 
 func _ready():
 	_update_info()
@@ -13,7 +13,10 @@ func _ready():
 func _update_info():
 	if item_button == null:
 		return
-	item_button.text = desc_format_string % [info.name, "등급", info.grade, "stateId", info.stateId]
+
+	item_name_label.text = info.name
+	item_grade_label.text = info.grade + "등급"
+	item_stateid_label.text = info.stateId
 
 func set_info(info: Dictionary):
 	self.info = info

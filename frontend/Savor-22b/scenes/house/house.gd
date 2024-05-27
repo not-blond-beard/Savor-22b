@@ -107,6 +107,9 @@ func _on_farm_button_down():
 func _on_village_button_down():
 	get_tree().change_scene_to_file("res://scenes/village/village_view.tscn")
 
+func _on_market_button_down():
+	get_tree().change_scene_to_file("res://scenes/market/market.tscn")
+
 func _on_refresh_button_down():
 	clear_popup()
 	reload_sub_scene()

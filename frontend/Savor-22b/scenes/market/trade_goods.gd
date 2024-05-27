@@ -5,6 +5,7 @@ extends Control
 
 var info
 var desc_format_string = "%s : %s
+%s : %s
 %s : %s%s
 %s : %s"
 
@@ -14,7 +15,7 @@ func _ready():
 func _update_info():
 	if description_label == null:
 		return
-	description_label.text = desc_format_string % ["품목명",info.food["name"],"가격",info.price," BBG","게시자",info.sellerAddress]
+	description_label.text = desc_format_string % ["품목명",info.food["name"],"stateId",info.food["stateId"],"가격",info.price," BBG","게시자",info.sellerAddress]
 
 func set_info(info: Dictionary):
 	self.info = info

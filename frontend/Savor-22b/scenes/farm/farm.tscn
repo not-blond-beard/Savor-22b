@@ -94,6 +94,12 @@ size_flags_vertical = 0
 theme_override_font_sizes/font_size = 50
 text = "부엌으로"
 
+[node name="MarketButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "무역으로"
+
 [node name="InventoryButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 0
@@ -112,4 +118,5 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/HomeButton" to="." method="_on_home_button_down"]
+[connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/MarketButton" to="." method="_on_market_button_down"]
 [connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/RefreshButton" to="." method="_on_refresh_button_down"]

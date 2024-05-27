@@ -2,7 +2,7 @@ extends Control
 
 const MyItemScn = preload("res://scenes/market/my_item.tscn")
 
-@onready var inventory_container = $MarginContainer/VBoxContainer/InventoryPanel/ScrollContainer/CenterContainer/GridContainer
+@onready var inventory_container = $MarginContainer/VBoxContainer/InventoryPanel/ScrollContainer/CenterContainer/MarginContainer/GridContainer
 
 var items
 
