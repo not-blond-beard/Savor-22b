@@ -3,15 +3,6 @@ var stage_tx_mutation = GQLQuery.new("stageTransaction").set_args({
 	"signature": "signature",
 });
 
-var get_villages_query = GQLQuery.new("villages").set_props([
-	"id",
-	"name",
-	"width",
-	"height",
-	"worldX",
-	"worldY"
-]);
-
 var calculate_relocation_cost_query = GQLQuery.new("calculateRelocationCost").set_args({
 	"villageId": "villageId",
 	"relocationVillageId": "relocationVillageId"
@@ -75,3 +66,22 @@ var uninstall_kitchen_equipment_query = GQLQuery.new("createAction_UninstallKitc
 	"publicKey": "publicKey",
 	"spaceNumber": "spaceNumber"
 });
+
+var get_houses_and_dungeons_query = GQLQuery.new("villages").set_props([
+	"id",
+	"name",
+	"width",
+	"height",
+	"worldX",
+	"worldY",
+	GQLQuery.new("houses").set_props([
+		"x",
+		"y",
+		"owner",
+	]),
+	GQLQuery.new("dungeons").set_props([
+		"x",
+		"y",
+		"name",
+	]),
+]);

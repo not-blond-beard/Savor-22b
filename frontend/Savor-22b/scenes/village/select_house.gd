@@ -4,59 +4,82 @@ const HouseSlotButtonScn = preload("res://scenes/village/house_slot_button.tscn"
 const NoticePopupScn = preload("res://scenes/common/prefabs/notice_popup.tscn")
 const ConfirmPopupScn = preload("res://scenes/common/prefabs/confirm_popup.tscn")
 
+const HouseData = preload("res://gql/models/house.gd")
+const DungeonData = preload("res://gql/models/dungeon.gd")
+const VillageData = preload("res://gql/models/village.gd")
+
 @onready var notice_popup = $MarginContainer/Background/Noticepopup
 @onready var confirm_popup = $MarginContainer/Background/ConfirmPopup
 @onready var grid_container = $MarginContainer/Background/MarginContainer/ScrollContainer/HomeGridContainer
 
-var houses = []
-var exist_houses = SceneContext.get_selected_village()["houses"]
 var query_executor = QueryExecutor.new()
 var place_house_query_executor
 var stage_tx_mutation_executor
+var get_houses_and_dungeons_query_executor
+var calculate_relocation_cost_query_executor
 
-func _ready():
+var village_entities = []
+var selected_entity = null
+
+func register_query_executor():
 	place_house_query_executor = query_executor.place_house_query_executor
 	stage_tx_mutation_executor = query_executor.stage_tx_mutation_executor
+	get_houses_and_dungeons_query_executor = query_executor.get_houses_and_dungeons_query_executor
+	calculate_relocation_cost_query_executor = query_executor.calculate_relocation_cost_query_executor
 	add_child(place_house_query_executor)
 	add_child(stage_tx_mutation_executor)
+	add_child(get_houses_and_dungeons_query_executor)
+	add_child(calculate_relocation_cost_query_executor)
 
-	var size = SceneContext.selected_village_capacity
-	
-	grid_container.columns = SceneContext.selected_village_width
-	
-	var start_x_loc = -(( SceneContext.selected_village_width - 1 ) / 2)
-	var start_y_loc = (SceneContext.selected_village_height -1 ) / 2
-	var end_x_loc = ( SceneContext.selected_village_width - 1 ) / 2
-	
-	#create blank slots
-	for i in range(size):
-		var house = {"x" : start_x_loc, "y" : start_y_loc, "owner" : "none"}
-		houses.append(house)
+func _ready():
+	register_query_executor()
+
+	get_houses_and_dungeons_query_executor.graphql_response.connect(
+		func(data):
+			handle_houses_and_dungeons_response(data)
+	)
+	get_houses_and_dungeons_query_executor.run({})
+
+func handle_houses_and_dungeons_response(data):
+	var villages = []
+	for village_data in data.get("data").get("villages"):
+		var village = VillageData.new().from_dict(village_data)
+		villages.append(village)
+
+	draw_houses_and_dungeons(villages[SceneContext.selected_village_index])
+
+func draw_houses_and_dungeons(village: VillageData):
+	grid_container.columns = village.width
+
+	for i in range(village.height):
+		village_entities.append([])
+
+	for y in range(1, village["height"] + 1):
+		for x in range(1, village["width"] + 1):
+			var entity = {"x": x, "y": y, "house": null, "dungeon": null}
+			village_entities[y - 1].append(entity)
+
+	for house in village.houses:
+		village_entities[house.y - 1][house.x - 1].house = house
 		
-		if(start_x_loc == end_x_loc):
-			start_y_loc -= 1
-			start_x_loc = -(( SceneContext.selected_village_width - 1 ) / 2)
-		else:
-			start_x_loc += 1
+	for dungeon in village.dungeons:
+		village_entities[dungeon.y - 1][dungeon.x - 1].dungeon = dungeon
 
-	for h1 in exist_houses:
-		for h2 in houses:
-			if h1["x"] == h2["x"] and h1["y"] == h2["y"]:
-				h2["owner"] = h1["owner"]
-			
-	for info in houses:
-		var button = HouseSlotButtonScn.instantiate()
-		button.set_house(info)
-		button.button_down.connect(button_selected)
-		grid_container.add_child(button)
+	for row in village_entities:
+		for entity in row:
+			var button = HouseSlotButtonScn.instantiate()
+			grid_container.add_child(button)
+			button.set_entity(entity)
+			button.button_down.connect(button_selected)
 
-func button_selected(house_index):
-	var format_string1 = "house button down: %s"
-	var format_string2 = "selected slot location: %s"
+func button_selected(x: int, y: int):
+	selected_entity = { "x": x, "y": y }
+
+	# Calc lagacy house index
+	var house_index = (y-1) * len(village_entities[0]) + x
 	SceneContext.selected_house_index = house_index
-	SceneContext.selected_house_location = houses[house_index]
-
-	#Toggle mode
+	SceneContext.selected_house_location = village_entities[y - 1][x - 1]
+#
 	for slot in grid_container.get_children():
 		if(slot.get_index() != house_index):
 			slot.disable_button_selected()
@@ -65,7 +88,11 @@ func _on_button_pressed():
 	get_tree().change_scene_to_file("res://scenes/village/select_village.tscn")
 
 func _on_build_button_down():
-	if (SceneContext.selected_house_location["owner"] != "none"):
+	var dungeon = village_entities[selected_entity.y - 1][selected_entity.x - 1].get("dungeon", null)
+	var house = village_entities[selected_entity.y - 1][selected_entity.x - 1].get("house", null)
+	if (dungeon != null):
+		print_notice()
+	if (house != null):
 		print_notice()
 	else:
 		var isHouseOwner = false
@@ -76,11 +103,10 @@ func _on_build_button_down():
 		if (isHouseOwner):
 			_query_relocation_cost_and_open()
 		else:
-			build_house()
+			build_house(selected_entity.x, selected_entity.y)
 
 func _query_relocation_cost_and_open():
-	var cost_query_executor = query_executor.calculate_relocation_cost_query_executor
-	cost_query_executor.graphql_response.connect(
+	calculate_relocation_cost_query_executor.graphql_response.connect(
 		func(data):
 			var confirm_popup_scn = ConfirmPopupScn.instantiate()
 			
@@ -88,11 +114,11 @@ func _query_relocation_cost_and_open():
 				str(data.data.calculateRelocationCost.durationBlocks),
 				str(data.data.calculateRelocationCost.price)
 			])
-			confirm_popup_scn.ok_button_clicked_signal.connect(build_house)
+			confirm_popup_scn.ok_button_clicked_signal.connect(build_house(selected_entity.x, selected_entity.y))
 			confirm_popup.add_child(confirm_popup_scn)
 	)
-	add_child(cost_query_executor)
-	cost_query_executor.run({
+
+	calculate_relocation_cost_query_executor.run({
 		"villageId": SceneContext.user_state["villageState"]["houseState"]["villageId"],
 		"relocationVillageId": SceneContext.get_selected_village()["id"]
 	})
@@ -101,13 +127,13 @@ func print_notice():
 	var box = NoticePopupScn.instantiate()
 	notice_popup.add_child(box)
 	
-func build_house():
+func build_house(x: int, y: int):
 	query_executor.stage_action(
 		{
 			"publicKey": GlobalSigner.signer.GetPublicKey(),
 			"villageId": SceneContext.get_selected_village()["id"],
-			"x": SceneContext.selected_house_location.x,
-			"y": SceneContext.selected_house_location.y,
+			"x": x,
+			"y": y,
 		},
 		place_house_query_executor,
 		stage_tx_mutation_executor
@@ -119,20 +145,9 @@ func _on_refresh_button_down():
 	for child in grid_container.get_children():
 		child.queue_free()
 	
-	for h0 in houses:
-		h0["owner"] = "none"
+	village_entities = []
 
-	exist_houses = SceneContext.get_selected_village()["houses"]
-	for h1 in exist_houses:
-		for h2 in houses:
-			if h1["x"] == h2["x"] and h1["y"] == h2["y"]:
-				h2["owner"] = h1["owner"]
-			
-	for info in houses:
-		var button = HouseSlotButtonScn.instantiate()
-		button.set_house(info)
-		button.button_down.connect(button_selected)
-		grid_container.add_child(button)
+	get_houses_and_dungeons_query_executor.run({})
 
 func _on_back_button_down():
 	get_tree().change_scene_to_file("res://scenes/village/village_view.tscn")
