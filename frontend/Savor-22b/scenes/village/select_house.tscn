@@ -6,6 +6,8 @@
 bg_color = Color(0.00392157, 0.00392157, 0.00392157, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epcma"]
+content_margin_left = 20.0
+content_margin_right = 20.0
 bg_color = Color(0, 0, 0, 1)
 
 [node name="SelectHouse" type="Control"]
@@ -58,7 +60,7 @@ text = " 마을 선택으로 "
 layout_mode = 2
 theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_epcma")
-text = " 마을 전체 보기 "
+text = "내 마을로"
 
 [node name="BottomMenuMarginContainer" type="MarginContainer" parent="."]
 layout_mode = 0

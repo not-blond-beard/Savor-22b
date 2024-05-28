@@ -23,10 +23,10 @@ var calculate_relocation_cost_query_executor = SvrGqlClient.query(
 	gql_query.calculate_relocation_cost_query
 );
 
-var get_villages_query_executor = SvrGqlClient.query(
-	'GetVillages',
+var get_houses_and_dungeons_query_executor = SvrGqlClient.query(
+	'GetHousesAndDungeons',
 	{},
-	gql_query.get_villages_query
+	gql_query.get_houses_and_dungeons_query
 );
 
 var place_house_query_executor = SvrGqlClient.query(
@@ -45,7 +45,7 @@ var plant_seed_query_executor = SvrGqlClient.query(
 	{
 		"publicKey": "String!",
 		"fieldIndex": "Int!",
-		"itemStateIdToUse": "Int!"
+		"itemStateIdToUse": "Guid!"
 	},
 	gql_query.plant_seed_query
 );
