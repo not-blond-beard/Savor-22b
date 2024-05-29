@@ -241,3 +241,6 @@ func _on_refresh_button_down():
 
 func _on_home_button_down():
 	get_tree().change_scene_to_file("res://scenes/house/house.tscn")
+
+func _on_market_button_down():
+	get_tree().change_scene_to_file("res://scenes/market/market.tscn")

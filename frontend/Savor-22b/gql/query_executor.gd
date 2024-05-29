@@ -45,7 +45,7 @@ var plant_seed_query_executor = SvrGqlClient.query(
 	{
 		"publicKey": "String!",
 		"fieldIndex": "Int!",
-		"itemStateIdToUse": "Int!"
+		"itemStateIdToUse": "Guid!"
 	},
 	gql_query.plant_seed_query
 );
@@ -124,6 +124,25 @@ var uninstall_kitchen_equipment_query_executor = SvrGqlClient.query(
 	},
 	gql_query.uninstall_kitchen_equipment_query
 );
+
+
+var register_trade_good_query_executor = SvrGqlClient.query(
+	'RegisterTradeGood',
+	{
+		"publicKey": "String!",
+		"price": "Int!",
+		"foodStateId": "Guid",
+		"itemStateIds": "[Guid]"
+	},
+	gql_query.register_trade_good_query
+);
+
+var trade_inventory_state_executor = SvrGqlClient.query(
+	'tradeInventoryState',
+	{},
+	gql_query.trade_inventory_state_query
+);
+
 
 func stage_action(params, query_executor, mutation_executor):
 	query_executor.graphql_response.connect(

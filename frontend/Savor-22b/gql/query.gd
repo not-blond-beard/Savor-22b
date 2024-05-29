@@ -75,3 +75,38 @@ var uninstall_kitchen_equipment_query = GQLQuery.new("createAction_UninstallKitc
 	"publicKey": "publicKey",
 	"spaceNumber": "spaceNumber"
 });
+
+var register_trade_good_query = GQLQuery.new("createAction_RegisterTradeGoodAction").set_args({
+	"publicKey": "publicKey",
+	"price": "price",
+	"foodStateId": "foodStateId",
+	"itemStateIds": "itemStateIds"
+});
+
+var trade_inventory_state_query = GQLQuery.new("tradeInventoryState").set_props([
+	GQLQuery.new("tradeGoods").set_props([
+		"sellerAddress",
+		"productStateId",
+		"price",
+		"type",
+		GQLQuery.new("food").set_props([
+			"stateId",
+			"ingredientId",
+			"foodID",
+			"name",
+			"grade",
+			"hp",
+			"attack",
+			"defense",
+			"speed",
+			"isSuperFood",
+			"level",
+			"isAvailable"
+		]),
+		GQLQuery.new("items").set_props([
+			"stateID",
+			"itemID",
+			"itemName"
+		])
+	])
+])
