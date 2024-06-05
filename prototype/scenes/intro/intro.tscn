@@ -1,0 +1,87 @@
+[gd_scene load_steps=8 format=3 uid="uid://y7o5mr6mwrqc"]
+
+[ext_resource type="Script" path="res://scenes/intro/intro.gd" id="1_kqg3s"]
+[ext_resource type="Texture2D" uid="uid://dtsdqmpiq5i6p" path="res://ui/assets/background.webp" id="2_kooyf"]
+[ext_resource type="FontFile" uid="uid://bk0fo7i7bh2vu" path="res://ui/Jersey15-Regular.ttf" id="3_8hkdo"]
+
+[sub_resource type="Theme" id="Theme_hisb6"]
+default_font = ExtResource("3_8hkdo")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2kjqm"]
+content_margin_left = 50.0
+content_margin_top = 10.0
+content_margin_right = 50.0
+content_margin_bottom = 10.0
+bg_color = Color(0.992157, 0.6, 0.541176, 1)
+
+[sub_resource type="Theme" id="Theme_1by2r"]
+default_font = ExtResource("3_8hkdo")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fr15"]
+content_margin_left = 50.0
+content_margin_top = 10.0
+content_margin_right = 50.0
+content_margin_bottom = 10.0
+bg_color = Color(1, 0.835294, 0.65098, 1)
+
+[node name="Intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kqg3s")
+metadata/_edit_vertical_guides_ = [960.0]
+metadata/_edit_horizontal_guides_ = [540.0]
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_kooyf")
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 565.0
+offset_top = 232.0
+offset_right = 1355.0
+offset_bottom = 383.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.999999, 0.60029, 0.537575, 1)
+theme_override_constants/shadow_offset_x = 10
+theme_override_constants/shadow_offset_y = 5
+theme_override_fonts/font = ExtResource("3_8hkdo")
+theme_override_font_sizes/font_size = 150
+text = "Savor22B RPG"
+
+[node name="StartButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 701.0
+offset_top = 571.0
+offset_right = 1221.0
+offset_bottom = 692.0
+theme = SubResource("Theme_hisb6")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_8hkdo")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxFlat_2kjqm")
+text = "Start game"
+
+[node name="QuitButton" type="Button" parent="."]
+offset_left = 701.0
+offset_top = 733.0
+offset_right = 1221.0
+offset_bottom = 854.0
+theme = SubResource("Theme_1by2r")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_8hkdo")
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxFlat_3fr15")
+text = "Quit"
+
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
