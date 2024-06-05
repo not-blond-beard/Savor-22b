@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://eddcwfe8kgp5"]
+
+[ext_resource type="Script" path="res://scenes/village/select_village_button.gd" id="1_rpa1m"]
+
+[node name="SelectVillageVillageButton" type="MarginContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 200)
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+script = ExtResource("1_rpa1m")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "Village #1
+(Households X/Y)"
+
+[connection signal="button_down" from="Button" to="." method="_on_button_down"]

@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://cs43iommrj00v"]
+
+[ext_resource type="Script" path="res://scenes/house/kitchen/cook_menu.gd" id="1_tn6pc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6jp5j"]
+bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="CookMenu" type="Control"]
+custom_minimum_size = Vector2(400, 250)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1520.0
+offset_bottom = -830.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tn6pc")
+
+[node name="P" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 400.0
+offset_bottom = 250.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6jp5j")
+
+[node name="Desc" type="Label" parent="P"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+text = "[-- -] 요리 조리중
+[N 블록 남음]"
+horizontal_alignment = 1
+vertical_alignment = 1

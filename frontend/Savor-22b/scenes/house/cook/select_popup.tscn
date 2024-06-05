@@ -1,0 +1,85 @@
+[gd_scene load_steps=4 format=3 uid="uid://cdj3ppg7fw3ee"]
+
+[ext_resource type="Script" path="res://scenes/house/cook/select_popup.gd" id="1_g7ytm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7oiq"]
+bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61pm2"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="SelectPopup" type="Control"]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_g7ytm")
+
+[node name="Panel" type="Button" parent="."]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 1
+offset_left = 1.0
+offset_right = 401.0
+offset_bottom = 300.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_p7oiq")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p7oiq")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_p7oiq")
+theme_override_styles/focus = SubResource("StyleBoxFlat_p7oiq")
+
+[node name="M" type="MarginContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 15
+
+[node name="V" type="VBoxContainer" parent="Panel/M"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Panel/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "현재 소유중인 [-- -]"
+
+[node name="S" type="ScrollContainer" parent="Panel/M/V"]
+custom_minimum_size = Vector2(175, 155)
+layout_mode = 2
+
+[node name="Ingredients" type="VBoxContainer" parent="Panel/M/V/S"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Button" type="Button" parent="Panel/M/V"]
+custom_minimum_size = Vector2(270, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_61pm2")
+text = "선택한 등급으로 설정"
+
+[connection signal="pressed" from="Panel" to="." method="_on_panel_pressed"]
+[connection signal="button_down" from="Panel/M/V/Button" to="." method="_on_button_down"]

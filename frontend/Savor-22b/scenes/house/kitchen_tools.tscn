@@ -1,0 +1,62 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwqquis7w31g7"]
+
+[ext_resource type="Script" path="res://scenes/house/kitchen_tools.gd" id="1_bkji1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rk6tx"]
+bg_color = Color(1, 0.541176, 0, 1)
+
+[node name="Kitchentools" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -357.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bkji1")
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="V" type="VBoxContainer" parent="M"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="Items" type="MarginContainer" parent="M/V"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="S" type="ScrollContainer" parent="M/V/Items"]
+custom_minimum_size = Vector2(1780, 500)
+layout_mode = 2
+
+[node name="G" type="GridContainer" parent="M/V/Items/S"]
+custom_minimum_size = Vector2(1780, 500)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 50
+columns = 5
+
+[node name="Button" type="MarginContainer" parent="M/V"]
+layout_mode = 2
+theme_override_constants/margin_right = 80
+
+[node name="Close" type="Button" parent="M/V/Button"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_rk6tx")
+text = "   닫기   "
+
+[connection signal="button_down" from="M/V/Button/Close" to="." method="_on_close_button_down"]

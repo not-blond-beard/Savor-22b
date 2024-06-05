@@ -1,0 +1,80 @@
+[gd_scene load_steps=4 format=3 uid="uid://crw3yutudcodf"]
+
+[ext_resource type="Script" path="res://scenes/market/trade_goods.gd" id="1_vfbu4"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3bs65"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lobix"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="TradeGoods" type="Control"]
+custom_minimum_size = Vector2(500, 430)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -25.0
+offset_right = -1445.0
+offset_bottom = -670.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_vfbu4")
+
+[node name="BackgroundPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3bs65")
+
+[node name="MarginContainer" type="MarginContainer" parent="BackgroundPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BackgroundPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="BackgroundPanel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 280)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "품목명 : 김
+A 등급
+foodstateId : dbfb5df1-9a5a-4f03-b19b-f385595ddc14
+가격 : 10
+게시자 : 0xae9bbb0090e20a8d1c8c3a2667b55951f8e
+"
+autowrap_mode = 1
+
+[node name="BuyButton" type="Button" parent="BackgroundPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_lobix")
+text = "   구매   "

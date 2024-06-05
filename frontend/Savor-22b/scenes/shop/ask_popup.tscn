@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://taqcgkosj1e6"]
 
-[ext_resource type="PackedScene" uid="uid://co4t4p5pawylr" path="res://ui/asset.tscn" id="1_t0req"]
+[ext_resource type="PackedScene" uid="uid://co4t4p5pawylr" path="res://scenes/common/prefabs/asset.tscn" id="1_t0req"]
 [ext_resource type="Script" path="res://scenes/shop/ask_popup.gd" id="1_ulgkj"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhy67"]
@@ -28,7 +28,7 @@ theme_override_constants/margin_bottom = 20
 layout_mode = 2
 theme_override_constants/separation = 20
 
-[node name="Itemname" type="Label" parent="M/V"]
+[node name="item_name" type="Label" parent="M/V"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_colors/font_color = Color(0, 0, 0, 1)

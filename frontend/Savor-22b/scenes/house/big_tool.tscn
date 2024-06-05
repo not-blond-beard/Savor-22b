@@ -1,0 +1,58 @@
+[gd_scene load_steps=5 format=3 uid="uid://c53b0e4ogji84"]
+
+[ext_resource type="Script" path="res://scenes/house/big_tool.gd" id="1_wba4e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nr860"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ki7ru"]
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aermx"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[node name="Bigtool" type="Control"]
+custom_minimum_size = Vector2(350, 250)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -1570.0
+offset_bottom = -830.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wba4e")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_nr860")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ki7ru")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_aermx")
+theme_override_styles/focus = SubResource("StyleBoxFlat_aermx")
+text = "조리도구 이름"
+text_overrun_behavior = 1
+
+[connection signal="button_down" from="Button" to="." method="_on_button_down"]

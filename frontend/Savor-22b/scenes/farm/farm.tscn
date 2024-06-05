@@ -1,0 +1,122 @@
+[gd_scene load_steps=3 format=3 uid="uid://c10m1dv6u7ks7"]
+
+[ext_resource type="Script" path="res://scenes/farm/farm.gd" id="1_q2tum"]
+[ext_resource type="PackedScene" uid="uid://co4t4p5pawylr" path="res://scenes/common/prefabs/asset.tscn" id="2_vkmuk"]
+
+[node name="Farm" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q2tum")
+metadata/_edit_horizontal_guides_ = [-309.0]
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MC" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="HC" type="HBoxContainer" parent="MC"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="CR" type="ColorRect" parent="MC/HC"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.7
+color = Color(0, 0, 0, 1)
+
+[node name="MC" type="MarginContainer" parent="MC/HC/CR"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="HC" type="HBoxContainer" parent="MC/HC/CR/MC"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="Left" type="VBoxContainer" parent="MC/HC/CR/MC/HC"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="Right" type="VBoxContainer" parent="MC/HC/CR/MC/HC"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MC/HC"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="MarginContainer" type="MarginContainer" parent="MC/HC/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MC/HC/VBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="Asset" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer" instance=ExtResource("2_vkmuk")]
+layout_mode = 2
+
+[node name="HomeButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "부엌으로"
+
+[node name="MarketButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "무역 상점"
+
+[node name="InventoryButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "인벤토리"
+
+[node name="RefreshButton" type="Button" parent="MC/HC/VBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 50
+text = "새로고침"
+
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/HomeButton" to="." method="_on_home_button_down"]
+[connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/MarketButton" to="." method="_on_market_button_down"]
+[connection signal="button_down" from="MC/HC/VBoxContainer/MarginContainer/VBoxContainer/RefreshButton" to="." method="_on_refresh_button_down"]

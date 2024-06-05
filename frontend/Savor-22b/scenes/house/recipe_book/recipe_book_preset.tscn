@@ -1,0 +1,455 @@
+[gd_scene load_steps=12 format=3 uid="uid://blowb3mc1asp1"]
+
+[ext_resource type="StyleBox" uid="uid://b2nqsuwp80vsg" path="res://scenes/house/recipe_book/recipe_style_box_flat.tres" id="1_txpcy"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvose"]
+bg_color = Color(0.94902, 0.694118, 0.0784314, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_size = 5
+
+[sub_resource type="FontVariation" id="FontVariation_eybux"]
+variation_embolden = -0.3
+
+[sub_resource type="SystemFont" id="SystemFont_ardk6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jup0i"]
+bg_color = Color(0.94902, 0.596078, 0.0784314, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="FontVariation" id="FontVariation_g1ith"]
+variation_embolden = -0.4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ym4cf"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rle7u"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ot8sp"]
+bg_color = Color(0.94902, 0.694118, 0.0784314, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_size = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ngbpx"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_61pm2"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="Recipebook" type="Control"]
+custom_minimum_size = Vector2(1600, 900)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1600.0
+offset_bottom = 900.0
+
+[node name="background" type="Panel" parent="."]
+custom_minimum_size = Vector2(1600, 900)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tvose")
+
+[node name="M" type="MarginContainer" parent="background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 30
+
+[node name="V" type="VBoxContainer" parent="background/M"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="background/M/V"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 70
+text = "조리 가능한 레시피"
+
+[node name="Description" type="HBoxContainer" parent="background/M/V"]
+layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
+
+[node name="Desc" type="Label" parent="background/M/V/Description"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_eybux")
+theme_override_font_sizes/font_size = 45
+text = "현재 설치된 조리도구"
+
+[node name="ription" type="Label" parent="background/M/V/Description"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("SystemFont_ardk6")
+theme_override_font_sizes/font_size = 45
+text = "[ 중화 웍, 후라이팬, ... ]"
+
+[node name="S" type="ScrollContainer" parent="background/M/V"]
+custom_minimum_size = Vector2(2.08165e-12, 580)
+layout_mode = 2
+
+[node name="G" type="GridContainer" parent="background/M/V/S"]
+layout_mode = 2
+theme_override_constants/h_separation = 50
+columns = 2
+
+[node name="Recipe" type="Panel" parent="background/M/V/S/G"]
+custom_minimum_size = Vector2(700, 550)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("1_txpcy")
+
+[node name="M" type="MarginContainer" parent="background/M/V/S/G/Recipe"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 10
+
+[node name="V" type="VBoxContainer" parent="background/M/V/S/G/Recipe/M"]
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="background/M/V/S/G/Recipe/M/V"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Name" type="Label" parent="background/M/V/S/G/Recipe/M/V/Title"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "[트러플 짜장면] 레시피"
+
+[node name="insufficient" type="Label" parent="background/M/V/S/G/Recipe/M/V/Title"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "(재료부족)"
+
+[node name="Blockreq" type="Label" parent="background/M/V/S/G/Recipe/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.541176, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "소요 블록 N 블록"
+
+[node name="Space" type="MarginContainer" parent="background/M/V/S/G/Recipe/M/V"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+
+[node name="Description" type="VBoxContainer" parent="background/M/V/S/G/Recipe/M/V"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="T1" type="Label" parent="background/M/V/S/G/Recipe/M/V/Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "[조리도구]"
+
+[node name="Tools" type="HBoxContainer" parent="background/M/V/S/G/Recipe/M/V/Description"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Availabletools" type="Button" parent="background/M/V/S/G/Recipe/M/V/Description/Tools"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[-- -]
+사용 가능"
+
+[node name="Availabletools2" type="Button" parent="background/M/V/S/G/Recipe/M/V/Description/Tools"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[-- -]
+사용 가능"
+
+[node name="T2" type="Label" parent="background/M/V/S/G/Recipe/M/V/Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "[식재료]"
+
+[node name="Ingredients" type="HBoxContainer" parent="background/M/V/S/G/Recipe/M/V/Description"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Ing" type="Button" parent="background/M/V/S/G/Recipe/M/V/Description/Ingredients"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[춘장]
+보유중"
+
+[node name="NoIng" type="Button" parent="background/M/V/S/G/Recipe/M/V/Description/Ingredients"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+
+[node name="Desc" type="VBoxContainer" parent="background/M/V/S/G/Recipe/M/V/Description/Ingredients/NoIng"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = -2
+alignment = 1
+
+[node name="Name" type="Label" parent="background/M/V/S/G/Recipe/M/V/Description/Ingredients/NoIng/Desc"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+text = "[라드]"
+
+[node name="No" type="Label" parent="background/M/V/S/G/Recipe/M/V/Description/Ingredients/NoIng/Desc"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_g1ith")
+theme_override_font_sizes/font_size = 25
+text = "없음"
+
+[node name="Recipe2" type="Panel" parent="background/M/V/S/G"]
+custom_minimum_size = Vector2(700, 550)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("1_txpcy")
+
+[node name="M" type="MarginContainer" parent="background/M/V/S/G/Recipe2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 10
+
+[node name="V" type="VBoxContainer" parent="background/M/V/S/G/Recipe2/M"]
+layout_mode = 2
+
+[node name="Title" type="HBoxContainer" parent="background/M/V/S/G/Recipe2/M/V"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Name" type="Label" parent="background/M/V/S/G/Recipe2/M/V/Title"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "[트러플 짜장면] 레시피"
+
+[node name="insufficient" type="Label" parent="background/M/V/S/G/Recipe2/M/V/Title"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "(재료부족)"
+
+[node name="Blockreq" type="Label" parent="background/M/V/S/G/Recipe2/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.541176, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "소요 블록 N 블록"
+
+[node name="Space" type="MarginContainer" parent="background/M/V/S/G/Recipe2/M/V"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+
+[node name="Description" type="VBoxContainer" parent="background/M/V/S/G/Recipe2/M/V"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="T1" type="Label" parent="background/M/V/S/G/Recipe2/M/V/Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "[조리도구]"
+
+[node name="Tools" type="HBoxContainer" parent="background/M/V/S/G/Recipe2/M/V/Description"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Availabletools" type="Button" parent="background/M/V/S/G/Recipe2/M/V/Description/Tools"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[-- -]
+사용 가능"
+
+[node name="Availabletools2" type="Button" parent="background/M/V/S/G/Recipe2/M/V/Description/Tools"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[-- -]
+사용 가능"
+
+[node name="T2" type="Label" parent="background/M/V/S/G/Recipe2/M/V/Description"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "[식재료]"
+
+[node name="Ingredients" type="HBoxContainer" parent="background/M/V/S/G/Recipe2/M/V/Description"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Ing" type="Button" parent="background/M/V/S/G/Recipe2/M/V/Description/Ingredients"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[춘장]
+보유중"
+
+[node name="Ing2" type="Button" parent="background/M/V/S/G/Recipe2/M/V/Description/Ingredients"]
+custom_minimum_size = Vector2(180, 110)
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_jup0i")
+text = "[춘장]
+보유중"
+
+[node name="BottomMenu" type="HBoxContainer" parent="background/M/V"]
+layout_mode = 2
+theme_override_constants/separation = 850
+
+[node name="Close" type="Button" parent="background/M/V/BottomMenu"]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_ym4cf")
+text = "닫기"
+
+[node name="Cook" type="Button" parent="background/M/V/BottomMenu"]
+custom_minimum_size = Vector2(450, 60)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_rle7u")
+text = "선택한 레시피로 조리하기"
+
+[node name="Popups" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SelectIngredients" type="Panel" parent="Popups"]
+custom_minimum_size = Vector2(400, 300)
+layout_mode = 1
+offset_left = 1253.0
+offset_top = 567.0
+offset_right = 1653.0
+offset_bottom = 867.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ot8sp")
+
+[node name="M" type="MarginContainer" parent="Popups/SelectIngredients"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 15
+
+[node name="V" type="VBoxContainer" parent="Popups/SelectIngredients/M"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Popups/SelectIngredients/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 30
+text = "현재 소유중인 [-- -]"
+
+[node name="Ingredients" type="VBoxContainer" parent="Popups/SelectIngredients/M/V"]
+layout_mode = 2
+
+[node name="RankB" type="Button" parent="Popups/SelectIngredients/M/V/Ingredients"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_ngbpx")
+text = "B 등급 [1개]"
+
+[node name="RankA" type="Button" parent="Popups/SelectIngredients/M/V/Ingredients"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_ngbpx")
+text = "A 등급 [3개]"
+
+[node name="RankS" type="Button" parent="Popups/SelectIngredients/M/V/Ingredients"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_ngbpx")
+text = "S 등급 [6개]"
+
+[node name="Button" type="Button" parent="Popups/SelectIngredients/M/V"]
+custom_minimum_size = Vector2(270, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_61pm2")
+text = "선택한 등급으로 설정"

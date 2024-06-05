@@ -1,0 +1,129 @@
+[gd_scene load_steps=7 format=3 uid="uid://bb0hth2o7k30q"]
+
+[ext_resource type="Script" path="res://scenes/house/cook/cook_book.gd" id="1_q1ejr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tvose"]
+bg_color = Color(0.94902, 0.694118, 0.0784314, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_size = 5
+
+[sub_resource type="FontVariation" id="FontVariation_eybux"]
+variation_embolden = -0.3
+
+[sub_resource type="SystemFont" id="SystemFont_ardk6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ym4cf"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rle7u"]
+bg_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="Cookbook" type="Control"]
+custom_minimum_size = Vector2(1600, 900)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1600.0
+offset_bottom = 900.0
+script = ExtResource("1_q1ejr")
+
+[node name="background" type="Panel" parent="."]
+custom_minimum_size = Vector2(1600, 900)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tvose")
+
+[node name="M" type="MarginContainer" parent="background"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 30
+
+[node name="V" type="VBoxContainer" parent="background/M"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="background/M/V"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 70
+text = "조리 가능한 레시피"
+
+[node name="Description" type="HBoxContainer" parent="background/M/V"]
+layout_mode = 2
+size_flags_vertical = 4
+alignment = 1
+
+[node name="Text" type="Label" parent="background/M/V/Description"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("FontVariation_eybux")
+theme_override_font_sizes/font_size = 45
+text = "현재 설치된 조리도구"
+
+[node name="ToolList" type="Label" parent="background/M/V/Description"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = SubResource("SystemFont_ardk6")
+theme_override_font_sizes/font_size = 45
+text = "[ 중화 웍, 후라이팬, ... ]"
+
+[node name="S" type="ScrollContainer" parent="background/M/V"]
+custom_minimum_size = Vector2(2.08165e-12, 580)
+layout_mode = 2
+
+[node name="G" type="GridContainer" parent="background/M/V/S"]
+layout_mode = 2
+theme_override_constants/h_separation = 50
+columns = 2
+
+[node name="BottomMenu" type="HBoxContainer" parent="background/M/V"]
+layout_mode = 2
+theme_override_constants/separation = 850
+
+[node name="Close" type="Button" parent="background/M/V/BottomMenu"]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_ym4cf")
+text = "닫기"
+
+[node name="Cook" type="Button" parent="background/M/V/BottomMenu"]
+custom_minimum_size = Vector2(450, 60)
+layout_mode = 2
+size_flags_horizontal = 8
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_rle7u")
+text = "선택한 레시피로 조리하기"
+
+[connection signal="button_down" from="background/M/V/BottomMenu/Close" to="." method="_on_close_button_down"]
+[connection signal="button_down" from="background/M/V/BottomMenu/Cook" to="." method="_on_cook_button_down"]

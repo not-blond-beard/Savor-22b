@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3 uid="uid://fdq3w641k4h1"]
+
+[ext_resource type="Script" path="res://scenes/common/prefabs/notice_popup.gd" id="1_ftdb6"]
+
+[node name="NoticePopup" type="ColorRect"]
+offset_left = 5.0
+offset_top = -38.0
+offset_right = 605.0
+offset_bottom = 262.0
+color = Color(1, 1, 0.533333, 1)
+script = ExtResource("1_ftdb6")
+
+[node name="MarginContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -93.0
+offset_bottom = 93.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 80
+
+[node name="Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+text = "이미 설치된 집입니다."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 50
+text = " 확인 "
+
+[connection signal="pressed" from="MarginContainer/Button" to="." method="_on_button_pressed"]

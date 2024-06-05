@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://c0qm0ud7mwmwb"]
+
+[ext_resource type="Script" path="res://scenes/farm/farm_slot_button.gd" id="1_vqq1f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1e62"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctkwv"]
+bg_color = Color(1, 1, 1, 0)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(1, 1, 1, 1)
+
+[node name="FarmSlotButton" type="ColorRect"]
+offset_right = 500.0
+offset_bottom = 300.0
+size_flags_vertical = 3
+color = Color(0.866667, 0.498039, 0.215686, 1)
+script = ExtResource("1_vqq1f")
+
+[node name="V" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="V"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxFlat_b1e62")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ctkwv")
+text = "[벼] 자라는 중
+[N 블록 남음]"
+
+[node name="Weed" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 1, 0, 1)
+theme_override_font_sizes/font_size = 28
+text = "[잡초 제거 필요]"
+horizontal_alignment = 2
+vertical_alignment = 2
+
+[connection signal="button_down" from="V/Button" to="." method="_on_button_down"]

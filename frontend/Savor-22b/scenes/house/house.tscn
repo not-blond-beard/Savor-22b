@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bpobpaan3tquv"]
 
-[ext_resource type="Script" path="res://scripts/scenes/house.gd" id="1_suicg"]
+[ext_resource type="Script" path="res://scenes/house/house.gd" id="1_suicg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n3yrr"]
 bg_color = Color(0.32549, 1, 0.290196, 1)
@@ -32,7 +32,7 @@ offset_right = 40.0
 offset_bottom = 23.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 60
-text = " 집 화면"
+text = " 집 "
 
 [node name="M" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -56,47 +56,54 @@ theme_override_constants/margin_bottom = 20
 custom_minimum_size = Vector2(500, 2.08165e-12)
 layout_mode = 2
 size_flags_horizontal = 8
-columns = 5
+columns = 6
 
 [node name="FarmButton" type="Button" parent="M/V/menus/V"]
 custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 45
 text = "밭으로"
 
 [node name="VillageButton" type="Button" parent="M/V/menus/V"]
 custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 45
 text = "  마을로  "
+
+[node name="MarketButton" type="Button" parent="M/V/menus/V"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 45
+text = " 무역 상점 "
 
 [node name="RecipeButton" type="Button" parent="M/V/menus/V"]
 custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 45
 text = "  레시피북  "
 
 [node name="InventoryButton" type="Button" parent="M/V/menus/V"]
 custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 45
 text = "  인벤토리  "
 
 [node name="RefreshButton" type="Button" parent="M/V/menus/V"]
 custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 45
 text = "  새로고침  "
 
 [node name="M" type="MarginContainer" parent="M/V/menus"]
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_constants/margin_left = 250
+theme_override_constants/margin_left = 100
 
 [node name="CookButton" type="Button" parent="M/V/menus/M"]
 custom_minimum_size = Vector2(380, 2.08165e-12)
@@ -107,14 +114,14 @@ theme_override_font_sizes/font_size = 45
 theme_override_styles/normal = SubResource("StyleBoxFlat_n3yrr")
 text = "+ 음식 조리하기"
 
-[node name="subscene" type="MarginContainer" parent="M/V"]
+[node name="sub_scene" type="MarginContainer" parent="M/V"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 theme_override_constants/margin_bottom = 20
 
-[node name="VBoxContainer" type="VBoxContainer" parent="M/V/subscene"]
+[node name="VBoxContainer" type="VBoxContainer" parent="M/V/sub_scene"]
 layout_mode = 2
 
 [node name="Popups" type="Control" parent="."]
@@ -130,9 +137,10 @@ offset_top = 300.0
 offset_right = 640.0
 offset_bottom = 340.0
 
-[connection signal="button_down" from="M/V/menus/V/FarmButton" to="." method="_on_farm_button_button_down"]
-[connection signal="button_down" from="M/V/menus/V/VillageButton" to="." method="_on_village_button_button_down"]
-[connection signal="button_down" from="M/V/menus/V/RecipeButton" to="." method="_on_recipe_button_button_down"]
-[connection signal="button_down" from="M/V/menus/V/InventoryButton" to="." method="_on_inventory_button_button_down"]
-[connection signal="button_down" from="M/V/menus/V/RefreshButton" to="." method="_on_refresh_button_button_down"]
-[connection signal="button_down" from="M/V/menus/M/CookButton" to="." method="_on_cook_button_button_down"]
+[connection signal="button_down" from="M/V/menus/V/FarmButton" to="." method="_on_farm_button_down"]
+[connection signal="button_down" from="M/V/menus/V/VillageButton" to="." method="_on_village_button_down"]
+[connection signal="button_down" from="M/V/menus/V/MarketButton" to="." method="_on_market_button_down"]
+[connection signal="button_down" from="M/V/menus/V/RecipeButton" to="." method="_on_recipe_button_down"]
+[connection signal="button_down" from="M/V/menus/V/InventoryButton" to="." method="_on_inventory_button_down"]
+[connection signal="button_down" from="M/V/menus/V/RefreshButton" to="." method="_on_refresh_button_down"]
+[connection signal="button_down" from="M/V/menus/M/CookButton" to="." method="_on_cook_button_down"]

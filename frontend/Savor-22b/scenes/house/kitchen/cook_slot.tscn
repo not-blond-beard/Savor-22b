@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3 uid="uid://dea1yl6pikg0n"]
+
+[ext_resource type="Script" path="res://scenes/house/kitchen/cook_slot.gd" id="1_kouyr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q2usp"]
+bg_color = Color(0, 0, 0, 1)
+
+[node name="CookSlot" type="Control"]
+custom_minimum_size = Vector2(1920, 400)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -680.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kouyr")
+
+[node name="P" type="Panel" parent="."]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 400.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_q2usp")
+
+[node name="M" type="MarginContainer" parent="P"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 15
+
+[node name="V" type="VBoxContainer" parent="P/M"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="P/M/V"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 50
+text = "일반 음식 조리 슬롯"
+
+[node name="S" type="ScrollContainer" parent="P/M/V"]
+layout_mode = 2
+vertical_scroll_mode = 0
+
+[node name="Slot" type="HBoxContainer" parent="P/M/V/S"]
+layout_mode = 2
+theme_override_constants/separation = 50

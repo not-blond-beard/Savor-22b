@@ -11,20 +11,19 @@ config_version=5
 [application]
 
 config/name="Savor-22b"
-run/main_scene="res://scenes/intro.tscn"
+run/main_scene="res://scenes/intro/intro.tscn"
 config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
 boot_splash/bg_color=Color(0.141176, 0.141176, 0.141176, 1)
 config/icon="res://icon.svg"
 
 [autoload]
 
-GlobalSigner="*res://scripts/sign/Signer.gd"
-SvrGqlClient="*res://gql/svr_gql_client.gd"
-SvrGqlClient2="*res://gql/svr_gql_client_2.gd"
-SceneContext="*res://scripts/global/scene_context.gd"
-GlobalInventory="*res://scripts/global/inventory.gd"
-Intro="*res://scripts/scenes/intro.gd"
-TestPanel="*res://scenes/testpanel/test_panel.gd"
+GlobalSigner="*res://global/signer.gd"
+SvrGqlClient="*res://global/svr_gql_client.gd"
+SvrExplorerGqlClient="*res://global/svr_explorer_gql_client.gd"
+SceneContext="*res://global/scene_context.gd"
+GlobalInventory="*res://global/inventory.gd"
+Intro="*res://scenes/intro/intro.gd"
 
 [display]
 
