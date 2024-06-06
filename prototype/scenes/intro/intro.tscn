@@ -72,6 +72,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_2kjqm")
 text = "Start game"
 
 [node name="QuitButton" type="Button" parent="."]
+layout_mode = 0
 offset_left = 701.0
 offset_top = 733.0
 offset_right = 1221.0
