@@ -24,12 +24,13 @@ script = ExtResource("4_fc4lm")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1
-anchors_preset = 10
+anchors_preset = -1
 anchor_right = 1.0
-offset_bottom = 47.0
+anchor_bottom = 0.706897
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.291216, 0.180638, 6.73831e-07, 1)
 theme_override_fonts/font = ExtResource("5_oibmx")
 theme_override_font_sizes/font_size = 30
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_use_anchors_ = true

@@ -13,9 +13,9 @@ texture = ExtResource("1_b1dp6")
 
 [node name="CurrentBlock" type="Label" parent="."]
 layout_mode = 0
-offset_left = 116.0
+offset_left = 97.0
 offset_top = 37.0
-offset_right = 164.0
+offset_right = 145.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = ExtResource("2_tqgw7")
@@ -24,9 +24,9 @@ text = " 500"
 
 [node name="TotalBlock" type="Label" parent="."]
 layout_mode = 0
-offset_left = 155.0
+offset_left = 136.0
 offset_top = 37.0
-offset_right = 215.0
+offset_right = 196.0
 offset_bottom = 73.0
 theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
 theme_override_fonts/font = ExtResource("2_tqgw7")
@@ -45,4 +45,4 @@ theme_override_font_sizes/font_size = 30
 text = "Pink radish"
 
 [node name="Progress" parent="." instance=ExtResource("3_hfy0m")]
-position = Vector2(59, 51)
+position = Vector2(52, 51)

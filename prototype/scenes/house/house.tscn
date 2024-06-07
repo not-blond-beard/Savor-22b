@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmk0ni1bs8vhl"]
+
+[ext_resource type="TileSet" uid="uid://cad0u5yvice1y" path="res://scenes/global/tile.tres" id="1_ktgxc"]
+
+[node name="House" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = ExtResource("1_ktgxc")
+format = 2
+
+[node name="Camera2D" type="Camera2D" parent="."]

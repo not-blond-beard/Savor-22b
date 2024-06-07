@@ -1,28 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://y7o5mr6mwrqc"]
+[gd_scene load_steps=5 format=3 uid="uid://y7o5mr6mwrqc"]
 
 [ext_resource type="Script" path="res://scenes/intro/intro.gd" id="1_kqg3s"]
 [ext_resource type="Texture2D" uid="uid://dtsdqmpiq5i6p" path="res://assets/background.webp" id="2_kooyf"]
 [ext_resource type="FontFile" uid="uid://bk0fo7i7bh2vu" path="res://assets/Jersey15-Regular.ttf" id="3_8hkdo"]
-
-[sub_resource type="Theme" id="Theme_hisb6"]
-default_font = ExtResource("3_8hkdo")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2kjqm"]
-content_margin_left = 50.0
-content_margin_top = 10.0
-content_margin_right = 50.0
-content_margin_bottom = 10.0
-bg_color = Color(0.992157, 0.6, 0.541176, 1)
-
-[sub_resource type="Theme" id="Theme_1by2r"]
-default_font = ExtResource("3_8hkdo")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fr15"]
-content_margin_left = 50.0
-content_margin_top = 10.0
-content_margin_right = 50.0
-content_margin_bottom = 10.0
-bg_color = Color(1, 0.835294, 0.65098, 1)
+[ext_resource type="PackedScene" uid="uid://b6uh4eshx1cka" path="res://ui/texture_button.tscn" id="4_7mk68"]
 
 [node name="Intro" type="Control"]
 layout_mode = 3
@@ -58,31 +39,23 @@ theme_override_fonts/font = ExtResource("3_8hkdo")
 theme_override_font_sizes/font_size = 150
 text = "Savor22B RPG"
 
-[node name="StartButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 701.0
-offset_top = 571.0
-offset_right = 1221.0
-offset_bottom = 692.0
-theme = SubResource("Theme_hisb6")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("3_8hkdo")
-theme_override_font_sizes/font_size = 100
-theme_override_styles/normal = SubResource("StyleBoxFlat_2kjqm")
-text = "Start game"
+[node name="StartButton" parent="." instance=ExtResource("4_7mk68")]
+layout_mode = 1
+offset_left = 963.0
+offset_top = 716.0
+offset_right = 1456.0
+offset_bottom = 861.0
+label = "Start game"
+font_size = 60
 
-[node name="QuitButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 701.0
-offset_top = 733.0
-offset_right = 1221.0
-offset_bottom = 854.0
-theme = SubResource("Theme_1by2r")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_fonts/font = ExtResource("3_8hkdo")
-theme_override_font_sizes/font_size = 100
-theme_override_styles/normal = SubResource("StyleBoxFlat_3fr15")
-text = "Quit"
+[node name="QuitButton" parent="." instance=ExtResource("4_7mk68")]
+layout_mode = 1
+offset_left = 996.0
+offset_top = 908.0
+offset_right = 1408.0
+offset_bottom = 1008.0
+label = "Quit game"
+font_size = 50
 
 [connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="QuitButton" to="." method="_on_quit_button_pressed"]
