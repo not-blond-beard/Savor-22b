@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://y7o5mr6mwrqc"]
 
 [ext_resource type="Script" path="res://scenes/intro/intro.gd" id="1_kqg3s"]
-[ext_resource type="Texture2D" uid="uid://dtsdqmpiq5i6p" path="res://ui/assets/background.webp" id="2_kooyf"]
-[ext_resource type="FontFile" uid="uid://bk0fo7i7bh2vu" path="res://ui/Jersey15-Regular.ttf" id="3_8hkdo"]
+[ext_resource type="Texture2D" uid="uid://dtsdqmpiq5i6p" path="res://assets/background.webp" id="2_kooyf"]
+[ext_resource type="FontFile" uid="uid://bk0fo7i7bh2vu" path="res://assets/Jersey15-Regular.ttf" id="3_8hkdo"]
 
 [sub_resource type="Theme" id="Theme_hisb6"]
 default_font = ExtResource("3_8hkdo")

@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://bemk6vxjlt877"]
+
+[ext_resource type="Texture2D" uid="uid://b21xkxcmaffnw" path="res://assets/ui/UI_Flat_Textfield_01.png" id="1_2cgqb"]
+[ext_resource type="Script" path="res://ui/banner/banner.gd" id="1_ncyft"]
+[ext_resource type="Texture2D" uid="uid://diuje002pp3rv" path="res://assets/icons/Star.svg" id="2_hcory"]
+[ext_resource type="FontFile" uid="uid://bk0fo7i7bh2vu" path="res://assets/Jersey15-Regular.ttf" id="3_s653u"]
+
+[node name="Banner" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 220.0
+offset_bottom = 75.0
+script = ExtResource("1_ncyft")
+
+[node name="Container" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_2cgqb")
+
+[node name="Icon" type="Sprite2D" parent="Container"]
+modulate = Color(1, 0.698039, 0, 1)
+position = Vector2(24, 19)
+scale = Vector2(0.357143, 0.39011)
+texture = ExtResource("2_hcory")
+
+[node name="Title" type="Label" parent="Container"]
+layout_mode = 0
+offset_left = 37.125
+offset_top = 2.0
+offset_right = 85.125
+offset_bottom = 38.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_s653u")
+theme_override_font_sizes/font_size = 35
+text = "-"
+
+[node name="Value" type="Label" parent="Container"]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 9.0
+offset_right = 206.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_s653u")
+theme_override_font_sizes/font_size = 45
+text = "-"
+horizontal_alignment = 2
+vertical_alignment = 2

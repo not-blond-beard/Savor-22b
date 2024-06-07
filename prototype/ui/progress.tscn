@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3iv1nmtigc7o"]
+
+[ext_resource type="Texture2D" uid="uid://c5dl6ksp6cmmo" path="res://assets/ui/UI_Flat_Scrollbar_01.png" id="1_huli2"]
+
+[node name="Progress" type="Sprite2D"]
+position = Vector2(43, 8)
+scale = Vector2(2.6875, 1.76562)
+texture = ExtResource("1_huli2")
+
+[node name="Percent" type="ColorRect" parent="."]
+offset_left = -14.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = 1.0
+color = Color(0.985663, 0.418165, 0.240193, 1)
+metadata/_edit_use_anchors_ = true

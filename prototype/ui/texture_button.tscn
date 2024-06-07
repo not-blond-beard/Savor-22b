@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://b6uh4eshx1cka"]
+
+[ext_resource type="Texture2D" uid="uid://2dufwn2omtxj" path="res://assets/ui/UI_Flat_Button_Medium_Lock_02a1.png" id="1_v41au"]
+[ext_resource type="Texture2D" uid="uid://dkw1ocmkkctyc" path="res://assets/ui/UI_Flat_Button_Medium_Press_02a3.png" id="2_e0uwf"]
+[ext_resource type="Texture2D" uid="uid://csmo04pownb6o" path="res://assets/ui/UI_Flat_Button_Medium_Press_02a4.png" id="3_ua0nn"]
+[ext_resource type="Script" path="res://ui/texture_button.gd" id="4_fc4lm"]
+[ext_resource type="FontFile" uid="uid://bk0fo7i7bh2vu" path="res://assets/Jersey15-Regular.ttf" id="5_oibmx"]
+
+[node name="TextureButton" type="TextureButton"]
+anchors_preset = -1
+anchor_left = -0.125
+anchor_top = -0.15
+anchor_right = -0.125
+anchor_bottom = -0.15
+offset_left = 241.0
+offset_top = 164.0
+offset_right = 390.0
+offset_bottom = 222.0
+texture_normal = ExtResource("1_v41au")
+texture_pressed = ExtResource("2_e0uwf")
+texture_hover = ExtResource("3_ua0nn")
+stretch_mode = 0
+script = ExtResource("4_fc4lm")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 47.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.291216, 0.180638, 6.73831e-07, 1)
+theme_override_fonts/font = ExtResource("5_oibmx")
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1

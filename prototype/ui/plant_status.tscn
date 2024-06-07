@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://ca4y5j2in3gkv"]
+
+[ext_resource type="Texture2D" uid="uid://0i45kiprichi" path="res://assets/ui/UI_Flat_Frame_02_Horizontal.png" id="1_b1dp6"]
+[ext_resource type="FontFile" uid="uid://bk0fo7i7bh2vu" path="res://assets/Jersey15-Regular.ttf" id="2_tqgw7"]
+[ext_resource type="PackedScene" uid="uid://d3iv1nmtigc7o" path="res://ui/progress.tscn" id="3_hfy0m"]
+
+[node name="PlantStatus" type="TextureRect"]
+offset_left = -2.0
+offset_top = -2.0
+offset_right = 217.0
+offset_bottom = 67.0
+texture = ExtResource("1_b1dp6")
+
+[node name="CurrentBlock" type="Label" parent="."]
+layout_mode = 0
+offset_left = 116.0
+offset_top = 37.0
+offset_right = 164.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_tqgw7")
+theme_override_font_sizes/font_size = 25
+text = " 500"
+
+[node name="TotalBlock" type="Label" parent="."]
+layout_mode = 0
+offset_left = 155.0
+offset_top = 37.0
+offset_right = 215.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.277528, 0.277528, 0.277528, 1)
+theme_override_fonts/font = ExtResource("2_tqgw7")
+theme_override_font_sizes/font_size = 25
+text = "/8000"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = 6.0
+offset_right = 136.0
+offset_bottom = 37.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_tqgw7")
+theme_override_font_sizes/font_size = 30
+text = "Pink radish"
+
+[node name="Progress" parent="." instance=ExtResource("3_hfy0m")]
+position = Vector2(59, 51)
